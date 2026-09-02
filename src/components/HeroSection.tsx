@@ -54,7 +54,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectStage, onSearc
       <section ref={servicesRef} className="relative flex min-h-screen scroll-mt-0 items-center overflow-hidden bg-[#f4f8fb] py-14 sm:py-16">
         <div className="pointer-events-none absolute -right-24 -top-44 h-[540px] w-[540px] rounded-full border-[58px] border-[#dceef6] opacity-70" />
         <div className="pointer-events-none absolute right-10 top-12 h-72 w-72 rounded-full border border-[#b7dbe9] opacity-80" />
-        <div className="relative mx-auto max-w-[1280px] px-5 sm:px-8 lg:px-12">
+        <div className="relative mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
+          <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(480px,0.9fr)] lg:gap-12">
           <div className="max-w-2xl">
             <p className="text-sm font-semibold tracking-[0.14em] text-[#0069b4] uppercase">Información clara, en un solo lugar</p>
             <h2 className="mt-3 text-4xl font-semibold leading-[1.04] tracking-[-0.05em] text-[#071e3a] sm:text-5xl">Entender tu proceso también genera <span className="text-[#0069b4]">confianza.</span></h2>
@@ -64,6 +65,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectStage, onSearc
               <button type="submit" className="flex h-10 w-11 items-center justify-center rounded-md bg-[#0069b4] text-white transition-colors hover:bg-[#005995]" aria-label="Buscar"><Search className="h-5 w-5" /></button>
             </form>
             <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-500"><span>Ejemplos:</span>{['patentamiento', 'gestoría', 'fecha de entrega', 'documentación'].map((term) => <button type="button" onClick={() => onSearchSubmit(term)} key={term} className="rounded bg-white px-2 py-1 text-[#356081] transition-colors hover:bg-[#dceef6]">{term}</button>)}</div>
+          </div>
+          <div className="relative hidden min-h-[360px] overflow-hidden rounded-[2rem] bg-[radial-gradient(circle_at_60%_40%,#ffffff_0%,#e4f4fa_50%,#d1e9f4_100%)] shadow-[0_25px_60px_rgba(13,74,110,0.14)] lg:block">
+            <img src="/images/vw-taos-panel.png" alt="SUV Volkswagen azul" className="absolute inset-0 h-full w-full object-cover object-center mix-blend-multiply" />
+            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#d7edf6]/65 to-transparent" />
+            <div className="absolute left-7 top-7 rounded-full border border-white/80 bg-white/75 px-4 py-2 text-xs font-semibold text-[#0069b4] backdrop-blur">Volkswagen · Gama SUV</div>
+          </div>
           </div>
 
           <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -92,7 +99,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectStage, onSearc
               ); })}
             </div>
           </div>
-          <p className="mt-8 text-center text-sm text-slate-500">Cada etapa abre su explicación completa, documentación necesaria y próximos pasos.</p>
         </div>
       </section>
 

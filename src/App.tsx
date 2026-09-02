@@ -300,7 +300,7 @@ function AppContent() {
       />
 
       {/* Platform Footer with VW | Autosol Branding */}
-      <footer className="bg-[#0B2265] text-slate-300 text-xs border-t border-blue-900 mt-16">
+      <footer className="hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Brand & Motto */}
@@ -476,6 +476,42 @@ function AppContent() {
               </button>
             </div>
           </div>
+        </div>
+      </footer>
+      <footer className="bg-[#061d38] text-white">
+        <div className="mx-auto max-w-[1280px] px-5 py-14 sm:px-8 lg:px-12 lg:py-16">
+          <div className="grid gap-12 border-b border-white/15 pb-12 md:grid-cols-2 lg:grid-cols-[1.2fr_.75fr_.9fr_1.05fr]">
+            <div>
+              <AutosolLogo size="lg" variant="white" showSubtitle={false} />
+              <p className="mt-5 max-w-xs text-sm leading-relaxed text-blue-100">Una experiencia de compra clara, cercana y confiable para acompañarte desde la elección hasta la entrega.</p>
+              <button onClick={() => setIsTrackerModalOpen(true)} className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#64c9ea]/60 px-4 py-2.5 text-sm font-semibold text-[#92ddf5] transition-colors hover:bg-white hover:text-[#061d38]"><UserCheck className="h-4 w-4" /> Seguir mi operación</button>
+            </div>
+            <div>
+              <h4 className="text-xs font-bold tracking-[0.14em] text-[#74d5f4] uppercase">Conocé Autosol</h4>
+              <div className="mt-5 flex flex-col items-start gap-3 text-sm text-blue-100">
+                <button onClick={() => handleNavigate('process')} className="transition-colors hover:text-white">Mi proceso de compra</button>
+                <button onClick={() => handleNavigate('financing')} className="transition-colors hover:text-white">Financiación</button>
+                <button onClick={() => handleNavigate('delivery')} className="transition-colors hover:text-white">Entrega y postventa</button>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-xs font-bold tracking-[0.14em] text-[#74d5f4] uppercase">Ayuda</h4>
+              <div className="mt-5 flex flex-col items-start gap-3 text-sm text-blue-100">
+                <button onClick={() => handleNavigate('documents')} className="transition-colors hover:text-white">Documentación</button>
+                <button onClick={() => handleNavigate('times')} className="transition-colors hover:text-white">Tiempos orientativos</button>
+                <button onClick={() => handleNavigate('faq')} className="transition-colors hover:text-white">Preguntas frecuentes</button>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-xs font-bold tracking-[0.14em] text-[#74d5f4] uppercase">Contacto</h4>
+              <div className="mt-5 space-y-3 text-sm leading-relaxed text-blue-100">
+                <div className="flex items-start gap-3"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#74d5f4]" /><span>Av. Excombatientes de Malvinas 3850, Salta Capital</span></div>
+                <div className="flex items-center gap-3"><Phone className="h-4 w-4 shrink-0 text-[#74d5f4]" /><span>(0387) 424-8000</span></div>
+                <div className="flex items-center gap-3"><Mail className="h-4 w-4 shrink-0 text-[#74d5f4]" /><span>transparencia@autosol.com.ar</span></div>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-4 pt-7 text-xs text-blue-200 sm:flex-row sm:items-center sm:justify-between"><p>© {new Date().getFullYear()} Autosol S.A. Todos los derechos reservados.</p><div className="flex gap-5"><button onClick={() => setActiveTab('quality-dashboard')} className="hover:text-white">Calidad</button><button onClick={() => setActiveTab('admin-panel')} className="hover:text-white">Administración</button></div></div>
         </div>
       </footer>
     </div>
