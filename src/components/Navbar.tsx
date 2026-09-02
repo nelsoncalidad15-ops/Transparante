@@ -1,24 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import {
-  Car,
-  Compass,
-  FileText,
-  Clock,
-  BookOpen,
-  HelpCircle,
-  Bot,
-  Menu,
-  X,
-  UserCheck,
-  CreditCard,
-  KeyRound,
-  ChevronDown,
-  Sparkles,
-  SlidersHorizontal,
-  BarChart3,
-  Settings,
-  Layers,
-} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Menu, X, ArrowUpRight, MapPin, UserCheck } from 'lucide-react';
 import { AutosolLogo } from './AutosolLogo';
 
 export type ActiveTab =
@@ -44,361 +25,80 @@ interface NavbarProps {
   onOpenTrackerModal: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({
-  activeTab,
-  setActiveTab,
-  onOpenTrackerModal,
-}) => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [guidesDropdownOpen, setGuidesDropdownOpen] = useState(false);
-  const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const adminRef = useRef<HTMLDivElement>(null);
+const navigation = [
+  { id: 'home' as ActiveTab, label: 'Inicio', detail: 'Volvé a la portada' },
+  { id: 'process' as ActiveTab, label: 'Mi compra', detail: 'Seguí cada etapa' },
+  { id: 'financing' as ActiveTab, label: 'Financiación', detail: 'Opciones y pagos' },
+  { id: 'documents' as ActiveTab, label: 'Documentación', detail: 'Todo lo que necesitás' },
+  { id: 'delivery' as ActiveTab, label: 'Postventa', detail: 'Entrega y cuidado' },
+];
 
-  // Close dropdowns when clicking outside
+export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenTrackerModal }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const isHome = activeTab === 'home';
+
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setGuidesDropdownOpen(false);
-      }
-      if (adminRef.current && !adminRef.current.contains(event.target as Node)) {
-        setAdminDropdownOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
 
-  const guideItems = [
-    {
-      id: 'documents' as ActiveTab,
-      label: 'Documentación y Papeles',
-      desc: 'Requisitos para personas físicas y jurídicas',
-      icon: FileText,
-      pastelBg: 'bg-indigo-50 text-indigo-700',
-    },
-    {
-      id: 'times' as ActiveTab,
-      label: 'Tiempos por Etapa',
-      desc: 'Plazos y factores de cada instancia',
-      icon: Clock,
-      pastelBg: 'bg-sky-50 text-sky-700',
-    },
-    {
-      id: 'financing' as ActiveTab,
-      label: 'Financiación & Pagos',
-      desc: 'Crédito prendario, autoahorro y cuentas oficiales',
-      icon: CreditCard,
-      pastelBg: 'bg-amber-50 text-amber-700',
-    },
-    {
-      id: 'delivery' as ActiveTab,
-      label: 'Entrega & Control PDI',
-      desc: 'Checklist para el retiro y prueba técnica',
-      icon: KeyRound,
-      pastelBg: 'bg-teal-50 text-teal-700',
-    },
-    {
-      id: 'dictionary' as ActiveTab,
-      label: 'Glosario Automotor',
-      desc: 'Términos explicados en lenguaje sencillo',
-      icon: BookOpen,
-      pastelBg: 'bg-purple-50 text-purple-700',
-    },
-  ];
-
-  const isGuideActive = [
-    'documents',
-    'times',
-    'financing',
-    'delivery',
-    'dictionary',
-  ].includes(activeTab);
+  const navigate = (tab: ActiveTab) => {
+    setActiveTab(tab);
+    setMenuOpen(false);
+  };
 
   return (
-    <header className="sticky top-0 z-40 bg-white/85 backdrop-blur-xl border-b border-slate-200/70 shadow-xs transition-all">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20">
-          
-          {/* Official Brand Logo */}
-          <div
-            className="cursor-pointer select-none group flex items-center transition-transform hover:scale-[1.01]"
-            onClick={() => {
-              setActiveTab('home');
-              setMobileMenuOpen(false);
-            }}
-          >
-            <AutosolLogo size="md" variant="dark" />
-          </div>
+    <>
+      <header className={`z-40 w-full ${isHome ? 'absolute top-0 left-0 text-white' : 'sticky top-0 bg-white text-[#071e3a] border-b border-slate-200 shadow-sm'}`}>
+        <div className="mx-auto flex h-20 max-w-[1440px] items-center justify-between px-5 sm:px-8 lg:px-12">
+          <button onClick={() => navigate('home')} className="group cursor-pointer" aria-label="Ir al inicio">
+            <AutosolLogo size="md" variant={isHome ? 'white' : 'dark'} showSubtitle={false} />
+          </button>
 
-          {/* Clean, Modern Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-1.5 bg-slate-100/80 p-1.5 rounded-2xl border border-slate-200/60 shadow-inner">
-            
-            {/* 1. Inicio */}
-            <button
-              id="nav-link-home"
-              onClick={() => setActiveTab('home')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer ${
-                activeTab === 'home'
-                  ? 'bg-white text-[#0B2265] shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-              }`}
-            >
-              <Compass className={`w-4 h-4 ${activeTab === 'home' ? 'text-blue-700' : 'text-slate-400'}`} />
-              <span>Inicio</span>
+          <div className="flex items-center gap-3 sm:gap-5">
+            <button onClick={onOpenTrackerModal} className={`hidden items-center gap-2 text-sm font-semibold transition-colors sm:flex ${isHome ? 'text-white/90 hover:text-white' : 'text-[#071e3a] hover:text-[#0069b4]'}`}>
+              <UserCheck className="h-4 w-4" /> Seguir mi 0km
             </button>
-
-            {/* 2. Mi Proceso (7 Pasos) */}
-            <button
-              id="nav-link-process"
-              onClick={() => setActiveTab('process')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer ${
-                activeTab === 'process'
-                  ? 'bg-white text-[#0B2265] shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-              }`}
-            >
-              <Car className={`w-4 h-4 ${activeTab === 'process' ? 'text-blue-700' : 'text-slate-400'}`} />
-              <span>Mi Proceso (7 Pasos)</span>
-            </button>
-
-            {/* 3. Guías & Trámites (Clean Pastel Dropdown) */}
-            <div className="relative" ref={dropdownRef}>
-              <button
-                id="nav-link-guides-dropdown"
-                onClick={() => setGuidesDropdownOpen(!guidesDropdownOpen)}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer ${
-                  isGuideActive
-                    ? 'bg-white text-[#0B2265] shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-                }`}
-              >
-                <FileText className={`w-4 h-4 ${isGuideActive ? 'text-blue-700' : 'text-slate-400'}`} />
-                <span>Guías & Trámites</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${guidesDropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {guidesDropdownOpen && (
-                <div className="absolute left-0 mt-2 w-80 bg-white/95 backdrop-blur-xl rounded-3xl shadow-xl border border-slate-200/80 p-2.5 z-50 animate-in fade-in zoom-in-95">
-                  <div className="px-3 py-1.5 text-[10px] font-black text-slate-400 uppercase tracking-wider">
-                    Información & Requisitos
-                  </div>
-                  <div className="space-y-1">
-                    {guideItems.map((item) => {
-                      const Icon = item.icon;
-                      const isItemActive = activeTab === item.id;
-                      return (
-                        <button
-                          key={item.id}
-                          onClick={() => {
-                            setActiveTab(item.id);
-                            setGuidesDropdownOpen(false);
-                          }}
-                          className={`w-full flex items-start space-x-3 p-2.5 rounded-2xl text-left transition-all cursor-pointer ${
-                            isItemActive
-                              ? 'bg-blue-50 text-blue-950 border border-blue-200/80'
-                              : 'hover:bg-slate-50 text-slate-700'
-                          }`}
-                        >
-                          <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${item.pastelBg}`}>
-                            <Icon className="w-4 h-4" />
-                          </div>
-                          <div>
-                            <div className="text-xs font-bold text-slate-900">{item.label}</div>
-                            <div className="text-[11px] text-slate-500 line-clamp-1">{item.desc}</div>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* 4. Preguntas Frecuentes */}
-            <button
-              id="nav-link-faq"
-              onClick={() => setActiveTab('faq')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer ${
-                activeTab === 'faq'
-                  ? 'bg-white text-[#0B2265] shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-              }`}
-            >
-              <HelpCircle className={`w-4 h-4 ${activeTab === 'faq' ? 'text-blue-700' : 'text-slate-400'}`} />
-              <span>Preguntas</span>
-            </button>
-
-            {/* 5. Asistente IA */}
-            <button
-              id="nav-link-assistant"
-              onClick={() => setActiveTab('assistant')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer ${
-                activeTab === 'assistant'
-                  ? 'bg-white text-sky-900 shadow-xs'
-                  : 'text-sky-700 hover:text-sky-900 hover:bg-sky-50/70'
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5 text-sky-600" />
-              <span>Asistente IA</span>
-            </button>
-          </nav>
-
-          {/* Right Action: Clean Status Tracker Pill & Subtle Settings */}
-          <div className="flex items-center space-x-2.5">
-            <button
-              id="btn-open-tracker-modal-nav"
-              onClick={onOpenTrackerModal}
-              className="bg-gradient-to-r from-[#0B2265] to-blue-800 hover:from-blue-900 hover:to-blue-700 text-white text-xs font-bold px-4 sm:px-5 py-2.5 rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center space-x-2 cursor-pointer active:scale-95"
-            >
-              <UserCheck className="w-4 h-4 text-sky-300" />
-              <span className="hidden sm:inline">Rastrear mi 0km</span>
-              <span className="sm:hidden">Mi Estado</span>
-            </button>
-
-            {/* Subtle Admin dropdown icon for internal tools */}
-            <div className="relative hidden lg:block" ref={adminRef}>
-              <button
-                onClick={() => setAdminDropdownOpen(!adminDropdownOpen)}
-                className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
-                title="Herramientas internas"
-                aria-label="Herramientas internas"
-              >
-                <SlidersHorizontal className="w-4 h-4" />
-              </button>
-
-              {adminDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-white/95 backdrop-blur-xl rounded-2xl shadow-lg border border-slate-200 p-2 z-50 animate-in fade-in">
-                  <div className="px-3 py-1 text-[10px] font-black text-slate-400 uppercase tracking-wider">
-                    Área Interna Autosol
-                  </div>
-                  <button
-                    onClick={() => {
-                      setActiveTab('quality-dashboard');
-                      setAdminDropdownOpen(false);
-                    }}
-                    className="w-full text-left px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center space-x-2 cursor-pointer"
-                  >
-                    <BarChart3 className="w-4 h-4 text-blue-600" />
-                    <span>Panel de Calidad</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setActiveTab('admin-panel');
-                      setAdminDropdownOpen(false);
-                    }}
-                    className="w-full text-left px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center space-x-2 cursor-pointer"
-                  >
-                    <Settings className="w-4 h-4 text-blue-600" />
-                    <span>Editor de Contenidos</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setActiveTab('infographic');
-                      setAdminDropdownOpen(false);
-                    }}
-                    className="w-full text-left px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-xl flex items-center space-x-2 cursor-pointer"
-                  >
-                    <Layers className="w-4 h-4 text-blue-600" />
-                    <span>Mapa del Modelo (5 Columnas)</span>
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Mobile Menu Hamburger */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer border border-slate-200/80"
-              aria-label="Abrir menú"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            <button onClick={() => setMenuOpen(true)} className={`flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold transition-all ${isHome ? 'border-white/60 bg-white/10 text-white hover:bg-white hover:text-[#071e3a]' : 'border-slate-300 bg-white text-[#071e3a] hover:border-[#071e3a]'}`} aria-label="Abrir menú">
+              <Menu className="h-5 w-5" /> <span className="hidden sm:inline">Menú</span>
             </button>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden bg-white/98 backdrop-blur-2xl border-b border-slate-200 px-4 pt-3 pb-6 space-y-2 animate-in slide-in-from-top-2">
-          
-          <button
-            onClick={() => {
-              setActiveTab('home');
-              setMobileMenuOpen(false);
-            }}
-            className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold text-left transition-colors ${
-              activeTab === 'home' ? 'bg-blue-50 text-blue-950 border border-blue-200' : 'text-slate-700 hover:bg-slate-50'
-            }`}
-          >
-            <Compass className="w-4 h-4 text-blue-700" />
-            <span>Inicio</span>
-          </button>
-
-          <button
-            onClick={() => {
-              setActiveTab('process');
-              setMobileMenuOpen(false);
-            }}
-            className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold text-left transition-colors ${
-              activeTab === 'process' ? 'bg-blue-50 text-blue-950 border border-blue-200' : 'text-slate-700 hover:bg-slate-50'
-            }`}
-          >
-            <Car className="w-4 h-4 text-blue-700" />
-            <span>Mi Proceso (7 Pasos)</span>
-          </button>
-
-          <div className="pt-2 pb-1 px-3 text-[10px] font-black text-slate-400 uppercase tracking-wider">
-            Guías & Trámites
-          </div>
-
-          {guideItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setActiveTab(item.id);
-                  setMobileMenuOpen(false);
-                }}
-                className={`w-full flex items-center space-x-3 px-3.5 py-2 rounded-2xl text-xs font-bold text-left transition-colors ${
-                  isActive ? 'bg-blue-50 text-blue-950 border border-blue-200' : 'text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${item.pastelBg}`}>
-                  <Icon className="w-3.5 h-3.5" />
-                </div>
-                <span>{item.label}</span>
+      {menuOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#061d38] text-white">
+          <div className="mx-auto min-h-screen max-w-[1440px] px-5 py-6 sm:px-8 lg:px-12">
+            <div className="flex items-center justify-between">
+              <AutosolLogo size="md" variant="white" showSubtitle={false} />
+              <button onClick={() => setMenuOpen(false)} className="flex items-center gap-2 rounded-full border border-white/35 px-4 py-2.5 text-sm hover:bg-white hover:text-[#061d38]">
+                <X className="h-5 w-5" /> Cerrar
               </button>
-            );
-          })}
+            </div>
 
-          <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
-            <button
-              onClick={() => {
-                setActiveTab('faq');
-                setMobileMenuOpen(false);
-              }}
-              className="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold text-slate-700 hover:bg-slate-50"
-            >
-              <HelpCircle className="w-4 h-4 text-slate-500" />
-              <span>Preguntas Frecuentes</span>
-            </button>
+            <div className="mt-14 grid gap-12 border-t border-white/30 pt-10 lg:grid-cols-[1.45fr_0.8fr] lg:gap-24">
+              <nav className="space-y-1" aria-label="Navegación principal">
+                {navigation.map((item) => (
+                  <button key={item.id} onClick={() => navigate(item.id)} className="group flex w-full items-baseline justify-between border-b border-white/15 py-4 text-left transition-colors hover:border-[#45bce5]">
+                    <span className="text-3xl font-light tracking-[-0.04em] sm:text-5xl">{item.label}</span>
+                    <span className="hidden text-sm text-blue-200 sm:block">{item.detail}</span>
+                    <ArrowUpRight className="h-5 w-5 text-[#45bce5] transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
+                  </button>
+                ))}
+              </nav>
 
-            <button
-              onClick={() => {
-                setActiveTab('assistant');
-                setMobileMenuOpen(false);
-              }}
-              className="w-full flex items-center justify-center space-x-2 bg-sky-50 text-sky-950 border border-sky-200 text-xs font-bold py-2.5 rounded-2xl"
-            >
-              <Sparkles className="w-4 h-4 text-sky-600" />
-              <span>Consultar Asistente IA</span>
-            </button>
+              <aside className="border-l border-white/30 pl-0 lg:pl-10">
+                <p className="text-sm font-semibold text-[#45bce5]">Atención Autosol</p>
+                <p className="mt-3 max-w-xs text-xl font-light leading-snug text-white/90">Todo lo que necesitás para elegir, comprar y disfrutar tu próximo vehículo.</p>
+                <button onClick={() => { setMenuOpen(false); onOpenTrackerModal(); }} className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-[#061d38] transition-transform hover:scale-[1.02]">
+                  <UserCheck className="h-4 w-4" /> Seguir mi operación
+                </button>
+                <div className="mt-10 flex items-center gap-2 text-sm text-white/70"><MapPin className="h-4 w-4 text-[#45bce5]" /> Jujuy · Argentina</div>
+              </aside>
+            </div>
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 };

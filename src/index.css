@@ -3,7 +3,10 @@
 @layer base {
   body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: #ffffff;
   }
+
+  button { cursor: pointer; }
 }
 
 /* Custom scrollbars */
@@ -21,4 +24,3 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
-
