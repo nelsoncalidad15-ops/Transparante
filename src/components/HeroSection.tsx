@@ -41,9 +41,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectStage, onSearc
           <div className="max-w-3xl">
             <p className="mb-5 text-sm font-semibold tracking-[0.16em] text-[#7cdbf6] uppercase">Autosol Jujuy</p>
             <h1 className="max-w-2xl text-5xl font-semibold leading-[0.95] tracking-[-0.06em] text-white sm:text-7xl lg:text-8xl">Tu próximo camino empieza acá.</h1>
-            <p className="mt-7 max-w-lg text-base leading-relaxed text-white/85 sm:text-lg">Una experiencia simple, cercana y transparente para elegir, comprar y disfrutar tu próximo 0km.</p>
+            <p className="mt-7 max-w-lg text-base leading-relaxed text-white/85 sm:text-lg">Información clara sobre definiciones, trámites y cada etapa para acompañarte durante la compra de tu próximo 0km.</p>
             <div className="mt-9 flex flex-wrap gap-3">
-              <button onClick={scrollToServices} className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-bold text-[#071e3a] transition-transform hover:scale-[1.02]">Conocé Autosol <ArrowRight className="h-4 w-4" /></button>
+              <button onClick={scrollToServices} className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-bold text-[#071e3a] transition-transform hover:scale-[1.02]">Información para tu compra <ArrowRight className="h-4 w-4" /></button>
               <button onClick={onOpenTrackerModal} className="rounded-full border border-white/60 bg-white/5 px-6 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition-colors hover:bg-white/15">Seguir mi operación</button>
             </div>
           </div>

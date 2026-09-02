@@ -229,20 +229,20 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
 
   return (
     <div
-      className={`flex flex-col bg-white border border-slate-200/90 rounded-3xl shadow-xs overflow-hidden ${
-        isFloatingModal ? 'h-[580px] w-full max-w-md' : 'h-[640px] max-w-4xl mx-auto'
+      className={`flex flex-col overflow-hidden rounded-[1.75rem] border border-slate-200/90 bg-white shadow-[0_24px_70px_rgba(7,30,58,0.18)] ${
+        isFloatingModal ? 'h-[560px] w-[min(390px,calc(100vw-2.5rem))] max-w-none' : 'h-[640px] max-w-4xl mx-auto'
       }`}
     >
       {/* Top Header */}
-      <div className="bg-gradient-to-r from-blue-950 via-blue-900 to-slate-900 px-5 py-4 text-white flex items-center justify-between shrink-0">
+      <div className="flex shrink-0 items-center justify-between bg-[#061d38] px-5 py-3.5 text-white">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-2xl bg-blue-600/30 border border-blue-400/40 flex items-center justify-center text-blue-300">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0b6fb8] text-white shadow-inner shadow-white/20">
             <Bot className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <h2 className="text-sm sm:text-base font-bold text-white">Asistente Autosol</h2>
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <h2 className="text-sm font-semibold tracking-tight text-white">Asistente Autosol</h2>
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
             </div>
             <p className="text-[11px] text-blue-200/80 flex items-center space-x-1">
               <ShieldCheck className="w-3 h-3 text-emerald-400" />
@@ -254,7 +254,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
         {onCloseModal && (
           <button
             onClick={onCloseModal}
-            className="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-colors"
+            className="rounded-full p-1.5 text-blue-200 transition-colors hover:bg-white/10 hover:text-white"
           >
             <X className="w-5 h-5" />
           </button>
@@ -262,7 +262,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
       </div>
 
       {/* Suggestion Chips Banner */}
-      <div className="bg-slate-50 border-b border-slate-200/80 px-4 py-2 flex items-center space-x-2 overflow-x-auto scrollbar-thin shrink-0">
+      <div className="flex shrink-0 items-center space-x-2 overflow-x-auto border-b border-slate-100 bg-white px-4 py-3 scrollbar-thin">
         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider shrink-0">
           Sugerencias:
         </span>
@@ -270,7 +270,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
           <button
             key={pill}
             onClick={() => handleUserSendMessage(pill)}
-            className="text-[11px] font-medium bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 px-2.5 py-1 rounded-lg whitespace-nowrap transition-colors"
+            className="whitespace-nowrap rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-medium text-slate-600 transition-colors hover:border-[#84c8e5] hover:bg-[#edf8fc] hover:text-[#0069b4]"
           >
             {pill}
           </button>
@@ -278,7 +278,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
       </div>
 
       {/* Messages Scroll Area */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 bg-slate-50/40">
+      <div className="flex-1 space-y-4 overflow-y-auto bg-[linear-gradient(180deg,#f8fbfd_0%,#ffffff_28%)] p-4 sm:p-5">
         {messages.map((msg) => {
           const isBot = msg.sender === 'bot';
           return (
@@ -287,17 +287,17 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
               className={`flex items-start space-x-2.5 ${isBot ? 'justify-start' : 'justify-end'}`}
             >
               {isBot && (
-                <div className="w-8 h-8 rounded-xl bg-blue-950 text-blue-300 flex items-center justify-center shrink-0 text-xs shadow-2xs mt-0.5">
+                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#e0f1f8] text-[#0069b4]">
                   <Bot className="w-4 h-4" />
                 </div>
               )}
 
               <div className={`max-w-[85%] sm:max-w-[75%] space-y-2`}>
                 <div
-                  className={`p-3.5 sm:p-4 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-xs ${
+                  className={`rounded-2xl p-3.5 text-xs leading-relaxed shadow-sm sm:p-4 sm:text-sm ${
                     isBot
-                      ? 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm'
-                      : 'bg-blue-600 text-white font-medium rounded-tr-sm'
+                      ? 'rounded-tl-md border border-slate-100 bg-white text-slate-700'
+                      : 'rounded-tr-md bg-[#0069b4] font-medium text-white'
                   }`}
                 >
                   <p>{msg.text}</p>
@@ -349,7 +349,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
                       <button
                         key={i}
                         onClick={() => handleUserSendMessage(sug)}
-                        className="text-[11px] font-medium bg-white hover:bg-blue-50 text-blue-700 border border-blue-200/80 px-2.5 py-1 rounded-full transition-colors flex items-center space-x-1"
+                        className="flex items-center space-x-1 rounded-full border border-[#b9dcf0] bg-white px-2.5 py-1 text-[11px] font-medium text-[#0069b4] transition-colors hover:bg-[#edf8fc]"
                       >
                         <span>{sug}</span>
                         <ChevronRight className="w-3 h-3 text-blue-400" />
@@ -378,7 +378,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
           e.preventDefault();
           handleUserSendMessage(inputMessage);
         }}
-        className="p-3 bg-white border-t border-slate-200 shrink-0 flex items-center space-x-2"
+        className="flex shrink-0 items-center space-x-2 border-t border-slate-100 bg-white p-3"
       >
         <input
           id="assistant-chat-input"
@@ -386,13 +386,13 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
           placeholder="Escribí tu consulta (ej: ¿Qué es gestoría?)..."
-          className="flex-1 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/30"
+          className="flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0069b4]/25 sm:text-sm"
         />
         <button
           type="submit"
           id="btn-send-assistant-msg"
           disabled={!inputMessage.trim()}
-          className="bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white p-3 rounded-2xl shadow-xs transition-all active:scale-95 shrink-0"
+          className="shrink-0 rounded-full bg-[#0069b4] p-3 text-white shadow-[0_5px_14px_rgba(0,105,180,0.3)] transition-all hover:-translate-y-0.5 hover:bg-[#005995] active:scale-95 disabled:opacity-40"
         >
           <Send className="w-4 h-4" />
         </button>

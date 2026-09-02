@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Menu, X, ArrowUpRight, MapPin, UserCheck } from 'lucide-react';
+import { Menu, X, ArrowUpRight, MapPin, UserCheck, LockKeyhole, BarChart3, FilePenLine, LoaderCircle } from 'lucide-react';
 import { AutosolLogo } from './AutosolLogo';
 
 export type ActiveTab =
@@ -30,11 +30,16 @@ const navigation = [
   { id: 'process' as ActiveTab, label: 'Mi compra', detail: 'Seguí cada etapa' },
   { id: 'financing' as ActiveTab, label: 'Financiación', detail: 'Opciones y pagos' },
   { id: 'documents' as ActiveTab, label: 'Documentación', detail: 'Todo lo que necesitás' },
-  { id: 'delivery' as ActiveTab, label: 'Postventa', detail: 'Entrega y cuidado' },
+  { id: 'delivery' as ActiveTab, label: 'Entrega', detail: 'Preparación y retiro' },
 ];
 
 export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenTrackerModal }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [adminOpen, setAdminOpen] = useState(false);
+  const [adminPassword, setAdminPassword] = useState('');
+  const [adminAuthenticated, setAdminAuthenticated] = useState(false);
+  const [adminError, setAdminError] = useState('');
+  const [isSubmittingAdmin, setIsSubmittingAdmin] = useState(false);
   const isHome = activeTab === 'home';
 
   useEffect(() => {
@@ -45,6 +50,27 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenT
   const navigate = (tab: ActiveTab) => {
     setActiveTab(tab);
     setMenuOpen(false);
+  };
+
+  const handleAdminLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!adminPassword.trim()) return;
+    setIsSubmittingAdmin(true);
+    setAdminError('');
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword }),
+      });
+      if (!response.ok) throw new Error('Credenciales inválidas o backend no configurado.');
+      setAdminAuthenticated(true);
+      setAdminPassword('');
+    } catch (error) {
+      setAdminError(error instanceof Error ? error.message : 'No se pudo iniciar sesión.');
+    } finally {
+      setIsSubmittingAdmin(false);
+    }
   };
 
   return (
@@ -76,24 +102,41 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenT
               </button>
             </div>
 
-            <div className="mt-14 grid gap-12 border-t border-white/30 pt-10 lg:grid-cols-[1.45fr_0.8fr] lg:gap-24">
-              <nav className="space-y-1" aria-label="Navegación principal">
-                {navigation.map((item) => (
-                  <button key={item.id} onClick={() => navigate(item.id)} className="group flex w-full items-baseline justify-between border-b border-white/15 py-4 text-left transition-colors hover:border-[#45bce5]">
-                    <span className="text-3xl font-light tracking-[-0.04em] sm:text-5xl">{item.label}</span>
-                    <span className="hidden text-sm text-blue-200 sm:block">{item.detail}</span>
-                    <ArrowUpRight className="h-5 w-5 text-[#45bce5] transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
+            <div className="mt-10 grid gap-10 border-t border-white/20 pt-8 lg:mt-12 lg:grid-cols-[minmax(0,1.45fr)_minmax(320px,.72fr)] lg:gap-16 lg:pt-10">
+              <nav aria-label="Navegación principal">
+                <p className="mb-5 text-[11px] font-bold tracking-[0.16em] text-[#56c9ed] uppercase">Navegación</p>
+                {navigation.map((item, index) => (
+                  <button key={item.id} onClick={() => navigate(item.id)} className="group grid w-full grid-cols-[2.5rem_minmax(0,1fr)_auto] items-center gap-3 border-t border-white/15 py-4 text-left transition-colors first:border-t-0 hover:bg-white/[0.035] sm:gap-5 sm:py-5">
+                    <span className="text-xs font-medium tabular-nums text-[#62cae9]/75">0{index + 1}</span>
+                    <span><span className="block text-3xl font-light tracking-[-0.045em] text-white sm:text-4xl">{item.label}</span><span className="mt-1 block text-sm text-blue-200/75">{item.detail}</span></span>
+                    <ArrowUpRight className="h-5 w-5 text-[#56c9ed] transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
                   </button>
                 ))}
               </nav>
 
-              <aside className="border-l border-white/30 pl-0 lg:pl-10">
-                <p className="text-sm font-semibold text-[#45bce5]">Atención Autosol</p>
-                <p className="mt-3 max-w-xs text-xl font-light leading-snug text-white/90">Todo lo que necesitás para elegir, comprar y disfrutar tu próximo vehículo.</p>
-                <button onClick={() => { setMenuOpen(false); onOpenTrackerModal(); }} className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-[#061d38] transition-transform hover:scale-[1.02]">
+              <aside className="self-start rounded-2xl border border-white/15 bg-white/[0.055] p-6 sm:p-7">
+                <p className="text-[11px] font-bold tracking-[0.14em] text-[#56c9ed] uppercase">Centro de información</p>
+                <p className="mt-4 text-2xl font-light leading-snug tracking-[-0.03em] text-white">Todo lo que necesitás saber sobre tu compra.</p>
+                <div className="mt-6 border-t border-white/15 pt-5 text-sm leading-relaxed text-blue-100/85">Reunimos guías, definiciones, documentación, etapas y tiempos orientativos para que puedas comprender cada instancia con claridad.</div>
+                <div className="mt-4 inline-flex rounded-full border border-[#56c9ed]/30 bg-[#56c9ed]/10 px-3 py-1.5 text-[11px] font-semibold text-[#8bdbf3]">Información orientativa para clientes</div>
+                <button onClick={() => { setMenuOpen(false); onOpenTrackerModal(); }} className="mt-7 inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-[#061d38] transition-transform hover:scale-[1.02]">
                   <UserCheck className="h-4 w-4" /> Seguir mi operación
                 </button>
-                <div className="mt-10 flex items-center gap-2 text-sm text-white/70"><MapPin className="h-4 w-4 text-[#45bce5]" /> Jujuy · Argentina</div>
+                <div className="mt-8 flex items-center gap-2 border-t border-white/15 pt-5 text-sm text-white/70"><MapPin className="h-4 w-4 text-[#56c9ed]" /> Jujuy · Argentina</div>
+                <div className="mt-5 border-t border-white/15 pt-5">
+                  {!adminOpen && !adminAuthenticated && <button onClick={() => setAdminOpen(true)} className="flex items-center gap-2 text-sm font-semibold text-blue-100 transition-colors hover:text-[#56c9ed]"><LockKeyhole className="h-4 w-4" /> Ingresar como administrador</button>}
+                  {adminOpen && !adminAuthenticated && (
+                    <form onSubmit={handleAdminLogin} className="space-y-3">
+                      <div className="flex items-center justify-between"><span className="text-[11px] font-bold tracking-[0.12em] text-[#56c9ed] uppercase">Administración</span><button type="button" onClick={() => { setAdminOpen(false); setAdminError(''); }} className="text-xs text-blue-200 hover:text-white">Cancelar</button></div>
+                      <input type="password" autoComplete="current-password" value={adminPassword} onChange={(event) => setAdminPassword(event.target.value)} placeholder="Contraseña" className="w-full rounded-lg border border-white/20 bg-[#03152a] px-3 py-2.5 text-sm text-white outline-none placeholder:text-blue-200/50 focus:border-[#56c9ed]" />
+                      {adminError && <p className="text-xs text-rose-300">{adminError}</p>}
+                      <button disabled={isSubmittingAdmin} className="inline-flex items-center gap-2 rounded-lg bg-[#56c9ed] px-3.5 py-2.5 text-sm font-bold text-[#061d38] transition-colors hover:bg-white disabled:opacity-60">{isSubmittingAdmin ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <LockKeyhole className="h-4 w-4" />} Ingresar</button>
+                    </form>
+                  )}
+                  {adminAuthenticated && (
+                    <div className="space-y-3"><div className="flex items-center gap-2 text-sm font-semibold text-emerald-300"><span className="h-2 w-2 rounded-full bg-emerald-400" /> Sesión de administrador</div><div className="grid gap-2"><button onClick={() => navigate('quality-dashboard')} className="flex items-center gap-2 rounded-lg border border-white/15 px-3 py-2.5 text-left text-sm text-blue-100 hover:bg-white/10"><BarChart3 className="h-4 w-4 text-[#56c9ed]" /> Ver indicadores</button><button onClick={() => navigate('admin-panel')} className="flex items-center gap-2 rounded-lg border border-white/15 px-3 py-2.5 text-left text-sm text-blue-100 hover:bg-white/10"><FilePenLine className="h-4 w-4 text-[#56c9ed]" /> Editar información</button></div></div>
+                  )}
+                </div>
               </aside>
             </div>
           </div>

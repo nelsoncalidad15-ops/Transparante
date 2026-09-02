@@ -306,6 +306,22 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const syncWithGoogleSheets = async (): Promise<{ success: boolean; message: string }> => {
+    try {
+      const response = await fetch('/api/content', { headers: { Accept: 'application/json' } });
+      if (response.ok) {
+        const result = await response.json();
+        const data = result.data || result;
+        if (data && Array.isArray(data.articles) && data.articles.length > 0) {
+          setArticles(data.articles);
+          if (Array.isArray(data.faqs) && data.faqs.length > 0) setFaqs(data.faqs);
+          setSheetConfig((prev) => ({ ...prev, isConnected: true, lastSyncTimestamp: new Date().toLocaleString('es-AR') }));
+          return { success: true, message: `Sincronizados ${data.articles.length} artículos desde el backend seguro.` };
+        }
+      }
+    } catch (err) {
+      console.warn('Vercel API unavailable, trying legacy endpoint:', err);
+    }
+
     if (sheetConfig.appsScriptEndpoint) {
       try {
         const response = await fetch(sheetConfig.appsScriptEndpoint, {
@@ -344,6 +360,21 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       message: 'Conexión validada: Datos sincronizados y estructura de Google Sheets lista.',
     };
   };
+
+  useEffect(() => {
+    let mounted = true;
+    fetch('/api/content', { headers: { Accept: 'application/json' } })
+      .then((response) => response.ok ? response.json() : null)
+      .then((result) => {
+        const data = result?.data || result;
+        if (!mounted || !Array.isArray(data?.articles) || data.articles.length === 0) return;
+        setArticles(data.articles);
+        if (Array.isArray(data.faqs) && data.faqs.length > 0) setFaqs(data.faqs);
+        setSheetConfig((previous) => ({ ...previous, isConnected: true, lastSyncTimestamp: new Date().toLocaleString('es-AR') }));
+      })
+      .catch(() => undefined);
+    return () => { mounted = false; };
+  }, []);
 
   const resetToDefaults = () => {
     setArticles(INITIAL_ARTICLES);
