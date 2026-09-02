@@ -54,7 +54,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectStage, onSearc
       <section ref={servicesRef} className="relative flex min-h-screen scroll-mt-0 items-center overflow-hidden bg-[#f4f8fb] py-14 sm:py-16">
         <div className="pointer-events-none absolute -right-24 -top-44 h-[540px] w-[540px] rounded-full border-[58px] border-[#dceef6] opacity-70" />
         <div className="pointer-events-none absolute right-10 top-12 h-72 w-72 rounded-full border border-[#b7dbe9] opacity-80" />
-        <div className="relative mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
+        <div className="relative mx-auto max-w-[1600px] px-5 sm:px-8 lg:px-12 xl:px-16">
           <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(480px,0.9fr)] lg:gap-12">
           <div className="max-w-2xl">
             <p className="text-sm font-semibold tracking-[0.14em] text-[#0069b4] uppercase">Información clara, en un solo lugar</p>
@@ -66,14 +66,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectStage, onSearc
             </form>
             <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-500"><span>Ejemplos:</span>{['patentamiento', 'gestoría', 'fecha de entrega', 'documentación'].map((term) => <button type="button" onClick={() => onSearchSubmit(term)} key={term} className="rounded bg-white px-2 py-1 text-[#356081] transition-colors hover:bg-[#dceef6]">{term}</button>)}</div>
           </div>
-          <div className="relative hidden min-h-[360px] overflow-hidden rounded-[2rem] bg-[radial-gradient(circle_at_60%_40%,#ffffff_0%,#e4f4fa_50%,#d1e9f4_100%)] shadow-[0_25px_60px_rgba(13,74,110,0.14)] lg:block">
+          <div className="relative mt-2 block min-h-[230px] overflow-hidden rounded-[1.5rem] bg-[radial-gradient(circle_at_60%_40%,#ffffff_0%,#e4f4fa_50%,#d1e9f4_100%)] shadow-[0_25px_60px_rgba(13,74,110,0.14)] sm:min-h-[300px] lg:mt-0 lg:min-h-[390px] lg:rounded-[2rem]">
             <img src="/images/vw-taos-panel.png" alt="SUV Volkswagen azul" className="absolute inset-0 h-full w-full object-cover object-center mix-blend-multiply" />
             <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#d7edf6]/65 to-transparent" />
             <div className="absolute left-7 top-7 rounded-full border border-white/80 bg-white/75 px-4 py-2 text-xs font-semibold text-[#0069b4] backdrop-blur">Volkswagen · Gama SUV</div>
           </div>
           </div>
 
-          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {cards.map((card) => { const Icon = card.icon; return (
               <button key={card.title} onClick={card.action} className="group min-h-32 rounded-lg border border-slate-200/80 bg-white p-4 text-left shadow-[0_5px_18px_rgba(23,59,87,0.07)] transition-all hover:-translate-y-1 hover:border-[#8bc9e2] hover:shadow-[0_12px_28px_rgba(23,97,137,0.13)] sm:p-5">
                 <Icon className="h-6 w-6 text-[#1576bd]" strokeWidth={1.6} /><h3 className="mt-3 text-sm font-bold leading-tight text-[#071e3a]">{card.title}</h3><p className="mt-1.5 text-xs leading-relaxed text-slate-600">{card.text}</p><ArrowRight className="mt-3 h-4 w-4 text-[#0069b4] transition-transform group-hover:translate-x-1" />

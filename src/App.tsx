@@ -264,10 +264,13 @@ function AppContent() {
             <button
               id="fab-open-assistant"
               onClick={() => setIsFloatingAssistantOpen(true)}
-              className="group bg-[#0B2265] hover:bg-blue-900 text-white pl-4 pr-5 py-3.5 rounded-full shadow-2xl shadow-blue-950/40 flex items-center space-x-3 transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer border border-white/20"
+              className="group relative flex h-14 w-14 items-center justify-center rounded-full border border-white/70 bg-[#0069b4] text-white shadow-[0_12px_28px_rgba(4,38,81,0.3)] transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:bg-[#00558f] active:scale-95"
               aria-label="Abrir Asistente Virtual Autosol"
             >
-              <div className="relative flex items-center justify-center">
+              <Bot className="h-6 w-6 transition-transform duration-300 group-hover:rotate-6" />
+              <span className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full border-2 border-[#0069b4] bg-emerald-400" />
+              <span className="pointer-events-none absolute right-[calc(100%+12px)] top-1/2 hidden w-max -translate-y-1/2 rounded-md bg-[#061d38] px-3 py-2 text-xs font-semibold text-white shadow-lg group-hover:block">Asistente Autosol</span>
+              <div className="hidden">
                 <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
                   <Bot className="w-5 h-5 text-sky-300 group-hover:rotate-12 transition-transform duration-300" />
                 </div>
@@ -277,7 +280,7 @@ function AppContent() {
                   <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border-2 border-[#0B2265]"></span>
                 </span>
               </div>
-              <div className="text-left">
+              <div className="hidden">
                 <div className="text-xs font-black tracking-tight leading-none text-white flex items-center space-x-1.5">
                   <span>Asistente Autosol</span>
                   <Sparkles className="w-3 h-3 text-sky-300 inline" />
