@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { ArrowDown, ArrowRight, CalendarCheck, CarFront, Check, CircleHelp, Clock, CreditCard, FileCheck2, FileSignature, FileText, KeyRound, ReceiptText, Search, ShieldCheck, Wrench } from 'lucide-react';
+import { ArrowDown, ArrowRight, CalendarCheck, CarFront, CircleHelp, Clock, CreditCard, FileCheck2, FileSignature, FileText, KeyRound, ReceiptText, Search, ShieldCheck, Wrench } from 'lucide-react';
 import { ActiveTab } from './Navbar';
 import { ProcessStageId } from '../types';
 
@@ -10,10 +10,9 @@ interface HeroSectionProps {
   onNavigate: (tab: ActiveTab, category?: string, stageId?: ProcessStageId) => void;
 }
 
-export const HeroSection: React.FC<HeroSectionProps> = ({ onSearchSubmit, onOpenTrackerModal, onNavigate }) => {
+export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectStage, onSearchSubmit, onOpenTrackerModal, onNavigate }) => {
   const servicesRef = useRef<HTMLElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeStageIndex, setActiveStageIndex] = useState(0);
   const scrollToServices = () => servicesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   const cards = [
     { title: 'Mi proceso de compra', text: 'Conocé cada etapa de tu operación paso a paso.', icon: CarFront, action: () => onNavigate('process') },
@@ -52,7 +51,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearchSubmit, onOpen
         </div>
       </section>
 
-      <section ref={servicesRef} className="relative overflow-hidden bg-[#f4f8fb] py-16 sm:py-20">
+      <section ref={servicesRef} className="relative flex min-h-screen scroll-mt-0 items-center overflow-hidden bg-[#f4f8fb] py-14 sm:py-16">
         <div className="pointer-events-none absolute -right-24 -top-44 h-[540px] w-[540px] rounded-full border-[58px] border-[#dceef6] opacity-70" />
         <div className="pointer-events-none absolute right-10 top-12 h-72 w-72 rounded-full border border-[#b7dbe9] opacity-80" />
         <div className="relative mx-auto max-w-[1280px] px-5 sm:px-8 lg:px-12">
@@ -67,32 +66,33 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearchSubmit, onOpen
             <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-500"><span>Ejemplos:</span>{['patentamiento', 'gestoría', 'fecha de entrega', 'documentación'].map((term) => <button type="button" onClick={() => onSearchSubmit(term)} key={term} className="rounded bg-white px-2 py-1 text-[#356081] transition-colors hover:bg-[#dceef6]">{term}</button>)}</div>
           </div>
 
-          <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {cards.map((card) => { const Icon = card.icon; return (
-              <button key={card.title} onClick={card.action} className="group min-h-44 rounded-lg border border-slate-200/80 bg-white p-5 text-left shadow-[0_5px_18px_rgba(23,59,87,0.07)] transition-all hover:-translate-y-1 hover:border-[#8bc9e2] hover:shadow-[0_12px_28px_rgba(23,97,137,0.13)]">
-                <Icon className="h-6 w-6 text-[#1576bd]" strokeWidth={1.6} /><h3 className="mt-5 text-sm font-bold leading-tight text-[#071e3a]">{card.title}</h3><p className="mt-2 text-xs leading-relaxed text-slate-600">{card.text}</p><ArrowRight className="mt-4 h-4 w-4 text-[#0069b4] transition-transform group-hover:translate-x-1" />
+              <button key={card.title} onClick={card.action} className="group min-h-32 rounded-lg border border-slate-200/80 bg-white p-4 text-left shadow-[0_5px_18px_rgba(23,59,87,0.07)] transition-all hover:-translate-y-1 hover:border-[#8bc9e2] hover:shadow-[0_12px_28px_rgba(23,97,137,0.13)] sm:p-5">
+                <Icon className="h-6 w-6 text-[#1576bd]" strokeWidth={1.6} /><h3 className="mt-3 text-sm font-bold leading-tight text-[#071e3a]">{card.title}</h3><p className="mt-1.5 text-xs leading-relaxed text-slate-600">{card.text}</p><ArrowRight className="mt-3 h-4 w-4 text-[#0069b4] transition-transform group-hover:translate-x-1" />
               </button>
             ); })}
           </div>
+        </div>
+      </section>
 
-          <div className="mt-12 border-t border-[#c9e0eb] pt-8">
-            <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-sm font-semibold text-[#071e3a]">¿En qué etapa estás?</p><p className="mt-1 text-sm text-slate-600">Conocé qué sucede en cada momento de tu compra.</p></div><div className="flex items-center gap-5"><button onClick={() => setActiveStageIndex((current) => Math.min(current + 1, stages.length - 1))} disabled={activeStageIndex === stages.length - 1} className="text-sm font-bold text-[#0069b4] disabled:cursor-default disabled:text-slate-400">Marcar siguiente etapa</button><button onClick={() => onNavigate('process')} className="inline-flex items-center gap-2 text-sm font-bold text-[#0069b4]">Ver mi proceso completo <ArrowRight className="h-4 w-4" /></button></div></div>
-            <div className="mt-8 overflow-x-auto pb-3">
-              <div className="flex min-w-[780px] items-start justify-between px-1">
-                {stages.map((stage, index) => { const Icon = stage.icon; const isCompleted = index < activeStageIndex; const isCurrent = index === activeStageIndex; return (
-                  <React.Fragment key={stage.id}>
-                    <button onClick={() => setActiveStageIndex(index)} className="group flex w-[92px] shrink-0 flex-col items-center text-center" aria-label={`Marcar ${stage.label} como etapa actual`}>
-                      <span className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all ${isCompleted ? 'border-[#0069b4] bg-[#0069b4] text-white' : isCurrent ? 'border-[#0069b4] bg-[#dceef6] text-[#0069b4] ring-4 ring-[#bce1f0]/70' : 'border-[#c4dce8] bg-white text-[#64859a] group-hover:border-[#0069b4] group-hover:text-[#0069b4]'}`}>
-                        {isCompleted ? <Check className="h-5 w-5" strokeWidth={2.5} /> : <Icon className="h-4 w-4" />}
-                      </span>
-                      <span className={`mt-3 text-xs font-semibold leading-tight ${isCurrent ? 'text-[#0069b4]' : 'text-[#284761]'}`}>{stage.label}</span>
-                    </button>
-                    {index < stages.length - 1 && <span className={`mt-5 flex h-px min-w-5 flex-1 items-center justify-center ${index < activeStageIndex ? 'bg-[#0069b4]' : 'bg-[#a8cbdc]'}`}><ArrowRight className={`h-4 w-4 translate-x-1/2 ${index < activeStageIndex ? 'text-[#0069b4]' : 'text-[#7ea8bd]'}`} /></span>}
-                  </React.Fragment>
-                ); })}
-              </div>
+      <section className="bg-white py-20 sm:py-28">
+        <div className="mx-auto max-w-[1360px] px-5 sm:px-8 lg:px-12">
+          <div className="flex flex-wrap items-end justify-between gap-5"><div><p className="text-sm font-semibold tracking-[0.12em] text-[#0069b4] uppercase">Seguimiento transparente</p><h2 className="mt-3 text-4xl font-semibold tracking-[-0.05em] text-[#071e3a] sm:text-5xl">¿En qué etapa estás?</h2><p className="mt-3 text-base text-slate-600">Elegí una etapa para conocer qué sucede y qué viene después.</p></div><button onClick={() => onNavigate('process')} className="inline-flex items-center gap-2 rounded-full bg-[#071e3a] px-6 py-3.5 text-sm font-bold text-white transition-transform hover:scale-[1.02]">Ver mi proceso completo <ArrowRight className="h-4 w-4" /></button></div>
+          <div className="mt-14 overflow-x-auto pb-4">
+            <div className="flex min-w-[900px] items-start justify-between px-2">
+              {stages.map((stage, index) => { const Icon = stage.icon; return (
+                <React.Fragment key={stage.id}>
+                  <button onClick={() => onSelectStage(stage.id)} className="group flex w-28 shrink-0 flex-col items-center text-center" aria-label={`Ver etapa ${stage.label}`}>
+                    <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#e0eff5] text-[#176ca7] shadow-sm transition-all group-hover:scale-110 group-hover:bg-[#0069b4] group-hover:text-white group-focus-visible:ring-4 group-focus-visible:ring-[#9fd7ed]"><Icon className="h-7 w-7" strokeWidth={1.5} /></span>
+                    <span className="mt-4 text-sm font-bold leading-tight text-[#173d5a] group-hover:text-[#0069b4]">{stage.label}</span>
+                  </button>
+                  {index < stages.length - 1 && <span className="mt-8 flex h-px min-w-7 flex-1 items-center justify-center bg-[#bed9e5]"><ArrowRight className="h-5 w-5 translate-x-1/2 text-[#5e9bbb]" /></span>}
+                </React.Fragment>
+              ); })}
             </div>
           </div>
+          <p className="mt-8 text-center text-sm text-slate-500">Cada etapa abre su explicación completa, documentación necesaria y próximos pasos.</p>
         </div>
       </section>
 
