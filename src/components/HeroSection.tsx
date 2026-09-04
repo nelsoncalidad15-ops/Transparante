@@ -35,7 +35,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectStage, onSearc
   return (
     <div className="bg-white">
       <section className="relative flex min-h-[650px] items-end overflow-hidden bg-[#081a2d] sm:min-h-[700px]">
-        <img src="/images/autosol-hero-suv.png" alt="SUV en una concesionaria Autosol" className="absolute inset-0 h-full w-full object-cover object-[62%_center]" />
+        <img src={`${import.meta.env.BASE_URL}images/autosol-hero-suv.png`} alt="SUV en una concesionaria Autosol" className="absolute inset-0 h-full w-full object-cover object-[62%_center]" />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(3,15,31,0.83)_0%,rgba(3,15,31,0.53)_42%,rgba(3,15,31,0.08)_74%),linear-gradient(0deg,rgba(3,15,31,0.6)_0%,transparent_48%)]" />
         <div className="relative z-10 mx-auto w-full max-w-[1440px] px-5 pb-12 pt-32 sm:px-8 sm:pb-16 lg:px-12">
           <div className="max-w-3xl">
@@ -63,7 +63,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectStage, onSearc
             <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-500"><span>Ejemplos:</span>{['patentamiento', 'gestoría', 'fecha de entrega', 'documentación'].map((term) => <button type="button" onClick={() => onSearchSubmit(term)} key={term} className="rounded bg-white px-2 py-1 text-[#356081] transition-colors hover:bg-[#dceef6]">{term}</button>)}</div>
           </div>
           <div className="relative mt-2 block min-h-[230px] overflow-hidden rounded-[1.5rem] bg-[radial-gradient(circle_at_60%_40%,#ffffff_0%,#e4f4fa_50%,#d1e9f4_100%)] shadow-[0_25px_60px_rgba(13,74,110,0.14)] sm:min-h-[300px] lg:mt-0 lg:min-h-[390px] lg:rounded-[2rem]">
-            <img src="/images/vw-taos-panel.png" alt="SUV Volkswagen azul" className="absolute inset-0 h-full w-full object-cover object-center mix-blend-multiply" />
+            <img src={`${import.meta.env.BASE_URL}images/vw-taos-panel.png`} alt="SUV Volkswagen azul" className="absolute inset-0 h-full w-full object-cover object-center mix-blend-multiply" />
             <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#d7edf6]/65 to-transparent" />
             <div className="absolute left-7 top-7 rounded-full border border-white/80 bg-white/75 px-4 py-2 text-xs font-semibold text-[#0069b4] backdrop-blur">Volkswagen · Gama SUV</div>
           </div>
