@@ -2,6 +2,16 @@
 
 El navegador solo llama a Vercel. Vercel valida la sesión de administrador y recién entonces consulta Apps Script. El Sheet no debe compartirse públicamente.
 
+## Tablero de contención de clientes
+
+El panel interno usa primero la pestaña `Agenda` y, si no existe, `Operaciones`. Pegá o vinculá allí la exportación operativa con estos encabezados exactos: `Cliente`, `Teléfono`, `Modelo`, `Ultimo Estado`, `Fecha Facturación`, `Fecha Gestión Turno`, `Fecha Últ Modificación`, `N° Operación` y `Gestionado por`.
+
+El tablero prioriza `Facturado`, `Patentado`, `Preturno` y `Turno`. Cuenta días hábiles entre etapas y ordena los casos en verde, amarillo y rojo. Las filas con estado `Entregado` no se muestran.
+
+Administración puede editar los límites del semáforo desde el panel. Al guardar, se crea o actualiza automáticamente la pestaña `Configuracion semaforo`; no hace falta crearla antes.
+
+Para habilitar colaboradores, generá un segundo hash con `node scripts/create-password-hash.mjs` y cargalo en Vercel como `COLLABORATOR_PASSWORD_HASH`. Esa clave solo muestra el tablero de casos. La clave `ADMIN_PASSWORD_HASH` además permite cambiar tiempos, contenidos e indicadores.
+
 ## 1. Apps Script
 
 1. Creá un proyecto de Apps Script y pegá `apps-script/Code.gs`.

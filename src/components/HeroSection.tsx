@@ -34,20 +34,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectStage, onSearc
 
   return (
     <div className="bg-white">
-      <section className="relative flex min-h-[720px] items-end overflow-hidden bg-[#081a2d] sm:min-h-[760px]">
+      <section className="relative flex min-h-[650px] items-end overflow-hidden bg-[#081a2d] sm:min-h-[700px]">
         <img src="/images/autosol-hero-suv.png" alt="SUV en una concesionaria Autosol" className="absolute inset-0 h-full w-full object-cover object-[62%_center]" />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(3,15,31,0.83)_0%,rgba(3,15,31,0.53)_42%,rgba(3,15,31,0.08)_74%),linear-gradient(0deg,rgba(3,15,31,0.6)_0%,transparent_48%)]" />
-        <div className="relative z-10 mx-auto w-full max-w-[1440px] px-5 pb-16 pt-36 sm:px-8 sm:pb-20 lg:px-12">
+        <div className="relative z-10 mx-auto w-full max-w-[1440px] px-5 pb-12 pt-32 sm:px-8 sm:pb-16 lg:px-12">
           <div className="max-w-3xl">
             <p className="mb-5 text-sm font-semibold tracking-[0.16em] text-[#7cdbf6] uppercase">Autosol Jujuy</p>
             <h1 className="max-w-2xl text-5xl font-semibold leading-[0.95] tracking-[-0.06em] text-white sm:text-7xl lg:text-8xl">Tu próximo camino empieza acá.</h1>
             <p className="mt-7 max-w-lg text-base leading-relaxed text-white/85 sm:text-lg">Información clara sobre definiciones, trámites y cada etapa para acompañarte durante la compra de tu próximo 0km.</p>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <button onClick={scrollToServices} className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-bold text-[#071e3a] transition-transform hover:scale-[1.02]">Información para tu compra <ArrowRight className="h-4 w-4" /></button>
-              <button onClick={onOpenTrackerModal} className="rounded-full border border-white/60 bg-white/5 px-6 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition-colors hover:bg-white/15">Seguir mi operación</button>
-            </div>
           </div>
-          <button onClick={scrollToServices} className="mt-16 flex items-center gap-3 text-sm text-white/75 transition-colors hover:text-white" aria-label="Bajar a servicios"><span className="h-px w-10 bg-white/60" /> Descubrí más <ArrowDown className="h-4 w-4 animate-bounce" /></button>
+          <button onClick={scrollToServices} className="mt-12 flex items-center gap-3 text-sm text-white/75 transition-colors hover:text-white" aria-label="Bajar a servicios"><span className="h-px w-10 bg-white/60" /> Descubrí más <ArrowDown className="h-4 w-4 animate-bounce" /></button>
         </div>
       </section>
 

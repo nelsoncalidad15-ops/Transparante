@@ -124,3 +124,27 @@ export interface SheetIntegrationState {
   lastSyncTimestamp: string | null;
   autoSync: boolean;
 }
+
+export type CaseStatus = 'verde' | 'amarillo' | 'rojo';
+
+export interface DeliveryCase {
+  id: string;
+  clientName: string;
+  phone: string;
+  vehicleModel: string;
+  currentStatus: string;
+  invoiceDate: string;
+  appointmentDate: string;
+  lastModifiedDate: string;
+  operationNumber: string;
+  advisor: string;
+}
+
+export interface StageTiming {
+  key: string;
+  label: string;
+  description: string;
+  warningDays: number;
+  limitDays: number;
+  message: string;
+}

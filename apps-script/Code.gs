@@ -14,6 +14,9 @@ function doPost(e) {
     if (action === 'getPublicContent') return json_({ ok: true, data: getPublicContent_() });
     if (action === 'getAdminContent') return json_({ ok: true, data: getAdminContent_() });
     if (action === 'getIndicators') return json_({ ok: true, data: getIndicators_() });
+    if (action === 'getClientCases') return json_({ ok: true, data: getClientCases_() });
+    if (action === 'getCaseTimings') return json_({ ok: true, data: getCaseTimings_() });
+    if (action === 'updateCaseTimings') return json_({ ok: true, data: updateCaseTimings_(payload) });
     if (action === 'updateContent') return json_({ ok: true, data: updateContent_(payload) });
     return json_({ ok: false, error: 'Acción no reconocida.' });
   } catch (error) {
@@ -60,6 +63,77 @@ function getAdminContent_() {
 function getIndicators_() {
   var rows = readRows_('Indicadores');
   return { indicators: rows, updatedAt: new Date().toISOString() };
+}
+
+function normalizeHeader_(value) {
+  return String(value || '').toLowerCase().replace(/[áàäâ]/g, 'a').replace(/[éèëê]/g, 'e').replace(/[íìïî]/g, 'i').replace(/[óòöô]/g, 'o').replace(/[úùüû]/g, 'u').replace(/ñ/g, 'n').replace(/[^a-z0-9]/g, '');
+}
+
+function field_(row, name) {
+  var expected = normalizeHeader_(name);
+  var keys = Object.keys(row);
+  for (var i = 0; i < keys.length; i++) if (normalizeHeader_(keys[i]) === expected) return row[keys[i]];
+  return '';
+}
+
+function formatDate_(value) {
+  if (!value) return '';
+  if (Object.prototype.toString.call(value) === '[object Date]' && !isNaN(value.getTime())) return Utilities.formatDate(value, Session.getScriptTimeZone(), 'yyyy-MM-dd');
+  return String(value);
+}
+
+function getClientCases_() {
+  // La exportación operativa puede llamarse Agenda o Operaciones.
+  // Se prioriza Agenda para usar la hoja actual del equipo sin renombrarla.
+  var rows = readRows_('Agenda');
+  if (!rows.length) rows = readRows_('Operaciones');
+  return {
+    cases: rows.map(function(row, index) {
+      return {
+        id: String(field_(row, 'N° Operación') || field_(row, 'Interno') || index + 1),
+        clientName: String(field_(row, 'Cliente')),
+        phone: String(field_(row, 'Teléfono')),
+        vehicleModel: String(field_(row, 'Modelo')),
+        currentStatus: String(field_(row, 'Ultimo Estado')),
+        invoiceDate: formatDate_(field_(row, 'Fecha Facturación')),
+        appointmentDate: formatDate_(field_(row, 'Fecha Gestión Turno')),
+        lastModifiedDate: formatDate_(field_(row, 'Fecha Últ Modificación')),
+        operationNumber: String(field_(row, 'N° Operación')),
+        advisor: String(field_(row, 'Gestionado por'))
+      };
+    }).filter(function(item) { return item.clientName && item.currentStatus && item.currentStatus.toLowerCase() !== 'entregado'; }),
+    updatedAt: new Date().toISOString()
+  };
+}
+
+function defaultCaseTimings_() {
+  return [
+    { key: 'facturado', label: 'Facturado → Patentado', description: 'Desde Fecha Facturación', warningDays: 10, limitDays: 15, message: 'Hola {cliente}, te escribimos de Autosol por tu {modelo}. Estamos avanzando con la gestión de patentamiento y queremos mantenerte informado. Ante cualquier consulta, estamos a disposición.' },
+    { key: 'patentado', label: 'Patentado → Turno', description: 'Desde Fecha Últ Modificación', warningDays: 4, limitDays: 7, message: 'Hola {cliente}, tu {modelo} ya se encuentra patentado. Estamos coordinando los próximos pasos para tu entrega y te mantendremos informado/a.' },
+    { key: 'preturno', label: 'Preturno → Turno', description: 'Desde Fecha Últ Modificación', warningDays: 3, limitDays: 5, message: 'Hola {cliente}, estamos en la etapa final de preparación de tu {modelo}. En breve vamos a contactarte para coordinar el turno de entrega.' },
+    { key: 'turno', label: 'Turno → Entrega', description: 'Desde Fecha Gestión Turno', warningDays: 2, limitDays: 3, message: 'Hola {cliente}, queremos confirmar el avance de la entrega de tu {modelo}. Estamos revisando el turno y te informaremos la próxima novedad a la brevedad.' }
+  ];
+}
+
+function getCaseTimings_() {
+  var sheet = getSpreadsheet_().getSheetByName('Configuracion semaforo');
+  if (!sheet || sheet.getLastRow() < 2) return { timings: defaultCaseTimings_() };
+  var rows = readRows_('Configuracion semaforo');
+  return { timings: rows.map(function(row) {
+    return { key: String(row.key), label: String(row.label), description: String(row.description), warningDays: Number(row.warningDays), limitDays: Number(row.limitDays), message: String(row.message) };
+  }).filter(function(item) { return item.key; }) };
+}
+
+function updateCaseTimings_(payload) {
+  if (!payload || !Array.isArray(payload.timings)) throw new Error('Faltan los tiempos del semáforo.');
+  var ss = getSpreadsheet_();
+  var sheet = ss.getSheetByName('Configuracion semaforo') || ss.insertSheet('Configuracion semaforo');
+  sheet.clearContents();
+  var headers = ['key', 'label', 'description', 'warningDays', 'limitDays', 'message'];
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+  var values = payload.timings.map(function(item) { return headers.map(function(header) { return item[header] === undefined ? '' : item[header]; }); });
+  if (values.length) sheet.getRange(2, 1, values.length, headers.length).setValues(values);
+  return { timings: payload.timings };
 }
 
 function updateContent_(payload) {

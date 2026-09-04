@@ -17,6 +17,7 @@ import { FAQSection } from './components/FAQSection';
 import { PersonalizedTrackerModal } from './components/PersonalizedTrackerModal';
 import { QualityDashboardView } from './components/QualityDashboardView';
 import { AdminContentView } from './components/AdminContentView';
+import { ClientAlertDashboard } from './components/ClientAlertDashboard';
 import { AutosolLogo } from './components/AutosolLogo';
 import { ProcessStageId, ContentCategory } from './types';
 import {
@@ -82,7 +83,7 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800 selection:bg-blue-600 selection:text-white">
       {/* Main Top Navigation with official VW | Autosol Branding */}
-      <Navbar
+      {activeTab !== 'client-alerts' && <Navbar
         activeTab={activeTab}
         setActiveTab={(tab) => {
           setActiveTab(tab);
@@ -90,10 +91,11 @@ function AppContent() {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         onOpenTrackerModal={() => setIsTrackerModalOpen(true)}
-      />
+        onOpenCaseDashboard={() => setActiveTab('client-alerts')}
+      />}
 
       {/* Main Container */}
-      <main className={activeTab === 'home' ? 'flex-1' : 'flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8'}>
+      <main className={activeTab === 'client-alerts' ? 'flex-1 w-full' : activeTab === 'home' ? 'flex-1' : 'flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8'}>
         {/* VIEW 1: HOME (Centro Digital del Cliente) */}
         {activeTab === 'home' && (
           <HeroSection
@@ -236,15 +238,17 @@ function AppContent() {
 
         {/* VIEW 15: ADMIN CONTENT PANEL (Internal / Sheets) */}
         {activeTab === 'admin-panel' && <AdminContentView />}
+
+        {activeTab === 'client-alerts' && <ClientAlertDashboard onExit={() => setActiveTab('home')} />}
       </main>
 
       {/* Floating Action Button for Quick Assistant (Modern VW Official Style) */}
-      <div className="fixed bottom-24 right-5 z-40 hidden flex-col gap-2.5 sm:flex">
+      {activeTab !== 'client-alerts' && <div className="fixed bottom-24 right-5 z-40 hidden flex-col gap-2.5 sm:flex">
         <a href="https://www.google.com/maps/search/?api=1&query=Autosol+Jujuy,+Colectora+Acceso+Sur+Ruta+9,+Las+Lomas" target="_blank" rel="noreferrer" className="group relative flex h-11 w-11 items-center justify-center rounded-full border border-white/80 bg-white text-[#0069b4] shadow-[0_8px_20px_rgba(7,30,58,0.16)] transition-all hover:-translate-y-0.5 hover:bg-[#0069b4] hover:text-white" aria-label="Ver ubicación de Autosol"><MapPin className="h-4 w-4" /><span className="pointer-events-none absolute right-[calc(100%+10px)] top-1/2 hidden w-max -translate-y-1/2 rounded-md bg-[#061d38] px-3 py-2 text-xs font-semibold text-white shadow-lg group-hover:block">Ver ubicación</span></a>
         <a href="tel:+543884983210" className="group relative flex h-11 w-11 items-center justify-center rounded-full border border-white/80 bg-white text-[#0069b4] shadow-[0_8px_20px_rgba(7,30,58,0.16)] transition-all hover:-translate-y-0.5 hover:bg-[#0069b4] hover:text-white" aria-label="Contactar a Autosol"><Phone className="h-4 w-4" /><span className="pointer-events-none absolute right-[calc(100%+10px)] top-1/2 hidden w-max -translate-y-1/2 rounded-md bg-[#061d38] px-3 py-2 text-xs font-semibold text-white shadow-lg group-hover:block">Contactar Autosol</span></a>
         <a href="mailto:recepcion.ventas@autosol-vw.com.ar" className="group relative flex h-11 w-11 items-center justify-center rounded-full border border-white/80 bg-white text-[#0069b4] shadow-[0_8px_20px_rgba(7,30,58,0.16)] transition-all hover:-translate-y-0.5 hover:bg-[#0069b4] hover:text-white" aria-label="Enviar correo a Autosol"><Mail className="h-4 w-4" /><span className="pointer-events-none absolute right-[calc(100%+10px)] top-1/2 hidden w-max -translate-y-1/2 rounded-md bg-[#061d38] px-3 py-2 text-xs font-semibold text-white shadow-lg group-hover:block">Escribir a Autosol</span></a>
-      </div>
-      {activeTab !== 'assistant' && (
+      </div>}
+      {activeTab !== 'assistant' && activeTab !== 'client-alerts' && (
         <div className="fixed bottom-5 right-5 z-50">
           {isFloatingAssistantOpen ? (
             <div className="animate-in slide-in-from-bottom-5 fade-in duration-200">

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Menu, X, ArrowUpRight, MapPin, UserCheck, LockKeyhole, BarChart3, FilePenLine, LoaderCircle } from 'lucide-react';
+import { Menu, X, ArrowUpRight, UserCheck, LockKeyhole, BarChart3, FilePenLine, LoaderCircle } from 'lucide-react';
 import { AutosolLogo } from './AutosolLogo';
 
 export type ActiveTab =
@@ -17,12 +17,14 @@ export type ActiveTab =
   | 'search'
   | 'article-detail'
   | 'quality-dashboard'
-  | 'admin-panel';
+  | 'admin-panel'
+  | 'client-alerts';
 
 interface NavbarProps {
   activeTab: ActiveTab;
   setActiveTab: (tab: ActiveTab) => void;
   onOpenTrackerModal: () => void;
+  onOpenCaseDashboard: () => void;
 }
 
 const navigation = [
@@ -33,11 +35,12 @@ const navigation = [
   { id: 'delivery' as ActiveTab, label: 'Entrega', detail: 'Preparación y retiro' },
 ];
 
-export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenTrackerModal }) => {
+export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenTrackerModal, onOpenCaseDashboard }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
   const [adminPassword, setAdminPassword] = useState('');
   const [adminAuthenticated, setAdminAuthenticated] = useState(false);
+  const [sessionRole, setSessionRole] = useState<'admin' | 'collaborator' | null>(null);
   const [adminError, setAdminError] = useState('');
   const [isSubmittingAdmin, setIsSubmittingAdmin] = useState(false);
   const isHome = activeTab === 'home';
@@ -47,6 +50,18 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenT
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
 
+  useEffect(() => {
+    fetch('/api/auth/session')
+      .then((response) => response.ok ? response.json() : null)
+      .then((session) => {
+        if (session?.authenticated) {
+          setAdminAuthenticated(true);
+          setSessionRole(session.role === 'admin' ? 'admin' : 'collaborator');
+        }
+      })
+      .catch(() => undefined);
+  }, []);
+
   const navigate = (tab: ActiveTab) => {
     setActiveTab(tab);
     setMenuOpen(false);
@@ -55,6 +70,12 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenT
   const handleAdminLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!adminPassword.trim()) return;
+    if (import.meta.env.DEV && adminPassword === 'demo') {
+      setAdminAuthenticated(true);
+      setSessionRole('admin');
+      setAdminPassword('');
+      return;
+    }
     setIsSubmittingAdmin(true);
     setAdminError('');
     try {
@@ -64,7 +85,9 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenT
         body: JSON.stringify({ password: adminPassword }),
       });
       if (!response.ok) throw new Error('Credenciales inválidas o backend no configurado.');
+      const result = await response.json();
       setAdminAuthenticated(true);
+      setSessionRole(result.role === 'admin' ? 'admin' : 'collaborator');
       setAdminPassword('');
     } catch (error) {
       setAdminError(error instanceof Error ? error.message : 'No se pudo iniciar sesión.');
@@ -115,16 +138,8 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenT
               </nav>
 
               <aside className="self-start rounded-2xl border border-white/15 bg-white/[0.055] p-6 sm:p-7">
-                <p className="text-[11px] font-bold tracking-[0.14em] text-[#56c9ed] uppercase">Centro de información</p>
-                <p className="mt-4 text-2xl font-light leading-snug tracking-[-0.03em] text-white">Todo lo que necesitás saber sobre tu compra.</p>
-                <div className="mt-6 border-t border-white/15 pt-5 text-sm leading-relaxed text-blue-100/85">Reunimos guías, definiciones, documentación, etapas y tiempos orientativos para que puedas comprender cada instancia con claridad.</div>
-                <div className="mt-4 inline-flex rounded-full border border-[#56c9ed]/30 bg-[#56c9ed]/10 px-3 py-1.5 text-[11px] font-semibold text-[#8bdbf3]">Información orientativa para clientes</div>
-                <button onClick={() => { setMenuOpen(false); onOpenTrackerModal(); }} className="mt-7 inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-[#061d38] transition-transform hover:scale-[1.02]">
-                  <UserCheck className="h-4 w-4" /> Seguir mi operación
-                </button>
-                <div className="mt-8 flex items-center gap-2 border-t border-white/15 pt-5 text-sm text-white/70"><MapPin className="h-4 w-4 text-[#56c9ed]" /> Jujuy · Argentina</div>
-                <div className="mt-5 border-t border-white/15 pt-5">
-                  {!adminOpen && !adminAuthenticated && <button onClick={() => setAdminOpen(true)} className="flex items-center gap-2 text-sm font-semibold text-blue-100 transition-colors hover:text-[#56c9ed]"><LockKeyhole className="h-4 w-4" /> Ingresar como administrador</button>}
+                <div>
+                  {!adminOpen && !adminAuthenticated && <button onClick={() => setAdminOpen(true)} className="flex items-center gap-2 text-sm font-semibold text-blue-100 transition-colors hover:text-[#56c9ed]"><LockKeyhole className="h-4 w-4" /> Acceso interno</button>}
                   {adminOpen && !adminAuthenticated && (
                     <form onSubmit={handleAdminLogin} className="space-y-3">
                       <div className="flex items-center justify-between"><span className="text-[11px] font-bold tracking-[0.12em] text-[#56c9ed] uppercase">Administración</span><button type="button" onClick={() => { setAdminOpen(false); setAdminError(''); }} className="text-xs text-blue-200 hover:text-white">Cancelar</button></div>
@@ -133,6 +148,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenT
                       <button disabled={isSubmittingAdmin} className="inline-flex items-center gap-2 rounded-lg bg-[#56c9ed] px-3.5 py-2.5 text-sm font-bold text-[#061d38] transition-colors hover:bg-white disabled:opacity-60">{isSubmittingAdmin ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <LockKeyhole className="h-4 w-4" />} Ingresar</button>
                     </form>
                   )}
+                  {adminAuthenticated && <button onClick={() => { setMenuOpen(false); onOpenCaseDashboard(); }} className="mb-3 flex w-full items-center gap-2 rounded-lg bg-[#56c9ed] px-3 py-2.5 text-left text-sm font-bold text-[#061d38] hover:bg-white"><UserCheck className="h-4 w-4" /> Casos a contactar{sessionRole === 'collaborator' && <span className="ml-auto text-xs font-medium">Colaborador</span>}</button>}
                   {adminAuthenticated && (
                     <div className="space-y-3"><div className="flex items-center gap-2 text-sm font-semibold text-emerald-300"><span className="h-2 w-2 rounded-full bg-emerald-400" /> Sesión de administrador</div><div className="grid gap-2"><button onClick={() => navigate('quality-dashboard')} className="flex items-center gap-2 rounded-lg border border-white/15 px-3 py-2.5 text-left text-sm text-blue-100 hover:bg-white/10"><BarChart3 className="h-4 w-4 text-[#56c9ed]" /> Ver indicadores</button><button onClick={() => navigate('admin-panel')} className="flex items-center gap-2 rounded-lg border border-white/15 px-3 py-2.5 text-left text-sm text-blue-100 hover:bg-white/10"><FilePenLine className="h-4 w-4 text-[#56c9ed]" /> Editar información</button></div></div>
                   )}
