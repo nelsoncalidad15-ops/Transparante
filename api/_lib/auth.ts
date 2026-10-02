@@ -59,8 +59,11 @@ const verifyPasswordHash = async (password: string, stored: string) => {
 
 export const verifyPassword = async (password: string) => verifyPasswordHash(password, process.env.ADMIN_PASSWORD_HASH || '');
 
-export const verifyLogin = async (password: string): Promise<SessionRole | null> => {
-  if (await verifyPasswordHash(password, process.env.ADMIN_PASSWORD_HASH || '')) return 'admin';
-  if (await verifyPasswordHash(password, process.env.COLLABORATOR_PASSWORD_HASH || '')) return 'collaborator';
+export const verifyLogin = async (username: string, password: string): Promise<SessionRole | null> => {
+  const user = username.trim().toLowerCase();
+  const adminUser = (process.env.ADMIN_USERNAME || 'admin').trim().toLowerCase();
+  const collaboratorUser = (process.env.COLLABORATOR_USERNAME || 'administrativo').trim().toLowerCase();
+  if (user === adminUser && await verifyPasswordHash(password, process.env.ADMIN_PASSWORD_HASH || '')) return 'admin';
+  if (user === collaboratorUser && await verifyPasswordHash(password, process.env.COLLABORATOR_PASSWORD_HASH || '')) return 'collaborator';
   return null;
 };

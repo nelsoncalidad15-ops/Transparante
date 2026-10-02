@@ -50,16 +50,19 @@ export const InfographicModelView: React.FC<InfographicModelViewProps> = ({
   return (
     <div className="space-y-8 pb-12">
       {/* Top Controls / Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-900 text-white flex items-center justify-center font-bold text-sm shadow-sm">
-            <Layers className="w-5 h-5" />
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/80 shadow-[0_5px_20px_rgba(7,30,58,0.04)]">
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-[#e6e6e6] text-[#0040c4] flex items-center justify-center font-bold text-sm border border-[#e6e6e6]">
+            <Layers className="w-6 h-6 text-[#0040c4]" strokeWidth={1.6} />
           </div>
           <div>
-            <h1 className="text-lg sm:text-xl font-extrabold text-blue-950 tracking-tight">
+            <p className="text-[11px] font-semibold text-[#0040c4] uppercase tracking-wider">
+              Arquitectura del Sistema
+            </p>
+            <h1 className="text-lg sm:text-xl font-semibold text-[#001e50] tracking-tight">
               Estructura Integral del Modelo Autosol Transparente
             </h1>
-            <p className="text-xs text-slate-500 font-medium">
+            <p className="text-xs text-slate-500 font-normal mt-0.5">
               Diagrama interactivo de arquitectura, experiencia del cliente e indicadores de mejora
             </p>
           </div>
@@ -68,10 +71,10 @@ export const InfographicModelView: React.FC<InfographicModelViewProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={() => onNavigate('home')}
-            className="text-xs font-bold bg-blue-50 hover:bg-blue-100 text-blue-700 px-3.5 py-2 rounded-xl border border-blue-200 transition-colors flex items-center space-x-1.5"
+            className="text-xs font-semibold bg-[#001e50] hover:bg-[#0040c4] text-white px-5 py-2.5 rounded-full transition-all flex items-center gap-2 cursor-pointer"
           >
-            <Compass className="w-3.5 h-3.5" />
-            <span>Volver a la vista cliente</span>
+            <Compass className="w-4 h-4" />
+            <span>Volver a la portada</span>
           </button>
         </div>
       </div>
@@ -98,7 +101,7 @@ export const InfographicModelView: React.FC<InfographicModelViewProps> = ({
             </div>
           </div>
 
-          <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-[#0B2265] tracking-tight uppercase">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-[#001e50] tracking-tight uppercase">
             AUTOSOL TRANSPARENTE
           </h2>
           <p className="text-sm sm:text-base md:text-lg font-semibold text-slate-700 max-w-3xl mx-auto">
@@ -106,12 +109,12 @@ export const InfographicModelView: React.FC<InfographicModelViewProps> = ({
           </p>
 
           {/* QUOTE BANNER */}
-          <div className="max-w-4xl mx-auto mt-4 bg-[#0B2265] text-white px-5 sm:px-8 py-3.5 rounded-2xl sm:rounded-full shadow-md flex items-center justify-center space-x-3 text-center border-2 border-blue-900">
-            <span className="text-emerald-400 font-serif font-black text-2xl leading-none">“</span>
+          <div className="max-w-4xl mx-auto mt-4 bg-[#001e50] text-white px-5 sm:px-8 py-3.5 rounded-2xl sm:rounded-full shadow-md flex items-center justify-center space-x-3 text-center border-2 border-blue-900">
+            <span className="text-emerald-400 font-display font-black text-2xl leading-none">“</span>
             <p className="text-xs sm:text-sm md:text-base font-semibold text-blue-50">
               Informar no es solo decir en qué estado está una operación; también es ayudar al cliente a comprender qué significa.
             </p>
-            <span className="text-emerald-400 font-serif font-black text-2xl leading-none">”</span>
+            <span className="text-emerald-400 font-display font-black text-2xl leading-none">”</span>
           </div>
         </div>
 
@@ -122,8 +125,8 @@ export const InfographicModelView: React.FC<InfographicModelViewProps> = ({
           <div className="bg-white rounded-2xl border-2 border-slate-300 p-4 flex flex-col justify-between shadow-xs hover:border-blue-400 transition-all">
             <div className="space-y-4">
               {/* Header Badge */}
-              <div className="bg-[#0B2265] text-white rounded-xl p-2.5 flex items-center space-x-2">
-                <span className="w-7 h-7 rounded-full bg-white text-[#0B2265] font-black text-sm flex items-center justify-center shrink-0">
+              <div className="bg-[#001e50] text-white rounded-xl p-2.5 flex items-center space-x-2">
+                <span className="w-7 h-7 rounded-full bg-white text-[#001e50] font-black text-sm flex items-center justify-center shrink-0">
                   1
                 </span>
                 <span className="font-bold text-xs sm:text-sm leading-tight">
@@ -171,8 +174,8 @@ export const InfographicModelView: React.FC<InfographicModelViewProps> = ({
           <div className="bg-white rounded-2xl border-2 border-slate-300 p-4 flex flex-col justify-between shadow-xs hover:border-blue-400 transition-all">
             <div className="space-y-4">
               {/* Header Badge */}
-              <div className="bg-[#0B2265] text-white rounded-xl p-2.5 flex items-center space-x-2">
-                <span className="w-7 h-7 rounded-full bg-white text-[#0B2265] font-black text-sm flex items-center justify-center shrink-0">
+              <div className="bg-[#001e50] text-white rounded-xl p-2.5 flex items-center space-x-2">
+                <span className="w-7 h-7 rounded-full bg-white text-[#001e50] font-black text-sm flex items-center justify-center shrink-0">
                   2
                 </span>
                 <span className="font-bold text-xs sm:text-sm leading-tight">
@@ -353,8 +356,8 @@ export const InfographicModelView: React.FC<InfographicModelViewProps> = ({
           <div className="bg-white rounded-2xl border-2 border-slate-300 p-4 flex flex-col justify-between shadow-xs hover:border-blue-400 transition-all">
             <div className="space-y-3">
               {/* Header Badge */}
-              <div className="bg-[#0B2265] text-white rounded-xl p-2.5 flex items-center space-x-2">
-                <span className="w-7 h-7 rounded-full bg-white text-[#0B2265] font-black text-sm flex items-center justify-center shrink-0">
+              <div className="bg-[#001e50] text-white rounded-xl p-2.5 flex items-center space-x-2">
+                <span className="w-7 h-7 rounded-full bg-white text-[#001e50] font-black text-sm flex items-center justify-center shrink-0">
                   4
                 </span>
                 <span className="font-bold text-xs sm:text-sm leading-tight">
@@ -395,7 +398,7 @@ export const InfographicModelView: React.FC<InfographicModelViewProps> = ({
 
               {/* Timeline diagram mini */}
               <div className="pt-1">
-                <div className="text-[10px] font-bold text-[#0B2265] text-center mb-1">
+                <div className="text-[10px] font-bold text-[#001e50] text-center mb-1">
                   Línea de tiempo del proceso
                 </div>
                 <div className="grid grid-cols-7 gap-0.5 text-center">
@@ -437,8 +440,8 @@ export const InfographicModelView: React.FC<InfographicModelViewProps> = ({
           <div className="bg-white rounded-2xl border-2 border-slate-300 p-4 flex flex-col justify-between shadow-xs hover:border-blue-400 transition-all">
             <div className="space-y-3">
               {/* Header Badge */}
-              <div className="bg-[#0B2265] text-white rounded-xl p-2.5 flex items-center space-x-2">
-                <span className="w-7 h-7 rounded-full bg-white text-[#0B2265] font-black text-sm flex items-center justify-center shrink-0">
+              <div className="bg-[#001e50] text-white rounded-xl p-2.5 flex items-center space-x-2">
+                <span className="w-7 h-7 rounded-full bg-white text-[#001e50] font-black text-sm flex items-center justify-center shrink-0">
                   5
                 </span>
                 <span className="font-bold text-xs sm:text-sm leading-tight">
@@ -503,7 +506,7 @@ export const InfographicModelView: React.FC<InfographicModelViewProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           
           {/* INDICADORES SUGERIDOS */}
-          <div className="bg-[#0B2265] text-white rounded-2xl p-4 sm:p-5 border-2 border-blue-900 shadow-md">
+          <div className="bg-[#001e50] text-white rounded-2xl p-4 sm:p-5 border-2 border-blue-900 shadow-md">
             <div className="flex items-center space-x-2 mb-3 pb-2 border-b border-blue-800">
               <BarChart2 className="w-4 h-4 text-emerald-400" />
               <span className="font-extrabold text-xs uppercase tracking-wider text-blue-100">
@@ -606,7 +609,7 @@ export const InfographicModelView: React.FC<InfographicModelViewProps> = ({
         </div>
 
         {/* BOTTOM VALUE CHAIN RIBBON */}
-        <div className="bg-[#0B2265] text-white p-4 rounded-2xl flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-base font-extrabold shadow-md border-2 border-blue-900 text-center">
+        <div className="bg-[#001e50] text-white p-4 rounded-2xl flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-base font-extrabold shadow-md border-2 border-blue-900 text-center">
           <div className="flex items-center space-x-2 text-white">
             <span className="w-7 h-7 rounded-full bg-blue-700 flex items-center justify-center text-emerald-400">
               ⭐

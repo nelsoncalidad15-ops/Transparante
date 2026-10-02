@@ -52,47 +52,51 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
   }, [faqs, selectedCategory, searchQuery]);
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300 pb-10">
-      {/* Executive Header (Frosted Glass) */}
-      <div className="bg-gradient-to-r from-[#0B2265]/95 via-blue-950/95 to-slate-900/95 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-8 text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="space-y-2 max-w-2xl">
-          <div className="inline-flex items-center space-x-2 bg-white/10 text-sky-200 px-3 py-1 rounded-full text-xs font-semibold border border-white/15">
-            <Sparkles className="w-3.5 h-3.5 text-sky-300" />
-            <span>Respuestas Claras y Directas</span>
+    <div className="space-y-8 pb-12 animate-in fade-in duration-300">
+      {/* Header Editorial Volkswagen */}
+      <div className="relative overflow-hidden rounded-3xl bg-white border border-slate-200/80 p-6 sm:p-8 lg:p-10 shadow-[0_5px_20px_rgba(7,30,58,0.05)]">
+        <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full border-[36px] border-[#e6e6e6]/60" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="max-w-2xl">
+            <p className="text-xs sm:text-sm font-semibold tracking-[0.16em] text-[#0040c4] uppercase">
+              Respuestas Claras y Transparentes
+            </p>
+            <h1 className="mt-2 text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.05em] text-[#001e50]">
+              Preguntas Frecuentes
+            </h1>
+            <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl">
+              Respuestas directas y oficiales sin tecnicismos complejos para resolver cualquier duda durante tu operación.
+            </p>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            Preguntas Frecuentes
-          </h1>
-          <p className="text-xs sm:text-sm text-blue-100 font-normal">
-            Respuestas oficiales y sin tecnicismos complejos a las dudas más comunes durante tu proceso de compra.
-          </p>
-        </div>
 
-        <button
-          onClick={() => onOpenAssistant()}
-          className="bg-white hover:bg-blue-50 text-[#0B2265] text-xs font-bold px-4 py-2.5 rounded-2xl shadow-xs transition-all flex items-center space-x-2 shrink-0 self-start md:self-center cursor-pointer"
-        >
-          <Bot className="w-4 h-4 text-blue-700" />
-          <span>Consultar al Asistente IA</span>
-        </button>
+          <button
+            onClick={() => onOpenAssistant()}
+            className="inline-flex items-center gap-2 rounded-full bg-[#001e50] px-5 py-3 text-xs sm:text-sm font-bold text-white transition-all hover:bg-[#0040c4] hover:scale-[1.02] cursor-pointer shrink-0 self-start md:self-auto"
+          >
+            <Bot className="w-4 h-4" />
+            <span>Consultar al Asistente IA</span>
+          </button>
+        </div>
       </div>
 
-      {/* Search & Category Filter Bar */}
-      <div className="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-3xl p-4 sm:p-5 shadow-xs space-y-3">
-        <div className="relative">
-          <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+      {/* Buscador y Filtros por Tema */}
+      <div className="rounded-3xl bg-white border border-slate-200/80 p-5 sm:p-6 shadow-[0_5px_20px_rgba(7,30,58,0.04)] space-y-4">
+        <div className="relative flex overflow-hidden rounded-xl border border-[#a0a3aa] bg-white p-1 shadow-[0_6px_20px_rgba(14,71,104,0.06)]">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar en preguntas frecuentes (ej: factura, seguro, demoras, chasis)..."
-            className="w-full pl-11 pr-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200/80 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/30 text-xs sm:text-sm text-slate-800 font-medium"
+            placeholder="Buscá una duda (ej: factura, seguro, demoras, chasis, patentamiento)..."
+            className="min-w-0 flex-1 bg-transparent px-3 text-xs sm:text-sm text-[#001e50] outline-none placeholder:text-slate-400"
           />
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#0040c4] text-white">
+            <Search className="h-4 w-4" />
+          </div>
         </div>
 
-        <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 scrollbar-thin">
-          <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider mr-1 shrink-0 flex items-center">
-            <Filter className="w-3 h-3 mr-1" />
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+          <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mr-1 shrink-0 flex items-center gap-1">
+            <Filter className="w-3.5 h-3.5" />
             Tema:
           </span>
           {categories.map((cat) => {
@@ -101,10 +105,10 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer border ${
                   isSelected
-                    ? 'bg-blue-700 text-white shadow-xs'
-                    : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                    ? 'bg-[#001e50] text-white border-[#001e50] shadow-sm'
+                    : 'bg-[#ece5db] hover:bg-slate-100 text-slate-600 border-slate-200'
                 }`}
               >
                 {cat}
@@ -114,17 +118,17 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
         </div>
       </div>
 
-      {/* FAQs List */}
-      <div className="space-y-3">
+      {/* Listado de Preguntas */}
+      <div className="space-y-3.5">
         {filteredFaqs.length === 0 ? (
-          <div className="bg-white/80 backdrop-blur-md rounded-3xl border border-slate-200 p-8 text-center space-y-3">
+          <div className="rounded-3xl bg-white border border-slate-200/80 p-8 text-center space-y-3 shadow-2xs">
             <HelpCircle className="w-10 h-10 text-slate-300 mx-auto" />
-            <div className="text-sm font-bold text-slate-700">
-              No encontramos preguntas para "{searchQuery}"
+            <div className="text-sm font-semibold text-slate-700">
+              No encontramos respuestas para "{searchQuery}"
             </div>
             <button
               onClick={() => onOpenAssistant(searchQuery)}
-              className="inline-flex items-center space-x-2 bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all"
+              className="inline-flex items-center gap-2 bg-[#001e50] hover:bg-[#0040c4] text-white text-xs font-bold px-4 py-2.5 rounded-full transition-all"
             >
               <Bot className="w-4 h-4" />
               <span>Preguntarle a nuestro Asistente IA</span>
@@ -136,47 +140,47 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
             return (
               <div
                 key={faq.id}
-                className={`bg-white/90 backdrop-blur-md border rounded-3xl transition-all ${
+                className={`rounded-2xl border transition-all bg-white ${
                   isExpanded
-                    ? 'border-blue-300 shadow-xs ring-2 ring-blue-50'
-                    : 'border-slate-200/80 hover:border-slate-300'
+                    ? 'border-[#0040c4] shadow-[0_8px_24px_rgba(14,71,104,0.08)] ring-2 ring-[#e6e6e6]'
+                    : 'border-slate-200/80 hover:border-[#a0a3aa] shadow-[0_3px_12px_rgba(23,59,87,0.03)]'
                 }`}
               >
                 <button
                   onClick={() => setExpandedId(isExpanded ? null : faq.id)}
-                  className="w-full text-left p-4 sm:p-5 flex items-center justify-between gap-3 cursor-pointer"
+                  className="w-full text-left p-5 flex items-center justify-between gap-4 cursor-pointer"
                 >
-                  <div className="flex items-center space-x-3">
-                    <span className="w-6 h-6 rounded-lg bg-blue-50 text-blue-700 text-xs font-black flex items-center justify-center shrink-0">
+                  <div className="flex items-center gap-3.5">
+                    <span className="w-7 h-7 rounded-lg bg-[#e6e6e6] text-[#0040c4] text-xs font-bold flex items-center justify-center shrink-0">
                       ?
                     </span>
-                    <span className="text-xs sm:text-sm font-black text-slate-900">
+                    <span className="text-sm sm:text-base font-semibold text-[#001e50]">
                       {faq.question}
                     </span>
                   </div>
                   <div className="shrink-0 text-slate-400">
-                    {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    {isExpanded ? <ChevronUp className="w-4 h-4 text-[#0040c4]" /> : <ChevronDown className="w-4 h-4" />}
                   </div>
                 </button>
 
                 {isExpanded && (
-                  <div className="px-5 pb-5 pt-1 text-xs text-slate-600 space-y-3 border-t border-slate-100">
-                    <p className="leading-relaxed text-[13px] text-slate-700 pt-2 font-normal">
+                  <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-600 space-y-3.5 border-t border-slate-100">
+                    <p className="leading-relaxed pt-2">
                       {faq.answer}
                     </p>
 
                     <div className="flex items-center justify-between pt-2">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded-md">
-                        Categoría: {faq.category}
+                      <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider bg-[#ece5db] px-2.5 py-1 rounded-full border border-slate-200">
+                        {faq.category}
                       </span>
 
                       {faq.relatedArticleSlug && (
                         <button
                           onClick={() => onNavigateToArticle(faq.relatedArticleSlug!)}
-                          className="text-xs font-bold text-blue-700 hover:text-blue-900 flex items-center space-x-1 cursor-pointer"
+                          className="text-xs font-semibold text-[#0040c4] hover:underline flex items-center gap-1 cursor-pointer"
                         >
                           <span>Leer guía ampliada</span>
-                          <ArrowRight className="w-3 h-3" />
+                          <ArrowRight className="w-3.5 h-3.5" />
                         </button>
                       )}
                     </div>

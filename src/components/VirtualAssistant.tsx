@@ -234,9 +234,9 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
       }`}
     >
       {/* Top Header */}
-      <div className="flex shrink-0 items-center justify-between bg-[#061d38] px-5 py-3.5 text-white">
+      <div className="flex shrink-0 items-center justify-between bg-[#001e50] px-5 py-3.5 text-white">
         <div className="flex items-center space-x-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0b6fb8] text-white shadow-inner shadow-white/20">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0040c4] text-white shadow-inner shadow-white/20">
             <Bot className="w-5 h-5" />
           </div>
           <div>
@@ -270,7 +270,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
           <button
             key={pill}
             onClick={() => handleUserSendMessage(pill)}
-            className="whitespace-nowrap rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-medium text-slate-600 transition-colors hover:border-[#84c8e5] hover:bg-[#edf8fc] hover:text-[#0069b4]"
+            className="whitespace-nowrap rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-medium text-slate-600 transition-colors hover:border-[#a0a3aa] hover:bg-[#ece5db] hover:text-[#0040c4]"
           >
             {pill}
           </button>
@@ -278,7 +278,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
       </div>
 
       {/* Messages Scroll Area */}
-      <div className="flex-1 space-y-4 overflow-y-auto bg-[linear-gradient(180deg,#f8fbfd_0%,#ffffff_28%)] p-4 sm:p-5">
+      <div className="flex-1 space-y-4 overflow-y-auto bg-[linear-gradient(180deg,#ece5db_0%,#ffffff_28%)] p-4 sm:p-5">
         {messages.map((msg) => {
           const isBot = msg.sender === 'bot';
           return (
@@ -287,7 +287,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
               className={`flex items-start space-x-2.5 ${isBot ? 'justify-start' : 'justify-end'}`}
             >
               {isBot && (
-                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#e0f1f8] text-[#0069b4]">
+                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#e6e6e6] text-[#0040c4]">
                   <Bot className="w-4 h-4" />
                 </div>
               )}
@@ -297,7 +297,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
                   className={`rounded-2xl p-3.5 text-xs leading-relaxed shadow-sm sm:p-4 sm:text-sm ${
                     isBot
                       ? 'rounded-tl-md border border-slate-100 bg-white text-slate-700'
-                      : 'rounded-tr-md bg-[#0069b4] font-medium text-white'
+                      : 'rounded-tr-md bg-[#0040c4] font-medium text-white'
                   }`}
                 >
                   <p>{msg.text}</p>
@@ -349,7 +349,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
                       <button
                         key={i}
                         onClick={() => handleUserSendMessage(sug)}
-                        className="flex items-center space-x-1 rounded-full border border-[#b9dcf0] bg-white px-2.5 py-1 text-[11px] font-medium text-[#0069b4] transition-colors hover:bg-[#edf8fc]"
+                        className="flex items-center space-x-1 rounded-full border border-[#d0d1d5] bg-white px-2.5 py-1 text-[11px] font-medium text-[#0040c4] transition-colors hover:bg-[#ece5db]"
                       >
                         <span>{sug}</span>
                         <ChevronRight className="w-3 h-3 text-blue-400" />
@@ -386,13 +386,13 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
           placeholder="Escribí tu consulta (ej: ¿Qué es gestoría?)..."
-          className="flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0069b4]/25 sm:text-sm"
+          className="flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0040c4]/25 sm:text-sm"
         />
         <button
           type="submit"
           id="btn-send-assistant-msg"
           disabled={!inputMessage.trim()}
-          className="shrink-0 rounded-full bg-[#0069b4] p-3 text-white shadow-[0_5px_14px_rgba(0,105,180,0.3)] transition-all hover:-translate-y-0.5 hover:bg-[#005995] active:scale-95 disabled:opacity-40"
+          className="shrink-0 rounded-full bg-[#0040c4] p-3 text-white shadow-[0_5px_14px_rgba(0,105,180,0.3)] transition-all hover:-translate-y-0.5 hover:bg-[#001e50] active:scale-95 disabled:opacity-40"
         >
           <Send className="w-4 h-4" />
         </button>

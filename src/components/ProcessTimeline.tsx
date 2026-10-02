@@ -57,11 +57,11 @@ export const ProcessTimeline: React.FC<ProcessTimelineProps> = ({
   const currentStage = stages.find((s) => s.id === internalStageId) || stages[0] || {
     id: 'cierre',
     stepNumber: 1,
-    name: 'Cierre de operación',
-    shortDesc: 'Formalización del boleto de reserva, seña y validación comercial.',
-    definition: 'Es el punto de partida formal donde se acuerdan las condiciones comerciales.',
+    name: 'Operación confirmada',
+    shortDesc: 'Confirmación de condiciones comerciales y documentación disponible.',
+    definition: 'Es el inicio formal de la operación; no implica por sí sola que la unidad esté facturada o lista para entregar.',
     whatHappens: ['Firma de reserva', 'Definición de modalidad de pago'],
-    estimatedTime: '1 a 3 días hábiles',
+    estimatedTime: 'Según validaciones comerciales',
     timeDisclaimer: 'Sujeto a confirmación bancaria y firmas.',
     timeFactors: ['Acreditación bancaria', 'Aprobaciones crediticias'],
     nextStep: 'Facturación de la unidad.',
@@ -70,23 +70,23 @@ export const ProcessTimeline: React.FC<ProcessTimelineProps> = ({
   };
 
   const getStageIcon = (iconName: string, active: boolean) => {
-    const props = { className: `w-4 h-4 ${active ? 'text-white' : 'text-slate-600'}` };
+    const props = { className: `w-5 h-5 ${active ? 'text-white' : 'text-[#0040c4]'}` };
     switch (iconName) {
       case 'FileSignature':
-        return <FileSignature {...props} />;
+        return <FileSignature {...props} strokeWidth={1.6} />;
       case 'ReceiptText':
-        return <ReceiptText {...props} />;
+        return <ReceiptText {...props} strokeWidth={1.6} />;
       case 'FolderCheck':
-        return <FolderCheck {...props} />;
+        return <FolderCheck {...props} strokeWidth={1.6} />;
       case 'ShieldCheck':
-        return <ShieldCheck {...props} />;
+        return <ShieldCheck {...props} strokeWidth={1.6} />;
       case 'Wrench':
-        return <Wrench {...props} />;
+        return <Wrench {...props} strokeWidth={1.6} />;
       case 'CalendarCheck':
-        return <CalendarCheck {...props} />;
+        return <CalendarCheck {...props} strokeWidth={1.6} />;
       case 'Car':
       default:
-        return <Car {...props} />;
+        return <Car {...props} strokeWidth={1.6} />;
     }
   };
 
@@ -95,46 +95,98 @@ export const ProcessTimeline: React.FC<ProcessTimelineProps> = ({
   const prevStage = currentIndex > 0 ? stages[currentIndex - 1] : null;
 
   return (
-    <div className="space-y-6 pb-10 animate-in fade-in duration-200">
-      {/* Executive Header (Frosted Glass) */}
-      <div className="bg-gradient-to-r from-[#0B2265]/95 via-blue-950/95 to-slate-900/95 backdrop-blur-xl border border-white/10 rounded-3xl p-6 text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="space-y-2 max-w-2xl">
-          <div className="inline-flex items-center space-x-2 bg-white/10 text-sky-200 px-3 py-1 rounded-full text-xs font-semibold border border-white/15">
-            <Sparkles className="w-3.5 h-3.5 text-sky-300" />
-            <span>Recorrido Oficial en 7 Pasos</span>
+    <div className="space-y-8 pb-12 animate-in fade-in duration-300">
+      {/* Header Editorial Volkswagen */}
+      <div className="relative overflow-hidden rounded-3xl bg-white border border-slate-200/80 p-6 sm:p-8 lg:p-10 shadow-[0_5px_20px_rgba(7,30,58,0.05)]">
+        <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full border-[36px] border-[#e6e6e6]/60" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="max-w-2xl">
+            <p className="text-xs sm:text-sm font-semibold tracking-[0.16em] text-[#0040c4] uppercase">
+              Recorrido Oficial en 7 Pasos
+            </p>
+            <h1 className="mt-2 text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.05em] text-[#001e50]">
+              Mi Proceso de Compra
+            </h1>
+            <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl">
+              Cada etapa explicada con total claridad: qué significa, qué documentación se tramita y los plazos estimados para acompañar tu 0km.
+            </p>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            Mi Proceso de Compra
-          </h1>
-          <p className="text-xs sm:text-sm text-blue-100 font-normal">
-            Cada etapa explicada con total claridad: qué significa, qué documentación se tramita y los plazos estimados.
-          </p>
-        </div>
 
-        {onOpenTracker && (
-          <button
-            onClick={onOpenTracker}
-            className="bg-white hover:bg-blue-50 text-[#0B2265] text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs transition-all flex items-center space-x-2 shrink-0 self-start md:self-center cursor-pointer active:scale-95"
-          >
-            <UserCheck className="w-4 h-4 text-blue-700" />
-            <span>Consultar mi estado actual</span>
-          </button>
-        )}
+          {onOpenTracker && (
+            <button
+              onClick={onOpenTracker}
+              className="inline-flex items-center justify-center gap-2.5 rounded-full bg-[#001e50] px-6 py-3.5 text-xs sm:text-sm font-bold text-white transition-all hover:scale-[1.02] hover:bg-[#0040c4] shadow-sm cursor-pointer self-start md:self-auto shrink-0"
+            >
+              <UserCheck className="h-4 w-4" />
+              <span>Consultar mi estado actual</span>
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Stepper Bar (Horizontal with Pastel Active States) */}
-      <div className="bg-white/80 backdrop-blur-md border border-slate-200/80 rounded-3xl p-4 sm:p-5 shadow-xs">
-        <div className="hidden md:flex items-center justify-between relative px-2">
-          {/* Connecting line */}
-          <div className="absolute top-5 left-8 right-8 h-1 bg-slate-200/80 -z-0" />
-          <div
-            className="absolute top-5 left-8 h-1 bg-blue-700 -z-0 transition-all duration-300"
-            style={{
-              width: `${(currentIndex / Math.max(1, stages.length - 1)) * 100}%`,
-              maxWidth: 'calc(100% - 4rem)',
-            }}
-          />
+      {/* Stepper Horizontal (Minimalista, amplio, sin textos cortados) */}
+      <div className="rounded-3xl bg-white border border-slate-200/80 p-6 sm:p-8 shadow-[0_5px_20px_rgba(7,30,58,0.04)]">
+        {/* Desktop View */}
+        <div className="hidden lg:block">
+          <div className="relative flex items-start justify-between">
+            {/* Base line */}
+            <div className="absolute top-6 left-8 right-8 h-0.5 bg-[#e6e6e6] -z-0" />
+            {/* Active progress line */}
+            <div
+              className="absolute top-6 left-8 h-0.5 bg-[#0040c4] -z-0 transition-all duration-300"
+              style={{
+                width: `${(currentIndex / Math.max(1, stages.length - 1)) * 100}%`,
+                maxWidth: 'calc(100% - 4rem)',
+              }}
+            />
 
+            {stages.map((stage, idx) => {
+              const isSelected = stage.id === currentStage.id;
+              const isPast = idx < currentIndex;
+
+              return (
+                <button
+                  key={stage.id}
+                  id={`btn-stage-stepper-${stage.id}`}
+                  onClick={() => handleStageSelect(stage.id)}
+                  className="group relative z-10 flex flex-col items-center cursor-pointer text-center w-32 focus:outline-none"
+                  aria-label={`Paso ${stage.stepNumber}: ${stage.name}`}
+                >
+                  <div
+                    className={`flex h-12 w-12 items-center justify-center rounded-full transition-all duration-200 ${
+                      isSelected
+                        ? 'bg-[#001e50] text-white ring-4 ring-[#e6e6e6] scale-110 shadow-md'
+                        : isPast
+                        ? 'bg-[#e6e6e6] text-[#0040c4] border border-[#d0d1d5] group-hover:bg-[#0040c4] group-hover:text-white'
+                        : 'bg-white text-slate-400 border border-slate-200 group-hover:border-[#a0a3aa] group-hover:text-[#0040c4]'
+                    }`}
+                  >
+                    {getStageIcon(stage.iconName, isSelected)}
+                  </div>
+
+                  <span className="mt-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                    Paso 0{stage.stepNumber}
+                  </span>
+
+                  <span
+                    className={`mt-1 text-xs font-semibold leading-snug transition-colors line-clamp-2 px-1 ${
+                      isSelected
+                        ? 'text-[#001e50] font-bold'
+                        : isPast
+                        ? 'text-[#001e50]'
+                        : 'text-slate-600 group-hover:text-[#0040c4]'
+                    }`}
+                  >
+                    {stage.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Tablet / Mobile Scrollable Track */}
+        <div className="lg:hidden flex items-center gap-2.5 overflow-x-auto pb-2 pt-1 scrollbar-thin">
           {stages.map((stage, idx) => {
             const isSelected = stage.id === currentStage.id;
             const isPast = idx < currentIndex;
@@ -142,78 +194,39 @@ export const ProcessTimeline: React.FC<ProcessTimelineProps> = ({
             return (
               <button
                 key={stage.id}
-                id={`btn-stage-stepper-${stage.id}`}
                 onClick={() => handleStageSelect(stage.id)}
-                className="relative z-10 flex flex-col items-center group cursor-pointer text-center max-w-[95px]"
-              >
-                <div
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-150 ${
-                    isSelected
-                      ? 'bg-blue-700 text-white shadow-md ring-4 ring-blue-100 scale-105'
-                      : isPast
-                      ? 'bg-emerald-600 text-white shadow-2xs'
-                      : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
-                  }`}
-                >
-                  {isPast ? (
-                    <CheckCircle2 className="w-5 h-5 text-white" />
-                  ) : (
-                    getStageIcon(stage.iconName, isSelected)
-                  )}
-                </div>
-
-                <span
-                  className={`mt-2 text-[11px] font-bold transition-colors line-clamp-1 ${
-                    isSelected
-                      ? 'text-blue-950 font-black'
-                      : isPast
-                      ? 'text-emerald-800'
-                      : 'text-slate-600 group-hover:text-slate-900'
-                  }`}
-                >
-                  {stage.name}
-                </span>
-
-                <span className="text-[9px] text-slate-400 font-semibold">Paso {stage.stepNumber}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Mobile Horizontal Pill Scroll */}
-        <div className="flex md:hidden overflow-x-auto pb-1 gap-1.5 scrollbar-thin">
-          {stages.map((stage) => {
-            const isSelected = stage.id === currentStage.id;
-            return (
-              <button
-                key={stage.id}
-                onClick={() => handleStageSelect(stage.id)}
-                className={`flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-bold shrink-0 transition-all ${
+                className={`flex items-center gap-2 rounded-full px-3.5 py-2 text-xs font-semibold shrink-0 transition-all cursor-pointer border ${
                   isSelected
-                    ? 'bg-blue-700 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    ? 'bg-[#001e50] text-white border-[#001e50] shadow-sm'
+                    : isPast
+                    ? 'bg-[#e6e6e6] text-[#001e50] border-[#d0d1d5]'
+                    : 'bg-white text-slate-600 border-slate-200 hover:border-[#a0a3aa]'
                 }`}
               >
                 <span
-                  className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold ${
-                    isSelected ? 'bg-white text-blue-700' : 'bg-slate-300 text-slate-800'
+                  className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold ${
+                    isSelected
+                      ? 'bg-white text-[#001e50]'
+                      : isPast
+                      ? 'bg-[#0040c4] text-white'
+                      : 'bg-slate-100 text-slate-500'
                   }`}
                 >
                   {stage.stepNumber}
                 </span>
-                <span className="truncate">{stage.name}</span>
+                <span className="whitespace-nowrap">{stage.name}</span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Synergic Stage Inspector Card (Concise, High Impact) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-        {/* Left Column: Stage Selector List */}
-        <div className="hidden lg:block lg:col-span-4 bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-3xl p-3.5 shadow-xs space-y-1">
-          <div className="px-3 py-1.5 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">
-            Todas las Etapas
+      {/* Inspector de Etapa (Diseño Editorial a 2 Columnas) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Columna Izquierda: Índice de las 7 Etapas */}
+        <div className="hidden lg:block lg:col-span-4 rounded-3xl bg-white border border-slate-200/80 p-4 shadow-[0_5px_20px_rgba(7,30,58,0.04)] space-y-1">
+          <div className="px-3 py-2 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+            Todas las etapas del recorrido
           </div>
           {stages.map((stage) => {
             const isSelected = stage.id === currentStage.id;
@@ -221,116 +234,118 @@ export const ProcessTimeline: React.FC<ProcessTimelineProps> = ({
               <button
                 key={stage.id}
                 onClick={() => handleStageSelect(stage.id)}
-                className={`w-full flex items-center justify-between p-2.5 rounded-2xl text-left transition-all cursor-pointer ${
+                className={`w-full flex items-center justify-between p-3 rounded-2xl text-left transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-sky-50 text-sky-950 border border-sky-200 font-bold shadow-2xs'
+                    ? 'bg-[#ece5db] text-[#001e50] border border-[#a0a3aa]/80 font-bold shadow-2xs'
                     : 'text-slate-600 hover:bg-slate-50 border border-transparent'
                 }`}
               >
-                <div className="flex items-center space-x-2.5">
+                <div className="flex items-center gap-3">
                   <span
-                    className={`w-6 h-6 rounded-lg text-[11px] font-bold flex items-center justify-center ${
-                      isSelected ? 'bg-blue-700 text-white' : 'bg-slate-100 text-slate-600'
+                    className={`flex h-7 w-7 items-center justify-center rounded-xl text-xs font-bold transition-colors ${
+                      isSelected ? 'bg-[#0040c4] text-white' : 'bg-slate-100 text-slate-500'
                     }`}
                   >
-                    {stage.stepNumber}
+                    0{stage.stepNumber}
                   </span>
                   <div>
-                    <div className="text-xs font-bold truncate">{stage.name}</div>
-                    <div className="text-[10px] text-slate-500 font-normal">{stage.estimatedTime}</div>
+                    <div className="text-xs font-semibold leading-tight text-[#001e50]">{stage.name}</div>
+                    <div className="text-[11px] text-slate-500 font-normal mt-0.5">{stage.estimatedTime}</div>
                   </div>
                 </div>
-                <ChevronRight className={`w-3.5 h-3.5 ${isSelected ? 'text-blue-700' : 'text-slate-300'}`} />
+                <ChevronRight className={`h-4 w-4 ${isSelected ? 'text-[#0040c4]' : 'text-slate-300'}`} />
               </button>
             );
           })}
         </div>
 
-        {/* Right Column: Active Stage Details Card */}
-        <div className="lg:col-span-8 bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-3xl p-5 sm:p-6 shadow-xs space-y-5">
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-700 border border-blue-200/60 flex items-center justify-center">
+        {/* Columna Derecha: Detalle Profundo de la Etapa Seleccionada */}
+        <div className="lg:col-span-8 rounded-3xl bg-white border border-slate-200/80 p-6 sm:p-8 shadow-[0_5px_20px_rgba(7,30,58,0.04)] space-y-6">
+          {/* Fila Superior: Badges e Identificación */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-100">
+            <div className="flex items-center gap-3.5">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e6e6e6] text-[#0040c4] border border-[#e6e6e6]">
                 {getStageIcon(currentStage.iconName, false)}
               </div>
               <div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-[10px] font-black uppercase tracking-wider bg-blue-100 text-blue-900 px-2 py-0.5 rounded-md">
-                    Etapa {currentStage.stepNumber} de 7
+                <div className="flex items-center gap-2">
+                  <span className="rounded-full bg-[#e6e6e6] px-3 py-1 text-[11px] font-semibold text-[#0040c4]">
+                    Etapa 0{currentStage.stepNumber} de 07
                   </span>
-                  <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md">
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-medium text-slate-600">
                     ⏱️ {currentStage.estimatedTime}
                   </span>
                 </div>
-                <h2 className="text-lg sm:text-xl font-black text-slate-900 mt-1">
+                <h2 className="mt-1.5 text-xl sm:text-2xl font-semibold tracking-[-0.04em] text-[#001e50]">
                   {currentStage.name}
                 </h2>
               </div>
             </div>
           </div>
 
-          {/* Quick Summary Pill */}
-          <div className="bg-sky-50/70 border border-sky-200/80 rounded-2xl p-3.5 text-xs text-sky-950 font-medium leading-relaxed">
+          {/* Resumen explicativo principal */}
+          <div className="rounded-2xl bg-[#ece5db] border border-[#e6e6e6] p-4 sm:p-5 text-sm leading-relaxed text-[#001e50]">
             {currentStage.definition || currentStage.shortDesc}
           </div>
 
-          {/* 3 Concise Key Blocks */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/70 space-y-2">
-              <div className="text-[11px] font-extrabold text-slate-900 uppercase tracking-wider flex items-center space-x-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+          {/* Bloques de Información Clave */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Bloque 1: Qué sucede */}
+            <div className="rounded-2xl border border-slate-200/80 p-4 sm:p-5 bg-white shadow-2xs space-y-3">
+              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#001e50]">
+                <CheckCircle2 className="h-4 w-4 text-[#0040c4]" />
                 <span>¿Qué sucede en esta etapa?</span>
               </div>
-              <ul className="space-y-1.5 text-xs text-slate-600">
-                {(currentStage.whatHappens || []).map((req, i) => (
-                  <li key={i} className="flex items-start space-x-1.5 text-[11px]">
-                    <span className="text-blue-600 font-bold">•</span>
-                    <span>{req}</span>
+              <ul className="space-y-2 text-xs leading-relaxed text-slate-600">
+                {(currentStage.whatHappens || []).map((item, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[#0040c4] shrink-0" />
+                    <span>{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/70 space-y-2 flex flex-col justify-between">
-              <div className="space-y-2">
-                <div className="text-[11px] font-extrabold text-slate-900 uppercase tracking-wider flex items-center space-x-1.5">
-                  <ArrowRight className="w-3.5 h-3.5 text-blue-600" />
+            {/* Bloque 2: Qué viene después y observaciones */}
+            <div className="rounded-2xl border border-slate-200/80 p-4 sm:p-5 bg-white shadow-2xs space-y-3 flex flex-col justify-between">
+              <div className="space-y-2.5">
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#001e50]">
+                  <ArrowRight className="h-4 w-4 text-[#0040c4]" />
                   <span>¿Qué viene después?</span>
                 </div>
-                <p className="text-xs text-slate-600 leading-relaxed text-[11px]">
+                <p className="text-xs leading-relaxed text-slate-600">
                   {currentStage.nextStep}
                 </p>
               </div>
 
               {currentStage.timeDisclaimer && (
-                <div className="pt-2 border-t border-slate-200/60 flex items-start space-x-1.5 text-[10px] text-slate-500">
-                  <Clock className="w-3 h-3 text-amber-600 shrink-0 mt-0.5" />
+                <div className="pt-3 border-t border-slate-100 flex items-start gap-2 text-[11px] text-slate-500">
+                  <Clock className="h-3.5 w-3.5 text-[#0040c4] shrink-0 mt-0.5" />
                   <span>{currentStage.timeDisclaimer}</span>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Navigation Controls */}
-          <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+          {/* Navegación entre etapas */}
+          <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
             {prevStage ? (
               <button
                 onClick={() => handleStageSelect(prevStage.id)}
-                className="text-xs font-bold text-slate-600 hover:text-slate-900 flex items-center space-x-1 p-2 rounded-xl hover:bg-slate-100 cursor-pointer"
+                className="group flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2.5 text-xs font-semibold text-slate-600 transition-colors hover:border-[#001e50] hover:text-[#001e50] cursor-pointer"
               >
-                <ChevronLeft className="w-4 h-4" />
-                <span>Paso {prevStage.stepNumber}: {prevStage.name}</span>
+                <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+                <span>Paso 0{prevStage.stepNumber}: {prevStage.name}</span>
               </button>
             ) : <div />}
 
             {nextStage && (
               <button
                 onClick={() => handleStageSelect(nextStage.id)}
-                className="text-xs font-bold text-blue-700 hover:text-blue-900 flex items-center space-x-1 p-2 rounded-xl hover:bg-blue-50 cursor-pointer"
+                className="group flex items-center gap-2 rounded-full bg-[#001e50] px-5 py-2.5 text-xs font-semibold text-white transition-all hover:bg-[#0040c4] cursor-pointer"
               >
-                <span>Paso {nextStage.stepNumber}: {nextStage.name}</span>
-                <ChevronRight className="w-4 h-4" />
+                <span>Paso 0{nextStage.stepNumber}: {nextStage.name}</span>
+                <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </button>
             )}
           </div>

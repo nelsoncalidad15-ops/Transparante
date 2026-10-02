@@ -4,6 +4,14 @@
  * Desplegá como Web app: Execute as "Me". No compartas el Sheet ni esta URL con el frontend.
  */
 
+function doGet(e) {
+  return json_({
+    ok: true,
+    message: 'Backend de Google Sheets para Autosol Transparente activo.',
+    updatedAt: new Date().toISOString()
+  });
+}
+
 function doPost(e) {
   try {
     var request = JSON.parse((e.postData && e.postData.contents) || '{}');
@@ -13,6 +21,10 @@ function doPost(e) {
 
     if (action === 'getPublicContent') return json_({ ok: true, data: getPublicContent_() });
     if (action === 'getAdminContent') return json_({ ok: true, data: getAdminContent_() });
+    if (action === 'getStages') return json_({ ok: true, data: { stages: readRows_('Etapas') } });
+    if (action === 'updateStages') return json_({ ok: true, data: updateStages_(payload) });
+    if (action === 'getSiteTexts') return json_({ ok: true, data: { texts: readRows_('Textos') } });
+    if (action === 'updateSiteTexts') return json_({ ok: true, data: updateSiteTexts_(payload) });
     if (action === 'getIndicators') return json_({ ok: true, data: getIndicators_() });
     if (action === 'getClientCases') return json_({ ok: true, data: getClientCases_() });
     if (action === 'getCaseTimings') return json_({ ok: true, data: getCaseTimings_() });
@@ -53,11 +65,40 @@ function readRows_(sheetName) {
 
 function getPublicContent_() {
   var articles = readRows_('Articulos').filter(function(article) { return article.status === 'Publicado'; });
-  return { articles: articles, faqs: readRows_('Preguntas'), updatedAt: new Date().toISOString() };
+  var stages = readRows_('Etapas').filter(function(stage) { return String(stage.active).toLowerCase() !== 'false'; });
+  var texts = readRows_('Textos').filter(function(text) { return String(text.active).toLowerCase() !== 'false'; });
+  return { articles: articles, faqs: readRows_('Preguntas'), stages: stages, texts: texts, updatedAt: new Date().toISOString() };
 }
 
 function getAdminContent_() {
-  return { articles: readRows_('Articulos'), faqs: readRows_('Preguntas'), updatedAt: new Date().toISOString() };
+  return { articles: readRows_('Articulos'), faqs: readRows_('Preguntas'), stages: readRows_('Etapas'), texts: readRows_('Textos'), updatedAt: new Date().toISOString() };
+}
+
+function updateSiteTexts_(payload) {
+  if (!payload || !Array.isArray(payload.texts)) throw new Error('Faltan los textos.');
+  var sheet = getSpreadsheet_().getSheetByName('Textos') || getSpreadsheet_().insertSheet('Textos');
+  var headers = ['key', 'section', 'label', 'value', 'description', 'active'];
+  var rows = payload.texts.map(function(text) { return headers.map(function(header) { return text[header] === undefined ? '' : text[header]; }); });
+  sheet.clearContents();
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+  if (rows.length) sheet.getRange(2, 1, rows.length, headers.length).setValues(rows);
+  return { texts: payload.texts };
+}
+
+function updateStages_(payload) {
+  if (!payload || !Array.isArray(payload.stages)) throw new Error('Faltan las etapas.');
+  var sheet = getSpreadsheet_().getSheetByName('Etapas') || getSpreadsheet_().insertSheet('Etapas');
+  var headers = ['id', 'stepNumber', 'name', 'shortDesc', 'definition', 'whatHappens', 'estimatedTime', 'timeDisclaimer', 'timeFactors', 'nextStep', 'iconName', 'category', 'active'];
+  var rows = payload.stages.map(function(stage) {
+    return headers.map(function(header) {
+      var value = stage[header] === undefined ? '' : stage[header];
+      return Array.isArray(value) ? value.join('|') : value;
+    });
+  });
+  sheet.clearContents();
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+  if (rows.length) sheet.getRange(2, 1, rows.length, headers.length).setValues(rows);
+  return { stages: payload.stages };
 }
 
 function getIndicators_() {
@@ -138,9 +179,15 @@ function updateCaseTimings_(payload) {
 
 function updateContent_(payload) {
   if (!payload || !payload.operation || !payload.article) throw new Error('Faltan datos de contenido.');
-  var sheet = getSpreadsheet_().getSheetByName('Articulos');
-  if (!sheet) throw new Error('No existe la hoja Articulos.');
-  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String);
+  var ss = getSpreadsheet_();
+  var sheet = ss.getSheetByName('Articulos');
+  var defaultHeaders = ['id', 'slug', 'title', 'category', 'type', 'shortDesc', 'definition', 'whatHappens', 'estimatedTime', 'timeFactors', 'whatNext', 'relatedTopics', 'readTimeMinutes', 'status', 'lastReview', 'responsible', 'version', 'viewsCount', 'helpfulCount', 'unhelpfulCount'];
+  if (!sheet) {
+    sheet = ss.insertSheet('Articulos');
+    sheet.getRange(1, 1, 1, defaultHeaders.length).setValues([defaultHeaders]);
+  }
+  var lastCol = sheet.getLastColumn();
+  var headers = lastCol > 0 ? sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String) : defaultHeaders;
   var article = payload.article;
   if (payload.operation === 'delete') {
     var rows = sheet.getDataRange().getValues();

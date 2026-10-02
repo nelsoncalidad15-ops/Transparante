@@ -33,9 +33,9 @@ export const PersonalizedTrackerModal: React.FC<PersonalizedTrackerModalProps> =
   onOpenAssistant,
 }) => {
   const { operations, stages, getStageById } = useData();
-  const [searchInput, setSearchInput] = useState('AS-84920');
+  const [searchInput, setSearchInput] = useState(import.meta.env.DEV ? 'AS-84920' : '');
   const [selectedOperation, setSelectedOperation] = useState<ClientOperation | null>(
-    operations[0] || null
+    import.meta.env.DEV ? operations[0] || null : null
   );
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -45,21 +45,21 @@ export const PersonalizedTrackerModal: React.FC<PersonalizedTrackerModalProps> =
     e.preventDefault();
     setErrorMsg('');
     const q = searchInput.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (q.length < 4) {
+      setErrorMsg('Ingresá el número completo de boleto o tu DNI.');
+      return;
+    }
     const found = operations.find((op) => {
       const opNum = op.orderNumber.toLowerCase().replace(/[^a-z0-9]/g, '');
       const dni = op.documentNumber.toLowerCase().replace(/[^a-z0-9]/g, '');
-      const name = op.clientName.toLowerCase();
-      return (
-        opNum.includes(q) ||
-        dni.includes(q) ||
-        name.includes(searchInput.trim().toLowerCase())
-      );
+      return opNum === q || dni === q;
     });
 
     if (found) {
       setSelectedOperation(found);
     } else {
-      setErrorMsg('No encontramos una operación con ese número de boleto o DNI de prueba.');
+      setSelectedOperation(null);
+      setErrorMsg('No encontramos una operación con esos datos. Revisalos o contactanos para recibir ayuda.');
     }
   };
 
@@ -107,6 +107,8 @@ export const PersonalizedTrackerModal: React.FC<PersonalizedTrackerModalProps> =
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
+                autoComplete="off"
+                disabled={!operations.length}
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="Ingresá tu N° de orden / boleto (ej: AS-84920) o DNI..."
@@ -115,14 +117,19 @@ export const PersonalizedTrackerModal: React.FC<PersonalizedTrackerModalProps> =
             </div>
             <button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-xs"
+              disabled={!operations.length}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-xs disabled:cursor-not-allowed disabled:opacity-45"
             >
               Consultar
             </button>
           </form>
 
-          {/* Quick Demo Selector Chips */}
-          <div className="flex items-center space-x-2 overflow-x-auto text-[11px] scrollbar-thin">
+          <p className="flex items-start gap-1.5 text-[11px] leading-relaxed text-slate-500"><ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-blue-600" />Usamos estos datos únicamente para localizar tu operación. No compartas tu consulta desde un dispositivo público.</p>
+
+          {!operations.length && <div className="rounded-xl border border-blue-200 bg-blue-50 p-3 text-xs leading-relaxed text-slate-700"><strong className="block text-blue-900">Consulta protegida en preparación</strong>Para cuidar tus datos, el seguimiento se habilitará cuando esté conectado al sistema seguro de Autosol. Mientras tanto, podés consultar por <a href="https://wa.me/5493884399187" target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2">WhatsApp oficial</a>.</div>}
+
+          {/* Quick demo selector: never rendered in production. */}
+          {import.meta.env.DEV && <div className="flex items-center space-x-2 overflow-x-auto text-[11px] scrollbar-thin">
             <span className="text-slate-400 font-semibold shrink-0">Clientes de prueba:</span>
             {operations.map((op) => (
               <button
@@ -141,7 +148,7 @@ export const PersonalizedTrackerModal: React.FC<PersonalizedTrackerModalProps> =
                 {op.clientName} ({op.vehicleModel})
               </button>
             ))}
-          </div>
+          </div>}
 
           {errorMsg && (
             <p className="text-xs text-rose-600 font-medium animate-in fade-in">{errorMsg}</p>
@@ -160,7 +167,7 @@ export const PersonalizedTrackerModal: React.FC<PersonalizedTrackerModalProps> =
                     Hola, {selectedOperation.clientName} 👋
                   </h3>
                   <p className="text-xs text-blue-100">
-                    DNI {selectedOperation.documentNumber} • {selectedOperation.vehicleModel} ({selectedOperation.vehicleVersion})
+                    DNI terminado en {selectedOperation.documentNumber.replace(/\D/g, '').slice(-3).padStart(3, '•')} • {selectedOperation.vehicleModel} ({selectedOperation.vehicleVersion})
                   </p>
                 </div>
 
@@ -278,7 +285,7 @@ export const PersonalizedTrackerModal: React.FC<PersonalizedTrackerModalProps> =
                   </div>
                   <div className="flex justify-between py-1">
                     <span className="text-slate-500">Chasis (VIN):</span>
-                    <span className="font-mono text-slate-700 font-medium">{selectedOperation.vinMasked}</span>
+                    <span className="font-sans text-slate-700 font-medium">{selectedOperation.vinMasked}</span>
                   </div>
                 </div>
               </div>

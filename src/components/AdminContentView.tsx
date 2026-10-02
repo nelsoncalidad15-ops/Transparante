@@ -21,6 +21,8 @@ import {
 import { useData } from '../context/DataContext';
 import { LibraryArticle, ContentCategory, ContentType } from '../types';
 import { INITIAL_SHEET_TEMPLATE_INFO } from '../data/defaultData';
+import { StageAdminView } from './StageAdminView';
+import { TextAdminView } from './TextAdminView';
 
 export const AdminContentView: React.FC = () => {
   const {
@@ -37,7 +39,7 @@ export const AdminContentView: React.FC = () => {
     resetToDefaults,
   } = useData();
 
-  const [activeSubTab, setActiveSubTab] = useState<'table' | 'sheets' | 'export'>('table');
+  const [activeSubTab, setActiveSubTab] = useState<'table' | 'stages' | 'texts' | 'sheets' | 'export'>('table');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('Todo');
   const [editingArticle, setEditingArticle] = useState<LibraryArticle | null>(null);
@@ -253,6 +255,26 @@ export const AdminContentView: React.FC = () => {
         </button>
 
         <button
+          onClick={() => setActiveSubTab('stages')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-2 ${
+            activeSubTab === 'stages' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          <Settings className="w-4 h-4" />
+          <span>Etapas del cliente</span>
+        </button>
+
+        <button
+          onClick={() => setActiveSubTab('texts')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-2 ${
+            activeSubTab === 'texts' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          <FileEdit className="w-4 h-4" />
+          <span>Textos del sitio</span>
+        </button>
+
+        <button
           onClick={() => setActiveSubTab('sheets')}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-2 ${
             activeSubTab === 'sheets'
@@ -276,6 +298,9 @@ export const AdminContentView: React.FC = () => {
           <span>Exportar / Importar Datos</span>
         </button>
       </div>
+
+      {activeSubTab === 'stages' && <StageAdminView />}
+      {activeSubTab === 'texts' && <TextAdminView />}
 
       {/* TAB 1: Content Table */}
       {activeSubTab === 'table' && (
@@ -329,7 +354,7 @@ export const AdminContentView: React.FC = () => {
               <tbody className="divide-y divide-slate-100 font-medium">
                 {filteredArticles.map((art) => (
                   <tr key={art.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="py-3 px-3 font-mono text-[11px] text-slate-400">{art.id}</td>
+                    <td className="py-3 px-3 font-sans text-[11px] text-slate-400">{art.id}</td>
                     <td className="py-3 px-3 font-bold text-slate-900 max-w-[200px] truncate">
                       {art.title}
                     </td>
@@ -498,25 +523,31 @@ export const AdminContentView: React.FC = () => {
                 .
               </li>
               <li>
-                Nombrá la pestaña principal como{' '}
+                Nombrá la pestaña de artículos como{' '}
                 <code className="bg-white px-1.5 py-0.5 rounded border text-slate-800">
-                  Contenidos
+                  Articulos
                 </code>{' '}
                 y colocá las siguientes columnas en la fila 1:
-                <div className="bg-white p-2 rounded-lg border border-slate-200 font-mono text-[10px] text-blue-900 my-1 overflow-x-auto">
+                <div className="bg-white p-2 rounded-lg border border-slate-200 font-sans text-[10px] text-blue-900 my-1 overflow-x-auto">
                   {INITIAL_SHEET_TEMPLATE_INFO.sheetColumns.join(' | ')}
                 </div>
+                <span className="text-[11px] text-slate-500 block mt-1">
+                  Las pestañas <strong>Etapas</strong>, <strong>Textos</strong> y <strong>Configuracion semaforo</strong> se generan automáticamente al guardar cambios desde sus respectivas solapas.
+                </span>
               </li>
               <li>
                 En tu Google Sheet, hacé clic en el menú <strong>Extensiones &gt; Apps Script</strong>.
               </li>
-              <li>Pegá el código que se muestra abajo y guardá el proyecto.</li>
+              <li>Copiá el código del archivo <code className="bg-white px-1.5 py-0.5 rounded border text-slate-800">apps-script/Code.gs</code> del proyecto y guardalo.</li>
               <li>
-                Hacé clic en <strong>Implementar &gt; Nueva Implementación &gt; Tipo: Aplicación Web</strong>{' '}
-                (Acceso: <em>Cualquier usuario</em>).
+                En <strong>Configuración del proyecto &gt; Propiedades de la secuencia de comandos</strong>, cargá <code className="bg-white px-1 rounded border">SHEET_ID</code> y <code className="bg-white px-1 rounded border">BACKEND_SHARED_SECRET</code>.
               </li>
               <li>
-                Copiá la URL generada y pegala en el campo de arriba para sincronizar en tiempo real.
+                Hacé clic en <strong>Implementar &gt; Nueva Implementación &gt; Tipo: Aplicación Web</strong>{' '}
+                (Ejecutar como: <em>Yo</em>, Acceso: <em>Cualquier usuario</em>).
+              </li>
+              <li>
+                Copiá la URL generada y configurala como <code className="bg-white px-1 rounded border">APPS_SCRIPT_URL</code> en Vercel (ver <code className="bg-white px-1 rounded border">BACKEND_SETUP.md</code>).
               </li>
             </ol>
 
@@ -534,7 +565,7 @@ export const AdminContentView: React.FC = () => {
                   <span>{copiedCode ? '¡Copiado!' : 'Copiar código'}</span>
                 </button>
               </div>
-              <pre className="bg-slate-950 text-slate-200 p-4 rounded-2xl text-[11px] font-mono overflow-x-auto max-h-48 border border-slate-800">
+              <pre className="bg-slate-950 text-slate-200 p-4 rounded-2xl text-[11px] font-sans overflow-x-auto max-h-48 border border-slate-800">
                 {INITIAL_SHEET_TEMPLATE_INFO.sampleAppsScript}
               </pre>
             </div>

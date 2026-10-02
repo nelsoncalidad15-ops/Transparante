@@ -9,6 +9,7 @@ import {
   QualityKPIs,
   SheetIntegrationState,
   ProcessStageId,
+  SiteText,
 } from '../types';
 import {
   INITIAL_STAGES,
@@ -18,6 +19,7 @@ import {
   INITIAL_UNCERTAINTY_TOPICS,
   INITIAL_UNASSISTED_SEARCHES,
   INITIAL_KPIS,
+  INITIAL_SITE_TEXTS,
 } from '../data/defaultData';
 
 interface SearchResultItem {
@@ -33,6 +35,7 @@ interface SearchResultItem {
 
 interface DataContextType {
   stages: ProcessStage[];
+  siteTexts: SiteText[];
   articles: LibraryArticle[];
   faqs: FAQItem[];
   operations: ClientOperation[];
@@ -43,6 +46,9 @@ interface DataContextType {
   
   // Actions
   getStageById: (id: ProcessStageId) => ProcessStage | undefined;
+  updateStages: (stages: ProcessStage[]) => void;
+  getText: (key: string, fallback: string) => string;
+  updateSiteTexts: (texts: SiteText[]) => void;
   getArticleBySlug: (slug: string) => LibraryArticle | undefined;
   getOperationByCode: (codeOrDni: string) => ClientOperation | undefined;
   
@@ -71,14 +77,37 @@ interface DataContextType {
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
-const LOCAL_STORAGE_KEY_ARTICLES = 'autosol_articles_v1';
-const LOCAL_STORAGE_KEY_FAQS = 'autosol_faqs_v1';
+const LOCAL_STORAGE_KEY_ARTICLES = 'autosol_articles_v2';
+const LOCAL_STORAGE_KEY_FAQS = 'autosol_faqs_v2';
 const LOCAL_STORAGE_KEY_KPIS = 'autosol_kpis_v1';
 const LOCAL_STORAGE_KEY_UNCERTAINTY = 'autosol_uncertainty_v1';
 const LOCAL_STORAGE_KEY_SHEET = 'autosol_sheet_config_v1';
+const LOCAL_STORAGE_KEY_STAGES = 'autosol_stages_v2';
+const LOCAL_STORAGE_KEY_TEXTS = 'autosol_site_texts_v1';
+
+const normalizeStages = (items: unknown[]): ProcessStage[] => items
+  .map((item) => {
+    const stage = item as Record<string, unknown>;
+    const list = (value: unknown) => Array.isArray(value) ? value.map(String) : typeof value === 'string' ? value.split('|').map((part) => part.trim()).filter(Boolean) : [];
+    return {
+      ...stage,
+      id: String(stage.id || ''), stepNumber: Number(stage.stepNumber || 0), name: String(stage.name || ''), shortDesc: String(stage.shortDesc || ''), definition: String(stage.definition || ''),
+      whatHappens: list(stage.whatHappens), estimatedTime: String(stage.estimatedTime || ''), timeDisclaimer: String(stage.timeDisclaimer || ''), timeFactors: list(stage.timeFactors), nextStep: String(stage.nextStep || ''),
+      iconName: String(stage.iconName || 'Car'), category: String(stage.category || 'Proceso de compra'), active: !(stage.active === false || String(stage.active).toLowerCase() === 'false'),
+    } as ProcessStage;
+  })
+  .filter((stage) => stage.id && stage.name && stage.active !== false)
+  .sort((a, b) => a.stepNumber - b.stepNumber);
 
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [stages] = useState<ProcessStage[]>(INITIAL_STAGES);
+  const [stages, setStages] = useState<ProcessStage[]>(() => {
+    try { const saved = localStorage.getItem(LOCAL_STORAGE_KEY_STAGES); return saved ? normalizeStages(JSON.parse(saved)) : INITIAL_STAGES; }
+    catch { return INITIAL_STAGES; }
+  });
+  const [siteTexts, setSiteTexts] = useState<SiteText[]>(() => {
+    try { const saved = localStorage.getItem(LOCAL_STORAGE_KEY_TEXTS); return saved ? JSON.parse(saved) : INITIAL_SITE_TEXTS; }
+    catch { return INITIAL_SITE_TEXTS; }
+  });
 
   const [articles, setArticles] = useState<LibraryArticle[]>(() => {
     try {
@@ -98,7 +127,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   });
 
-  const [operations] = useState<ClientOperation[]>(MOCK_OPERATIONS);
+  // Demo operations must never be bundled into the public production experience.
+  const [operations] = useState<ClientOperation[]>(() => import.meta.env.DEV ? MOCK_OPERATIONS : []);
 
   const [uncertaintyTopics, setUncertaintyTopics] = useState<UncertaintyTopic[]>(() => {
     try {
@@ -155,6 +185,14 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [articles]);
 
   useEffect(() => {
+    try { localStorage.setItem(LOCAL_STORAGE_KEY_STAGES, JSON.stringify(stages)); } catch (e) { console.error(e); }
+  }, [stages]);
+
+  useEffect(() => {
+    try { localStorage.setItem(LOCAL_STORAGE_KEY_TEXTS, JSON.stringify(siteTexts)); } catch (e) { console.error(e); }
+  }, [siteTexts]);
+
+  useEffect(() => {
     try {
       localStorage.setItem(LOCAL_STORAGE_KEY_FAQS, JSON.stringify(faqs));
     } catch (e) {
@@ -180,20 +218,20 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const getStageById = (id: ProcessStageId) => stages.find((s) => s.id === id);
 
+  const updateStages = (updatedStages: ProcessStage[]) => setStages(normalizeStages(updatedStages));
+  const getText = (key: string, fallback: string) => siteTexts.find((text) => text.key === key && text.active)?.value || fallback;
+  const updateSiteTexts = (texts: SiteText[]) => setSiteTexts(texts);
+
   const getArticleBySlug = (slug: string) =>
     articles.find((a) => a.slug === slug || a.id === slug);
 
   const getOperationByCode = (input: string) => {
     const clean = input.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (clean.length < 4) return undefined;
     return operations.find((op) => {
       const opNum = op.orderNumber.toLowerCase().replace(/[^a-z0-9]/g, '');
       const dni = op.documentNumber.toLowerCase().replace(/[^a-z0-9]/g, '');
-      const name = op.clientName.toLowerCase();
-      return (
-        opNum.includes(clean) ||
-        dni.includes(clean) ||
-        name.includes(input.trim().toLowerCase())
-      );
+      return opNum === clean || dni === clean;
     });
   };
 
@@ -311,9 +349,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (response.ok) {
         const result = await response.json();
         const data = result.data || result;
-        if (data && Array.isArray(data.articles) && data.articles.length > 0) {
-          setArticles(data.articles);
+        if (data && (Array.isArray(data.articles) || Array.isArray(data.stages) || Array.isArray(data.texts))) {
+          if (Array.isArray(data.articles) && data.articles.length > 0) setArticles(data.articles);
           if (Array.isArray(data.faqs) && data.faqs.length > 0) setFaqs(data.faqs);
+          if (Array.isArray(data.stages) && data.stages.length > 0) setStages(normalizeStages(data.stages));
+          if (Array.isArray(data.texts) && data.texts.length > 0) setSiteTexts(data.texts);
           setSheetConfig((prev) => ({ ...prev, isConnected: true, lastSyncTimestamp: new Date().toLocaleString('es-AR') }));
           return { success: true, message: `Sincronizados ${data.articles.length} artículos desde el backend seguro.` };
         }
@@ -367,9 +407,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       .then((response) => response.ok ? response.json() : null)
       .then((result) => {
         const data = result?.data || result;
-        if (!mounted || !Array.isArray(data?.articles) || data.articles.length === 0) return;
-        setArticles(data.articles);
+        if (!mounted || (!Array.isArray(data?.articles) && !Array.isArray(data?.stages) && !Array.isArray(data?.texts))) return;
+        if (Array.isArray(data.articles) && data.articles.length > 0) setArticles(data.articles);
         if (Array.isArray(data.faqs) && data.faqs.length > 0) setFaqs(data.faqs);
+        if (Array.isArray(data.stages) && data.stages.length > 0) setStages(normalizeStages(data.stages));
+        if (Array.isArray(data.texts) && data.texts.length > 0) setSiteTexts(data.texts);
         setSheetConfig((previous) => ({ ...previous, isConnected: true, lastSyncTimestamp: new Date().toLocaleString('es-AR') }));
       })
       .catch(() => undefined);
@@ -377,6 +419,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const resetToDefaults = () => {
+    setStages(INITIAL_STAGES);
+    setSiteTexts(INITIAL_SITE_TEXTS);
     setArticles(INITIAL_ARTICLES);
     setFaqs(INITIAL_FAQS);
     setUncertaintyTopics(INITIAL_UNCERTAINTY_TOPICS);
@@ -385,6 +429,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.removeItem(LOCAL_STORAGE_KEY_ARTICLES);
       localStorage.removeItem(LOCAL_STORAGE_KEY_FAQS);
       localStorage.removeItem(LOCAL_STORAGE_KEY_UNCERTAINTY);
+      localStorage.removeItem(LOCAL_STORAGE_KEY_STAGES);
+      localStorage.removeItem(LOCAL_STORAGE_KEY_TEXTS);
     } catch {}
   };
 
@@ -396,6 +442,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         articles,
         faqs,
         stages,
+        texts: siteTexts,
       },
       null,
       2
@@ -410,6 +457,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       if (parsed.faqs && Array.isArray(parsed.faqs)) {
         setFaqs(parsed.faqs);
+      }
+      if (parsed.stages && Array.isArray(parsed.stages)) {
+        setStages(normalizeStages(parsed.stages));
+      }
+      if (parsed.texts && Array.isArray(parsed.texts)) {
+        setSiteTexts(parsed.texts);
       }
       return true;
     } catch (e) {
@@ -510,6 +563,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <DataContext.Provider
       value={{
         stages,
+        siteTexts,
         articles,
         faqs,
         operations,
@@ -518,6 +572,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         kpis,
         sheetConfig,
         getStageById,
+        updateStages,
+        getText,
+        updateSiteTexts,
         getArticleBySlug,
         getOperationByCode,
         submitArticleFeedback,

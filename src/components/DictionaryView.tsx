@@ -105,45 +105,49 @@ export const DictionaryView: React.FC<DictionaryViewProps> = ({
   });
 
   return (
-    <div className="space-y-6 pb-10 animate-in fade-in duration-200">
-      {/* Executive Header (Frosted Glass) */}
-      <div className="bg-gradient-to-r from-[#0B2265]/95 via-blue-950/95 to-slate-900/95 backdrop-blur-xl border border-white/10 rounded-3xl p-6 text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="space-y-2 max-w-2xl">
-          <div className="inline-flex items-center space-x-2 bg-white/10 text-purple-200 px-3 py-1 rounded-full text-xs font-semibold border border-white/15">
-            <Sparkles className="w-3.5 h-3.5 text-purple-300" />
-            <span>Glosario en Lenguaje Claro</span>
+    <div className="space-y-8 pb-12 animate-in fade-in duration-300">
+      {/* Header Editorial Volkswagen */}
+      <div className="relative overflow-hidden rounded-3xl bg-white border border-slate-200/80 p-6 sm:p-8 lg:p-10 shadow-[0_5px_20px_rgba(7,30,58,0.05)]">
+        <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full border-[36px] border-[#e6e6e6]/60" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="max-w-2xl">
+            <p className="text-xs sm:text-sm font-semibold tracking-[0.16em] text-[#0040c4] uppercase">
+              Glosario en Lenguaje Claro
+            </p>
+            <h1 className="mt-2 text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.05em] text-[#001e50]">
+              Diccionario del Comprador
+            </h1>
+            <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl">
+              Definiciones sencillas para comprender cada término técnico, registral o financiero sin complicaciones.
+            </p>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            Diccionario del Comprador
-          </h1>
-          <p className="text-xs sm:text-sm text-blue-100 font-normal">
-            Definiciones sencillas para comprender cada término técnico, registral o financiero sin complicaciones.
-          </p>
-        </div>
 
-        {/* Search Bar */}
-        <div className="relative w-full md:w-72 self-start md:self-center">
-          <Search className="w-4 h-4 text-white/60 absolute left-3.5 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Buscar término (ej. VIN, PDI)..."
-            className="w-full pl-10 pr-4 py-2.5 bg-white/10 border border-white/20 rounded-2xl text-xs text-white placeholder-blue-200/60 focus:outline-hidden focus:ring-2 focus:ring-white/40 backdrop-blur-md"
-          />
+          {/* Buscador de Término */}
+          <div className="relative w-full md:w-80 flex overflow-hidden rounded-xl border border-[#a0a3aa] bg-white p-1 shadow-[0_6px_20px_rgba(14,71,104,0.06)] self-start md:self-auto shrink-0">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Buscar término (ej. VIN, PDI)..."
+              className="min-w-0 flex-1 bg-transparent px-3 text-xs sm:text-sm text-[#001e50] outline-none placeholder:text-slate-400"
+            />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#0040c4] text-white">
+              <Search className="h-4 w-4" />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Category Pills */}
-      <div className="flex overflow-x-auto pb-1 gap-1.5 scrollbar-thin">
+      {/* Categorías en Píldoras */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
         {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => setSelectedCategory(cat)}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
+            className={`px-4 py-2 rounded-full text-xs font-semibold transition-all shrink-0 cursor-pointer border ${
               selectedCategory === cat
-                ? 'bg-blue-700 text-white shadow-xs'
-                : 'bg-white/80 border border-slate-200 text-slate-700 hover:bg-slate-100'
+                ? 'bg-[#001e50] text-white border-[#001e50] shadow-sm'
+                : 'bg-white border-slate-200 text-slate-600 hover:border-[#a0a3aa]'
             }`}
           >
             {cat}
@@ -151,39 +155,39 @@ export const DictionaryView: React.FC<DictionaryViewProps> = ({
         ))}
       </div>
 
-      {/* Terms Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+      {/* Grilla de Términos */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {filteredTerms.map((item) => (
           <div
             key={item.id}
-            className="bg-white/90 backdrop-blur-md border border-slate-200/80 hover:border-purple-300 rounded-3xl p-4 shadow-xs transition-all flex flex-col justify-between group"
+            className="bg-white border border-slate-200/80 hover:border-[#a0a3aa] rounded-2xl p-5 shadow-[0_5px_18px_rgba(23,59,87,0.05)] hover:shadow-[0_12px_28px_rgba(23,97,137,0.1)] hover:-translate-y-1 transition-all flex flex-col justify-between group"
           >
-            <div className="space-y-2.5">
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className={`text-[10px] font-black px-2 py-0.5 rounded-md border ${item.pastelBadge}`}>
+                <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-[#ece5db] text-slate-600 border border-slate-200">
                   {item.category}
                 </span>
               </div>
 
               <div>
-                <h3 className="text-sm font-black text-slate-900 group-hover:text-purple-900 transition-colors">
+                <h3 className="text-base font-semibold text-[#001e50] group-hover:text-[#0040c4] transition-colors">
                   {item.term}
                 </h3>
-                <p className="text-[11px] text-slate-600 mt-1 leading-relaxed">{item.simpleDefinition}</p>
+                <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">{item.simpleDefinition}</p>
               </div>
 
-              <div className="bg-slate-50/80 rounded-2xl p-2.5 border border-slate-200/70 text-[10px] text-slate-500 italic">
-                💡 {item.example}
+              <div className="bg-[#ece5db] rounded-xl p-3 border border-slate-100 text-xs text-slate-600 leading-relaxed">
+                💡 <span className="font-medium text-[#001e50]">Ejemplo:</span> {item.example}
               </div>
             </div>
 
-            <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between">
+            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
               <button
                 onClick={() => onOpenAssistant(`¿Qué significa ${item.term}?`)}
-                className="text-[11px] font-bold text-purple-700 hover:text-purple-900 flex items-center space-x-1 cursor-pointer"
+                className="text-xs font-semibold text-[#0040c4] hover:underline flex items-center gap-1 cursor-pointer"
               >
-                <span>Preguntar al asistente</span>
-                <ChevronRight className="w-3 h-3" />
+                <span>Consultar con el asistente</span>
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>

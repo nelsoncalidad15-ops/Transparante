@@ -1,11 +1,4 @@
-export type ProcessStageId =
-  | 'cierre'
-  | 'facturacion'
-  | 'gestoria'
-  | 'patentamiento'
-  | 'preparacion'
-  | 'turno'
-  | 'entrega';
+export type ProcessStageId = string;
 
 export interface ProcessStage {
   id: ProcessStageId;
@@ -20,6 +13,7 @@ export interface ProcessStage {
   nextStep: string;
   iconName: string;
   category: string;
+  active?: boolean;
 }
 
 export type ContentCategory =
@@ -147,4 +141,13 @@ export interface StageTiming {
   warningDays: number;
   limitDays: number;
   message: string;
+}
+
+export interface SiteText {
+  key: string;
+  section: string;
+  label: string;
+  value: string;
+  description: string;
+  active: boolean;
 }

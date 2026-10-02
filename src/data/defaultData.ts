@@ -6,23 +6,39 @@ import {
   UncertaintyTopic,
   UnassistedSearch,
   QualityKPIs,
+  SiteText,
 } from '../types';
+
+export const INITIAL_SITE_TEXTS: SiteText[] = [
+  { key: 'hero_eyebrow', section: 'Inicio', label: 'Antetítulo principal', value: 'Autosol Jujuy', description: 'Texto pequeño sobre el título principal.', active: true },
+  { key: 'hero_title', section: 'Inicio', label: 'Título principal', value: 'Tu próximo camino empieza acá.', description: 'Título grande de portada.', active: true },
+  { key: 'hero_description', section: 'Inicio', label: 'Descripción principal', value: 'Información clara sobre definiciones, trámites y cada etapa para acompañarte durante la compra de tu próximo 0km.', description: 'Bajada de portada.', active: true },
+  { key: 'hero_scroll', section: 'Inicio', label: 'Acceso a información', value: 'Descubrí más', description: 'Texto para bajar a las opciones.', active: true },
+  { key: 'information_eyebrow', section: 'Inicio', label: 'Antetítulo información', value: 'Información clara, en un solo lugar', description: 'Antetítulo del bloque con buscador.', active: true },
+  { key: 'information_title', section: 'Inicio', label: 'Título información', value: 'Entender tu proceso también genera confianza.', description: 'Título del bloque con buscador.', active: true },
+  { key: 'information_description', section: 'Inicio', label: 'Descripción información', value: 'Acompañamos cada etapa de tu compra con información simple, clara y actualizada.', description: 'Bajada del bloque con buscador.', active: true },
+  { key: 'search_placeholder', section: 'Inicio', label: 'Placeholder buscador', value: 'Buscá una duda, un término o una etapa...', description: 'Texto dentro del buscador.', active: true },
+  { key: 'process_eyebrow', section: 'Proceso', label: 'Antetítulo proceso', value: 'Seguimiento transparente', description: 'Antetítulo de la línea de etapas.', active: true },
+  { key: 'process_title', section: 'Proceso', label: 'Título proceso', value: '¿En qué etapa estás?', description: 'Título de la línea de etapas.', active: true },
+  { key: 'process_description', section: 'Proceso', label: 'Descripción proceso', value: 'Elegí una etapa para conocer qué sucede y qué viene después.', description: 'Bajada de la línea de etapas.', active: true },
+  { key: 'whatsapp_message', section: 'Contacto', label: 'Mensaje inicial de WhatsApp', value: 'Hola Autosol, tengo una consulta sobre mi operación.', description: 'Mensaje que recibe el administrativo desde el botón público.', active: true },
+];
 
 export const INITIAL_STAGES: ProcessStage[] = [
   {
     id: 'cierre',
     stepNumber: 1,
-    name: 'Cierre de operación',
-    shortDesc: 'Formalización del boleto de reserva, seña y validación comercial.',
+    name: 'Operación confirmada',
+    shortDesc: 'Confirmación de las condiciones comerciales y el inicio formal de tu operación.',
     definition:
-      'Es el punto de partida formal donde se acuerdan las condiciones comerciales, se firma la solicitud de compra / reserva de la unidad y se define el medio de pago o financiación.',
+      'Es el inicio formal de la operación: se confirman las condiciones comerciales, la documentación disponible y la modalidad de pago. No implica por sí sola que la unidad esté facturada, patentada o lista para entregar.',
     whatHappens: [
       'Firma de solicitud de reserva / boleto de compra.',
       'Definición de modalidad de pago (contado, financiación prendaria, plan de ahorro o entrega de usado).',
       'Asignación inicial del pedido en el sistema comercial del concesionario.',
       'Apertura del legajo digital y recopilación de datos de contacto.',
     ],
-    estimatedTime: '1 a 3 días hábiles',
+    estimatedTime: 'Según validaciones comerciales y documentación',
     timeDisclaimer:
       'Los tiempos dependen de la confirmación de la seña, disponibilidad de cupo de fábrica y firma de la documentación de compra.',
     timeFactors: [
@@ -38,9 +54,9 @@ export const INITIAL_STAGES: ProcessStage[] = [
     id: 'facturacion',
     stepNumber: 2,
     name: 'Facturación',
-    shortDesc: 'Emisión de la factura oficial con chasis y motor asignados.',
+    shortDesc: 'Emisión de la factura oficial e inicio de la gestión administrativa.',
     definition:
-      'Es la etapa en la que se emite la factura legal de la unidad a nombre del titular. En este momento el vehículo queda formalmente individualizado con su número de chasis (VIN) y motor.',
+      'Es la etapa en la que se emite la factura legal de la unidad a nombre del titular y se inicia la preparación del legajo administrativo. Los datos de la unidad y la documentación aplicable se confirman según cada operación.',
     whatHappens: [
       'Emisión formal de la factura fiscal (Factura A o B) con número de chasis y motor.',
       'Generación de certificados de fabricación / importación de la unidad.',
@@ -53,7 +69,7 @@ export const INITIAL_STAGES: ProcessStage[] = [
     timeFactors: [
       'Tiempos de procesamiento administrativo y facturación de la fábrica o terminal.',
       'Completitud del pago del saldo y gastos de entrega convenidos.',
-      'Validación fiscal ante ARCA/AFIP del comprador.',
+      'Validación fiscal y documental que corresponda ante ARCA.',
     ],
     nextStep: 'Gestoría administrativa y preparación de formularios para patentar.',
     iconName: 'ReceiptText',
@@ -72,7 +88,7 @@ export const INITIAL_STAGES: ProcessStage[] = [
       'Gestión y pago de tasas arancelarias, sellados provinciales y aranceles registrales.',
       'Seguimiento administrativo y asignación del turno registral.',
     ],
-    estimatedTime: '7 a 15 días hábiles',
+    estimatedTime: 'Plazo orientativo según legajo y jurisdicción',
     timeDisclaimer:
       'Los tiempos son orientativos y pueden variar según el tipo de operación, jurisdicción del titular, documentación disponible y organismos intervinientes.',
     timeFactors: [
@@ -98,14 +114,14 @@ export const INITIAL_STAGES: ProcessStage[] = [
       'Asignación del número de dominio (chapa patente alfanumérica).',
       'Emisión de Título Digital (CAT) y Cédula de Identificación del Automotor (Cédula Verde).',
     ],
-    estimatedTime: '15 a 30 días hábiles',
+    estimatedTime: 'Sujeto al Registro Seccional y a la documentación',
     timeDisclaimer:
-      'Los plazos del Registro de la Propiedad Automotor dependen exclusivamente de la carga operativa del seccional asignado por el código postal del titular.',
+      'El plazo puede variar según la presentación completa del legajo, el Registro Seccional correspondiente al domicilio o guarda habitual del titular y eventuales observaciones.',
     timeFactors: [
-      'Demoras en turnos o capacidad de procesamiento del Registro Seccional.',
+      'Tiempos de procesamiento o eventuales observaciones del Registro Seccional.',
       'Observaciones administrativas o solicitudes de subsanación documental.',
       'Paros gremiales, asuetos o caídas del sistema central de DNRPA.',
-      'Tiempos de confección y envío físico de las placas metálicas patentes.',
+      'Gestiones provinciales aplicables; por ejemplo, sellos si la radicación corresponde a Jujuy.',
     ],
     nextStep: 'Alistamiento, lavado, colocación de patentes y control de calidad.',
     iconName: 'ShieldCheck',
@@ -126,7 +142,7 @@ export const INITIAL_STAGES: ProcessStage[] = [
     ],
     estimatedTime: '3 a 5 días hábiles',
     timeDisclaimer:
-      'El alistamiento comienza de inmediato cuando el vehículo se encuentra físicamente en concesionario con patentes recibidas.',
+      'El alistamiento se programa según la disponibilidad de la unidad, la documentación y la planificación operativa del concesionario.',
     timeFactors: [
       'Tiempos de arribo del transporte nodriza si la unidad estaba en depósito central.',
       'Complejidad y tiempo de instalación de accesorios adicionales solicitados.',
@@ -139,7 +155,7 @@ export const INITIAL_STAGES: ProcessStage[] = [
   {
     id: 'turno',
     stepNumber: 6,
-    name: 'Coordinación de Turno',
+    name: 'Coordinación de entrega',
     shortDesc: 'Agendamiento personalizado de día y hora en el salón de entregas.',
     definition:
       'Es el momento en el que nuestro equipo de entregas se comunica con el cliente para coordinar fecha, horario y detalles del acto formal de recepción de su 0km.',
@@ -204,9 +220,9 @@ export const INITIAL_ARTICLES: LibraryArticle[] = [
       'Generación del Título Digital de Propiedad del Automotor (CAT).',
       'Emisión de la Cédula Verde y asignación de las placas patentes metálicas.',
     ],
-    estimatedTime: '15 a 30 días hábiles',
+    estimatedTime: 'Plazo sujeto al Registro Seccional y a la documentación completa',
     timeFactors: [
-      'Tiempos y carga de trabajo del Registro Seccional asignado por código postal.',
+      'Tiempos, requisitos y eventuales observaciones del Registro Seccional que corresponda al titular.',
       'Observaciones o solicitudes de rectificación de firmas o constancias de domicilio.',
       'Plazos de fabricación y distribución de placas físicas emitidas por Casa de Moneda / DNRPA.',
       'Feriados, asuetos administrativos o demoras en los sistemas registrales centrales.',
@@ -239,9 +255,9 @@ export const INITIAL_ARTICLES: LibraryArticle[] = [
       'Confección de formularios obligatorios (01, 12, 13D, 59 si aplica).',
       'Solicitud de turno oficial en el Registro Seccional de radicación.',
     ],
-    estimatedTime: '7 a 15 días hábiles',
+    estimatedTime: 'Plazo orientativo según documentación y jurisdicción',
     timeFactors: [
-      'Tiempos de respuesta de organismos de rentas provinciales o AFIP.',
+      'Tiempos de respuesta de organismos de rentas provinciales o ARCA, cuando corresponda.',
       'Disponibilidad del titular para certificar firmas en banco o escribano.',
       'Exenciones especiales (discapacidad, leyes de promoción o diplomáticos).',
     ],
@@ -332,7 +348,7 @@ export const INITIAL_ARTICLES: LibraryArticle[] = [
     shortDesc:
       'Guía completa de papeles, constancias y requisitos para personas físicas y jurídicas.',
     definition:
-      'Para inscribir legalmente un vehículo 0km en Argentina se requiere presentar documentación obligatoria exigida por DNRPA, ARCA/AFIP y el concesionario.',
+      'Para inscribir legalmente un vehículo 0km en Argentina se requiere documentación según el caso, exigida por DNRPA, ARCA, organismos provinciales y el concesionario.',
     whatHappens: [
       'Personas físicas: DNI vigente (frente y dorso), constancia de CUIL/CUIT, justificación de fondos (si supera montos UIF).',
       'Personas jurídicas: Estatuto social, acta de designación de autoridades con mandato vigente, poder legal certificado, CUIT empresa.',
@@ -491,7 +507,7 @@ export const INITIAL_FAQS: FAQItem[] = [
     id: 'faq-4',
     question: '¿Qué es el patentamiento y cuánto puede tardar?',
     answer:
-      'El patentamiento es la inscripción del vehículo en el Registro de la Propiedad Automotor (DNRPA) para obtener el dominio (patente) y la cédula verde. El tiempo orientativo habitual es de 15 a 30 días hábiles, sujeto a los plazos operativos del registro seccional asignado según tu domicilio.',
+      'El patentamiento es la inscripción del vehículo en el Registro de la Propiedad Automotor (DNRPA) para obtener el dominio y la documentación correspondiente. El plazo depende de que el legajo esté completo, del Registro Seccional que corresponda al domicilio o guarda habitual del titular y de eventuales observaciones. Te informaremos el avance de tu operación.',
     category: 'Patentamiento',
     stageId: 'patentamiento',
     relatedArticleSlug: 'que-es-patentamiento',
@@ -677,54 +693,38 @@ export const INITIAL_KPIS: QualityKPIs = {
 export const INITIAL_SHEET_TEMPLATE_INFO = {
   sheetColumns: [
     'id',
-    'categoria',
-    'tipo',
-    'titulo',
-    'definicion',
-    'que_hacemos',
-    'tiempo_orientativo',
-    'factores_que_afectan',
-    'que_sigue',
-    'temas_relacionados',
-    'estado',
-    'responsable',
+    'slug',
+    'title',
+    'category',
+    'type',
+    'shortDesc',
+    'definition',
+    'whatHappens',
+    'estimatedTime',
+    'timeFactors',
+    'whatNext',
+    'relatedTopics',
+    'readTimeMinutes',
+    'status',
+    'lastReview',
+    'responsible',
     'version',
+    'viewsCount',
+    'helpfulCount',
+    'unhelpfulCount',
   ],
   sampleAppsScript: `/**
- * Google Apps Script Web App Endpoint para Autosol Transparente
- * 1. Abrir tu Google Sheet con las columnas de contenidos
- * 2. Ir a Extensiones > Apps Script
- * 3. Pegar este código y hacer clic en Implementar > Nueva Implementación > Aplicación Web (Acceso: Cualquier usuario)
- */
-
-function doGet(e) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Contenidos");
-  const data = sheet.getDataRange().getValues();
-  const headers = data[0];
-  const rows = data.slice(1);
-  
-  const articles = rows.map(row => {
-    let obj = {};
-    headers.forEach((header, index) => {
-      obj[header] = row[index];
-    });
-    return obj;
-  });
-  
-  return ContentService.createTextOutput(JSON.stringify({
-    status: "success",
-    updatedAt: new Date().toISOString(),
-    count: articles.length,
-    articles: articles
-  })).setMimeType(ContentService.MimeType.JSON);
-}
-
-function doPost(e) {
-  // Manejo de sincronización bidireccional y registro de feedback
-  return ContentService.createTextOutput(JSON.stringify({
-    status: "received",
-    message: "Contenido recibido correctamente"
-  })).setMimeType(ContentService.MimeType.JSON);
-}
-`,
+ * Google Apps Script Web App para Autosol Transparente
+ * Ubicación del archivo en el repositorio: apps-script/Code.gs
+ * 
+ * Configuración en Apps Script:
+ * 1. Project Settings > Script Properties:
+ *    - SHEET_ID: ID de tu Google Sheet
+ *    - BACKEND_SHARED_SECRET: Token secreto compartido con Vercel
+ * 2. Implementar > Nueva implementación > Tipo: Aplicación web
+ *    - Ejecutar como: "Yo" (tu usuario)
+ *    - Quién tiene acceso: "Cualquier usuario"
+ * 
+ * Ver instrucciones completas en BACKEND_SETUP.md
+ */`,
 };
