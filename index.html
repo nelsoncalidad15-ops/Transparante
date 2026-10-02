@@ -11,6 +11,59 @@
     <meta property="og:type" content="website" />
     <meta property="og:image" content="/images/banners/5-WEB.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="%BASE_URL%fonts/VWHeadOffice-Bold.ttf" as="font" type="font/ttf" crossorigin="anonymous" />
+    <link rel="preload" href="%BASE_URL%fonts/VWTextOffice-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous" />
+    <style>
+      @font-face {
+        font-family: 'VW Head';
+        src: url('%BASE_URL%fonts/VWHeadOffice-Bold.ttf') format('truetype');
+        font-weight: 700 900;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'VW Head';
+        src: url('%BASE_URL%fonts/VWHeadOffice-Regular.ttf') format('truetype');
+        font-weight: 300 600;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'VW Text';
+        src: url('%BASE_URL%fonts/VWTextOffice-Regular.ttf') format('truetype');
+        font-weight: 300 600;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'VW Text';
+        src: url('%BASE_URL%fonts/VWTextOffice-Bold.ttf') format('truetype');
+        font-weight: 700 900;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'VW-Head';
+        src: url('%BASE_URL%fonts/VWHeadOffice-Bold.ttf') format('truetype');
+        font-weight: 700 900;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'VW-Light';
+        src: url('%BASE_URL%fonts/VWHeadOffice-Regular.ttf') format('truetype');
+        font-weight: 300 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'VW-Regular';
+        src: url('%BASE_URL%fonts/VWTextOffice-Regular.ttf') format('truetype');
+        font-weight: 300 600;
+        font-style: normal;
+        font-display: swap;
+      }
+    </style>
   </head>
   <body class="antialiased bg-white text-slate-900 selection:bg-blue-600 selection:text-white">
     <div id="root"></div>
