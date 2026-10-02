@@ -47,6 +47,7 @@ interface DataContextType {
   // Actions
   getStageById: (id: ProcessStageId) => ProcessStage | undefined;
   updateStages: (stages: ProcessStage[]) => void;
+  updateFaqs: (faqs: FAQItem[]) => void;
   getText: (key: string, fallback: string) => string;
   updateSiteTexts: (texts: SiteText[]) => void;
   getArticleBySlug: (slug: string) => LibraryArticle | undefined;
@@ -219,6 +220,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const getStageById = (id: ProcessStageId) => stages.find((s) => s.id === id);
 
   const updateStages = (updatedStages: ProcessStage[]) => setStages(normalizeStages(updatedStages));
+  const updateFaqs = (updatedFaqs: FAQItem[]) => setFaqs(updatedFaqs);
   const getText = (key: string, fallback: string) => siteTexts.find((text) => text.key === key && text.active)?.value || fallback;
   const updateSiteTexts = (texts: SiteText[]) => setSiteTexts(texts);
 
@@ -573,6 +575,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         sheetConfig,
         getStageById,
         updateStages,
+        updateFaqs,
         getText,
         updateSiteTexts,
         getArticleBySlug,

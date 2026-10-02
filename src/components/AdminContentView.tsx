@@ -23,10 +23,13 @@ import { LibraryArticle, ContentCategory, ContentType } from '../types';
 import { INITIAL_SHEET_TEMPLATE_INFO } from '../data/defaultData';
 import { StageAdminView } from './StageAdminView';
 import { TextAdminView } from './TextAdminView';
+import { FaqAdminView } from './FaqAdminView';
+import { ValidationSummaryView } from './ValidationSummaryView';
 
 export const AdminContentView: React.FC = () => {
   const {
     articles,
+    faqs,
     addArticle,
     updateArticle,
     deleteArticle,
@@ -39,7 +42,7 @@ export const AdminContentView: React.FC = () => {
     resetToDefaults,
   } = useData();
 
-  const [activeSubTab, setActiveSubTab] = useState<'table' | 'stages' | 'texts' | 'sheets' | 'export'>('table');
+  const [activeSubTab, setActiveSubTab] = useState<'table' | 'stages' | 'faqs' | 'texts' | 'validation' | 'sheets' | 'export'>('table');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('Todo');
   const [editingArticle, setEditingArticle] = useState<LibraryArticle | null>(null);
@@ -241,66 +244,90 @@ export const AdminContentView: React.FC = () => {
       </div>
 
       {/* Sub Tabs */}
-      <div className="flex items-center space-x-2 border-b border-slate-200 pb-2">
+      <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-3">
         <button
           onClick={() => setActiveSubTab('table')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-2 ${
+          className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-1.5 cursor-pointer ${
             activeSubTab === 'table'
-              ? 'bg-blue-600 text-white shadow-xs'
+              ? 'bg-[#001e50] text-white shadow-xs'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          <FileEdit className="w-4 h-4" />
-          <span>Gestión de Contenidos ({articles.length})</span>
+          <FileEdit className="w-3.5 h-3.5" />
+          <span>Guías y Artículos ({articles.length})</span>
         </button>
 
         <button
           onClick={() => setActiveSubTab('stages')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-2 ${
-            activeSubTab === 'stages' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
+          className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-1.5 cursor-pointer ${
+            activeSubTab === 'stages' ? 'bg-[#001e50] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          <Settings className="w-4 h-4" />
-          <span>Etapas del cliente</span>
+          <Settings className="w-3.5 h-3.5" />
+          <span>Etapas y Plazos (7)</span>
+        </button>
+
+        <button
+          onClick={() => setActiveSubTab('faqs')}
+          className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-1.5 cursor-pointer ${
+            activeSubTab === 'faqs' ? 'bg-[#001e50] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+          <span>Preguntas Frecuentes ({faqs.length})</span>
         </button>
 
         <button
           onClick={() => setActiveSubTab('texts')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-2 ${
-            activeSubTab === 'texts' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
+          className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-1.5 cursor-pointer ${
+            activeSubTab === 'texts' ? 'bg-[#001e50] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          <FileEdit className="w-4 h-4" />
+          <FileEdit className="w-3.5 h-3.5" />
           <span>Textos del sitio</span>
         </button>
 
         <button
+          onClick={() => setActiveSubTab('validation')}
+          className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-1.5 border border-blue-200 cursor-pointer ${
+            activeSubTab === 'validation'
+              ? 'bg-[#0040c4] text-white shadow-xs'
+              : 'bg-blue-50/80 text-blue-900 hover:bg-blue-100'
+          }`}
+        >
+          <Check className="w-3.5 h-3.5 text-emerald-500" />
+          <span>📋 Ficha de Validación Integral</span>
+        </button>
+
+        <button
           onClick={() => setActiveSubTab('sheets')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-2 ${
+          className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-1.5 cursor-pointer ${
             activeSubTab === 'sheets'
-              ? 'bg-blue-600 text-white shadow-xs'
+              ? 'bg-[#001e50] text-white shadow-xs'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          <FileSpreadsheet className="w-4 h-4 text-emerald-500" />
-          <span>Google Sheets & Apps Script Sync</span>
+          <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-500" />
+          <span>Google Sheets Sync</span>
         </button>
 
         <button
           onClick={() => setActiveSubTab('export')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-2 ${
+          className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-1.5 cursor-pointer ${
             activeSubTab === 'export'
-              ? 'bg-blue-600 text-white shadow-xs'
+              ? 'bg-[#001e50] text-white shadow-xs'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          <Download className="w-4 h-4" />
-          <span>Exportar / Importar Datos</span>
+          <Download className="w-3.5 h-3.5" />
+          <span>Exportar</span>
         </button>
       </div>
 
       {activeSubTab === 'stages' && <StageAdminView />}
       {activeSubTab === 'texts' && <TextAdminView />}
+      {activeSubTab === 'faqs' && <FaqAdminView />}
+      {activeSubTab === 'validation' && <ValidationSummaryView />}
 
       {/* TAB 1: Content Table */}
       {activeSubTab === 'table' && (
