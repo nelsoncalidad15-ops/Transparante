@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { DataProvider, useData } from './context/DataContext';
 import { Navbar, ActiveTab } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
-import { InfographicModelView } from './components/InfographicModelView';
 import { ProcessTimeline } from './components/ProcessTimeline';
 import { DocumentsView } from './components/DocumentsView';
 import { TimesSection } from './components/TimesSection';
@@ -118,22 +117,11 @@ function AppContent() {
           />
         )}
 
-
-        {/* VIEW 2: MAPA DEL MODELO (Diagrama oficial de 5 columnas del modelo) */}
-        {activeTab === 'infographic' && (
-          <InfographicModelView
-            onNavigate={handleNavigate}
-            onOpenAssistant={handleOpenAssistant}
-            onOpenTracker={() => setIsTrackerModalOpen(true)}
-          />
-        )}
-
-        {/* VIEW 3: MI PROCESO (Línea de tiempo de 7 etapas) */}
+        {/* VIEW 2: MI PROCESO (Línea de tiempo de 7 etapas) */}
         {activeTab === 'process' && (
           <ProcessTimeline
             selectedStageId={selectedStageId}
             onSelectArticle={handleNavigateToArticle}
-            onOpenTracker={() => setIsTrackerModalOpen(true)}
           />
         )}
 
@@ -423,17 +411,17 @@ function AppContent() {
                 <button onClick={() => handleNavigate('process')} className="transition-colors hover:text-white">Mi proceso de compra</button>
                 <button onClick={() => handleNavigate('financing')} className="transition-colors hover:text-white">Financiación</button>
                 <button onClick={() => handleNavigate('delivery')} className="transition-colors hover:text-white">Preparación y entrega</button>
-                <button onClick={() => handleNavigate('infographic')} className="transition-colors hover:text-white">Mapa del modelo</button>
+                <button onClick={() => handleNavigate('faq')} className="transition-colors hover:text-white">Preguntas frecuentes</button>
               </div>
             </div>
 
             <div>
               <h4 className="text-xs font-bold tracking-[0.14em] text-white uppercase">Información</h4>
               <div className="mt-4 flex flex-col items-start gap-2.5 text-sm text-blue-100">
-                <button onClick={() => handleNavigate('documents')} className="transition-colors hover:text-white">Documentación</button>
+                <button onClick={() => handleNavigate('documents')} className="transition-colors hover:text-white">Documentación y gestoría</button>
                 <button onClick={() => handleNavigate('times')} className="transition-colors hover:text-white">Tiempos orientativos</button>
                 <button onClick={() => handleNavigate('dictionary')} className="transition-colors hover:text-white">Diccionario del comprador</button>
-                <button onClick={() => handleNavigate('faq')} className="transition-colors hover:text-white">Preguntas frecuentes</button>
+                <button onClick={() => handleNavigate('assistant')} className="transition-colors hover:text-white">Bot de consulta</button>
               </div>
             </div>
 
@@ -476,8 +464,6 @@ function AppContent() {
             <div className="flex flex-wrap gap-x-5 gap-y-2">
               <a href="https://autosol.com.ar/legales/cookies" target="_blank" rel="noreferrer" className="hover:text-white">Política de cookies</a>
               <a href="https://www.volkswagen.com.ar/es/informaciones-legales/terminos-y-condiciones.html" target="_blank" rel="noreferrer" className="hover:text-white">Términos y condiciones</a>
-              <button onClick={() => setActiveTab('quality-dashboard')} className="hover:text-white">Calidad</button>
-              <button onClick={() => setActiveTab('admin-panel')} className="hover:text-white">Administración</button>
             </div>
           </div>
         </div>

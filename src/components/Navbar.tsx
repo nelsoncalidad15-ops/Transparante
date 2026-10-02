@@ -14,7 +14,6 @@ import {
 
 export type ActiveTab =
   | 'home'
-  | 'infographic'
   | 'process'
   | 'documents'
   | 'times'
@@ -46,7 +45,6 @@ const navigation: { id: ActiveTab; label: string }[] = [
   { id: 'financing', label: 'Financiación y pagos' },
   { id: 'dictionary', label: 'Diccionario del comprador' },
   { id: 'faq', label: 'Preguntas frecuentes' },
-  { id: 'infographic', label: 'Mapa del modelo' },
 ];
 
 export const Navbar: React.FC<NavbarProps> = ({
