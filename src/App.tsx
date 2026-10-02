@@ -14,8 +14,8 @@ import { ArticleDetail } from './components/ArticleDetail';
 import { VirtualAssistant } from './components/VirtualAssistant';
 import { SearchResultsView } from './components/SearchResultsView';
 import { FAQSection } from './components/FAQSection';
-import { PersonalizedTrackerModal } from './components/PersonalizedTrackerModal';
 import { QualityDashboardView } from './components/QualityDashboardView';
+
 import { AdminContentView } from './components/AdminContentView';
 import { ClientAlertDashboard } from './components/ClientAlertDashboard';
 import { AutosolLogo } from './components/AutosolLogo';
@@ -45,7 +45,6 @@ function AppContent() {
   const [searchQuery, setSearchQuery] = useState<string>('gestoría');
   const [libraryInitialCategory, setLibraryInitialCategory] = useState<string | undefined>(undefined);
   const [assistantInitialQuery, setAssistantInitialQuery] = useState<string | undefined>(undefined);
-  const [isTrackerModalOpen, setIsTrackerModalOpen] = useState(false);
   const [isFloatingAssistantOpen, setIsFloatingAssistantOpen] = useState(false);
 
   // Navigation Helpers
@@ -92,21 +91,20 @@ function AppContent() {
           if (tab === 'library') setLibraryInitialCategory(undefined);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
-        onOpenTrackerModal={() => setIsTrackerModalOpen(true)}
         onOpenCaseDashboard={() => setActiveTab('client-alerts')}
       />}
 
       {/* Main Container */}
-      <main className={activeTab === 'client-alerts' ? 'flex-1 w-full' : activeTab === 'home' ? 'flex-1' : 'flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10'}>
+      <main className={activeTab === 'client-alerts' ? 'flex-1 w-full pt-16' : activeTab === 'home' ? 'flex-1 w-full' : 'flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-12'}>
         {/* VIEW 1: HOME (Centro Digital del Cliente) */}
         {activeTab === 'home' && (
           <HeroSection
             onSelectStage={handleSelectStage}
             onSearchSubmit={handleSearchSubmit}
-            onOpenTrackerModal={() => setIsTrackerModalOpen(true)}
             onNavigate={handleNavigate}
           />
         )}
+
 
         {/* VIEW 2: MAPA DEL MODELO (Diagrama oficial de 5 columnas del modelo) */}
         {activeTab === 'infographic' && (
@@ -297,21 +295,13 @@ function AppContent() {
                   <Sparkles className="w-3 h-3 text-sky-300 inline" />
                 </div>
                 <div className="text-[10px] text-sky-200 font-medium leading-tight mt-0.5">
-                  Consultas 24/7 • Rastrear 0km
+                  Consultas 24/7 • Asistente oficial
                 </div>
               </div>
             </button>
           )}
         </div>
       )}
-
-      {/* Personalized Unit Tracker Modal */}
-      <PersonalizedTrackerModal
-        isOpen={isTrackerModalOpen}
-        onClose={() => setIsTrackerModalOpen(false)}
-        onNavigateToStage={handleSelectStage}
-        onOpenAssistant={handleOpenAssistant}
-      />
 
       {/* Platform Footer with VW | Autosol Branding */}
       <footer className="bg-[#001e50] text-white">
@@ -320,8 +310,8 @@ function AppContent() {
             <div>
               <AutosolLogo size="lg" variant="white" showSubtitle={false} />
               <p className="mt-4 max-w-sm text-sm leading-relaxed text-blue-100">Información clara para acompañarte en cada decisión de compra y durante todo el proceso de entrega.</p>
-              <button onClick={() => setIsTrackerModalOpen(true)} className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#008cff]/60 px-4 py-2 text-sm font-semibold text-[#008cff] transition-colors hover:bg-white hover:text-[#001e50]"><UserCheck className="h-4 w-4" /> Seguir mi operación</button>
             </div>
+
 
             <div className="grid grid-cols-2 gap-8 border-t border-white/15 pt-7 lg:border-t-0 lg:pt-1">
               <div>

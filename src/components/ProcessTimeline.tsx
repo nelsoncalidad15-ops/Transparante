@@ -25,7 +25,6 @@ interface ProcessTimelineProps {
   onNavigateToArticle?: (slug: string) => void;
   onSelectArticle?: (slug: string) => void;
   onOpenAssistant?: (initialQuery?: string) => void;
-  onOpenTracker?: () => void;
 }
 
 export const ProcessTimeline: React.FC<ProcessTimelineProps> = ({
@@ -34,8 +33,8 @@ export const ProcessTimeline: React.FC<ProcessTimelineProps> = ({
   onNavigateToArticle,
   onSelectArticle,
   onOpenAssistant,
-  onOpenTracker,
 }) => {
+
   const { stages } = useData();
   const [internalStageId, setInternalStageId] = React.useState<ProcessStageId>(
     selectedStageId || stages[0]?.id || 'cierre'
@@ -111,18 +110,9 @@ export const ProcessTimeline: React.FC<ProcessTimelineProps> = ({
               Cada etapa explicada con total claridad: qué significa, qué documentación se tramita y los plazos estimados para acompañar tu 0km.
             </p>
           </div>
-
-          {onOpenTracker && (
-            <button
-              onClick={onOpenTracker}
-              className="inline-flex items-center justify-center gap-2.5 rounded-full bg-[#001e50] px-6 py-3.5 text-xs sm:text-sm font-bold text-white transition-all hover:scale-[1.02] hover:bg-[#0040c4] shadow-sm cursor-pointer self-start md:self-auto shrink-0"
-            >
-              <UserCheck className="h-4 w-4" />
-              <span>Consultar mi estado actual</span>
-            </button>
-          )}
         </div>
       </div>
+
 
       {/* Stepper Horizontal (Minimalista, amplio, sin textos cortados) */}
       <div className="rounded-3xl bg-white border border-slate-200/80 p-6 sm:p-8 shadow-[0_5px_20px_rgba(7,30,58,0.04)]">

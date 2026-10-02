@@ -32,7 +32,7 @@ interface VirtualAssistantProps {
   initialQuery?: string;
   onNavigateToArticle: (slug: string) => void;
   onNavigateToStage: (stageId: string) => void;
-  onOpenTracker: () => void;
+  onOpenTracker?: () => void;
   isFloatingModal?: boolean;
   onCloseModal?: () => void;
 }
@@ -41,10 +41,10 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
   initialQuery,
   onNavigateToArticle,
   onNavigateToStage,
-  onOpenTracker,
   isFloatingModal = false,
   onCloseModal,
 }) => {
+
   const { articles, stages, faqs, searchAll, recordSearchQuery } = useData();
   const [inputMessage, setInputMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([
@@ -327,20 +327,8 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
                       </button>
                     </div>
                   )}
-
-                  {msg.isTrackingPrompt && (
-                    <div className="pt-2.5 mt-2.5 border-t border-slate-100">
-                      <button
-                        onClick={onOpenTracker}
-                        className="inline-flex items-center space-x-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold px-3.5 py-2 rounded-xl text-xs shadow-xs transition-colors"
-                      >
-                        <UserCheck className="w-3.5 h-3.5" />
-                        <span>Abrir Mi Operación</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  )}
                 </div>
+
 
                 {/* Micro Suggestions under bot message */}
                 {msg.suggestions && msg.suggestions.length > 0 && (

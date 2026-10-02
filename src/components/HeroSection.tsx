@@ -24,7 +24,7 @@ interface HeroSectionProps {
   onSelectStage: (stageId: string) => void;
   onSearchSubmit: (query: string) => void;
   onNavigate: (tab: any) => void;
-  onOpenTrackerModal: () => void;
+  onOpenTrackerModal?: () => void;
 }
 
 const BANNERS = [
@@ -52,20 +52,14 @@ const BANNERS = [
     imageXs: `${import.meta.env.BASE_URL}images/banners/1-WEB_xs.jpg`,
     alt: 'Volkswagen Amarok V6',
   },
-  {
-    id: 'polo',
-    image: `${import.meta.env.BASE_URL}images/banners/4-WEB.jpg`,
-    imageXs: `${import.meta.env.BASE_URL}images/banners/4-WEB_xs.jpg`,
-    alt: 'Volkswagen Polo Track',
-  },
 ];
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onSelectStage,
   onSearchSubmit,
   onNavigate,
-  onOpenTrackerModal,
 }) => {
+
   const { stages, getText } = useData();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -207,18 +201,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
       </section>
 
-      {/* 2. INFORMATION & SEARCH SECTION (Dark typography on warm light background) */}
-      <section className="relative overflow-hidden bg-[#f7f5f0] py-12 sm:py-16 border-b border-slate-200">
-        <div className="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
+      {/* 2. INFORMATION & SEARCH SECTION (Expansive wide container, dark VW typography) */}
+      <section className="relative overflow-hidden bg-[#f7f5f0] py-14 sm:py-20 border-b border-slate-200">
+        <div className="mx-auto w-full max-w-[1720px] px-4 sm:px-8 lg:px-12 xl:px-16">
           {/* Section Header with Black / Deep Navy Typography */}
-          <div className="text-center max-w-3xl mx-auto">
+          <div className="text-center max-w-4xl mx-auto">
             <p className="text-xs sm:text-sm font-bold tracking-[0.16em] text-[#0040c4] uppercase">
               {getText('information_eyebrow', 'Información clara, en un solo lugar')}
             </p>
             <h1 className="mt-2 text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.04em] text-[#001e50]">
               {getText('information_title', 'Entender tu proceso también genera confianza.')}
             </h1>
-            <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
+            <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
               {getText(
                 'information_description',
                 'Acompañamos cada etapa de tu compra con información simple, clara y actualizada.'
@@ -231,21 +225,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 event.preventDefault();
                 if (searchQuery.trim()) onSearchSubmit(searchQuery.trim());
               }}
-              className="mt-6 flex overflow-hidden rounded-xl border border-[#a0a3aa] bg-white p-1.5 shadow-[0_8px_24px_rgba(14,71,104,0.08)] max-w-2xl mx-auto"
+              className="mt-8 flex overflow-hidden rounded-xl border border-[#a0a3aa] bg-white p-1.5 shadow-[0_8px_24px_rgba(0,30,80,0.06)] max-w-3xl mx-auto"
             >
               <input
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
                 placeholder={getText(
                   'search_placeholder',
-                  'Buscá una duda, un término o una etapa (ej: patentamiento, gestoría)...'
+                  'Buscá una duda, un término o una etapa (ej: patentamiento, gestoría, tiempos)...'
                 )}
-                className="min-w-0 flex-1 bg-transparent px-3 text-xs sm:text-sm text-[#001e50] outline-none placeholder:text-slate-400 font-medium"
+                className="min-w-0 flex-1 bg-transparent px-4 text-sm sm:text-base text-[#001e50] outline-none placeholder:text-slate-400 font-medium"
                 aria-label="Buscar información"
               />
               <button
                 type="submit"
-                className="flex h-10 w-11 sm:w-24 items-center justify-center gap-1.5 rounded-lg bg-[#001e50] text-white transition-colors hover:bg-[#0040c4] cursor-pointer"
+                className="flex h-11 px-5 items-center justify-center gap-2 rounded-lg bg-[#001e50] text-white transition-colors hover:bg-[#0040c4] cursor-pointer"
                 aria-label="Buscar"
               >
                 <Search className="h-4 w-4" />
@@ -254,7 +248,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </form>
 
             {/* Search Suggestions */}
-            <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5 text-xs text-slate-500">
+            <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2 text-xs text-slate-500">
               <span className="font-semibold text-slate-400">Temas frecuentes:</span>
               {['patentamiento', 'gestoría', 'fecha de entrega', 'documentación', 'chasis'].map(
                 (term) => (
@@ -262,7 +256,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     type="button"
                     onClick={() => onSearchSubmit(term)}
                     key={term}
-                    className="rounded-full bg-white border border-slate-200 px-3 py-0.5 text-xs text-slate-700 hover:border-[#001e50] hover:text-[#001e50] transition-colors cursor-pointer"
+                    className="rounded-full bg-white border border-slate-200 px-3.5 py-1 text-xs text-slate-700 hover:border-[#001e50] hover:text-[#001e50] transition-colors cursor-pointer"
                   >
                     {term}
                   </button>
@@ -271,29 +265,29 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
           </div>
 
-          {/* 6 Key Service Cards */}
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          {/* 6 Key Service Cards: Wide full-width layout */}
+          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {cards.map((card) => {
               const Icon = card.icon;
               return (
                 <button
                   key={card.title}
                   onClick={card.action}
-                  className="group rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-[0_4px_16px_rgba(0,30,80,0.04)] transition-all hover:-translate-y-1 hover:border-[#0040c4] hover:shadow-[0_12px_28px_rgba(0,30,80,0.08)] cursor-pointer flex flex-col justify-between"
+                  className="group rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-[0_4px_16px_rgba(0,30,80,0.04)] transition-all hover:-translate-y-1.5 hover:border-[#0040c4] hover:shadow-[0_14px_32px_rgba(0,30,80,0.09)] cursor-pointer flex flex-col justify-between"
                 >
                   <div>
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ece5db] text-[#0040c4] transition-colors group-hover:bg-[#001e50] group-hover:text-white">
-                      <Icon className="h-5 w-5" strokeWidth={1.8} />
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#ece5db] text-[#0040c4] transition-colors group-hover:bg-[#001e50] group-hover:text-white">
+                      <Icon className="h-6 w-6" strokeWidth={1.8} />
                     </div>
-                    <h2 className="mt-3 text-sm font-bold leading-snug text-[#001e50] group-hover:text-[#0040c4] transition-colors">
+                    <h2 className="mt-4 text-base font-bold leading-snug text-[#001e50] group-hover:text-[#0040c4] transition-colors">
                       {card.title}
                     </h2>
-                    <p className="mt-1.5 text-xs leading-relaxed text-slate-600">
+                    <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-600">
                       {card.text}
                     </p>
                   </div>
-                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center text-xs font-semibold text-[#0040c4]">
-                    <span>Consultar</span>
+                  <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center text-xs font-semibold text-[#0040c4]">
+                    <span>Consultar guía</span>
                     <ArrowRight className="ml-1 h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                   </div>
                 </button>
@@ -303,21 +297,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
       </section>
 
-      {/* 3. INTERACTIVE PROCESS TIMELINE: 7 STEPS */}
+      {/* 3. INTERACTIVE PROCESS TIMELINE: 7 STEPS (Wide full-screen container) */}
       <section className="bg-white py-16 sm:py-24 border-b border-slate-200">
-        <div className="mx-auto max-w-[1360px] px-5 sm:px-8 lg:px-12">
+        <div className="mx-auto w-full max-w-[1720px] px-4 sm:px-8 lg:px-12 xl:px-16">
           <div className="flex flex-wrap items-end justify-between gap-5">
             <div>
               <p className="text-xs sm:text-sm font-bold tracking-[0.14em] text-[#0040c4] uppercase">
-                {getText('process_eyebrow', 'Seguimiento transparente')}
+                {getText('process_eyebrow', 'Etapas del proceso')}
               </p>
               <h2 className="mt-2 text-3xl sm:text-4xl font-semibold tracking-[-0.04em] text-[#001e50]">
-                {getText('process_title', '¿En qué etapa estás?')}
+                {getText('process_title', '¿En qué etapa de tu compra estás?')}
               </h2>
-              <p className="mt-2 text-sm text-slate-600">
+              <p className="mt-2 text-sm text-slate-600 max-w-2xl">
                 {getText(
                   'process_description',
-                  'Elegí una etapa para conocer qué sucede y qué viene después.'
+                  'Elegí una etapa para conocer qué sucede, qué documentación interviene y qué viene después.'
                 )}
               </p>
             </div>
@@ -330,16 +324,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </button>
           </div>
 
-          {/* Horizontal Stage Stepper */}
+          {/* Stepper spanning the full wide screen */}
           <div className="mt-12 overflow-x-auto pb-4 scrollbar-thin">
-            <div className="flex min-w-[880px] items-start justify-between px-2">
+            <div className="flex min-w-[960px] items-start justify-between px-2">
               {stages.map((stage, index) => {
                 const Icon = stageIcons[stage.iconName] || CarFront;
                 return (
                   <React.Fragment key={stage.id}>
                     <button
                       onClick={() => onSelectStage(stage.id)}
-                      className="group flex w-28 shrink-0 flex-col items-center text-center cursor-pointer"
+                      className="group flex w-32 shrink-0 flex-col items-center text-center cursor-pointer"
                       aria-label={`Ver etapa ${stage.name}`}
                     >
                       <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#ece5db] text-[#001e50] shadow-sm transition-all group-hover:scale-110 group-hover:bg-[#001e50] group-hover:text-white">
@@ -353,7 +347,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                       </span>
                     </button>
                     {index < stages.length - 1 && (
-                      <span className="mt-8 flex h-px min-w-6 flex-1 items-center justify-center bg-[#d0d1d5]">
+                      <span className="mt-8 flex h-px min-w-8 flex-1 items-center justify-center bg-[#d0d1d5]">
                         <ArrowRight className="h-4 w-4 translate-x-1/2 text-[#a0a3aa]" />
                       </span>
                     )}
@@ -365,73 +359,72 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
       </section>
 
-      {/* 4. TRACKER CTA BANNER */}
-      <section className="bg-[#ece5db] py-14 sm:py-16">
-        <div className="mx-auto grid max-w-[1280px] gap-8 px-5 sm:px-8 md:grid-cols-[1fr_auto] md:items-center lg:px-12">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-bold text-[#0040c4] uppercase tracking-wider">
-              <ShieldCheck className="h-4 w-4 text-[#0040c4]" />
-              <span>Acompañamiento transparente</span>
+      {/* 4. UNIFIED CONCLUDING CARDS (Replaces all stacked horizontal stripes) */}
+      <section className="bg-[#f8f7f4] py-14 sm:py-20">
+        <div className="mx-auto w-full max-w-[1720px] px-4 sm:px-8 lg:px-12 xl:px-16">
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Card 1: Preguntas Frecuentes */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-7 sm:p-9 shadow-sm flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-2 text-xs font-bold text-[#0040c4] uppercase tracking-wider">
+                  <CircleHelp className="h-4 w-4 text-[#0040c4]" />
+                  <span>Centro de ayuda</span>
+                </div>
+                <h3 className="mt-3 text-2xl font-bold text-[#001e50]">
+                  ¿Tenés dudas sobre tu trámite?
+                </h3>
+                <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+                  Consultá nuestras preguntas frecuentes para encontrar respuestas inmediatas sobre patentamiento, requisitos de gestoría, plazos estimados y documentación obligatoria.
+                </p>
+              </div>
+              <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                <button
+                  onClick={() => onNavigate('faq')}
+                  className="inline-flex items-center gap-2 rounded-full bg-[#001e50] px-5 py-2.5 text-xs sm:text-sm font-bold text-white transition-all hover:bg-[#0040c4] cursor-pointer"
+                >
+                  <span>Ver preguntas frecuentes</span>
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => onNavigate('assistant')}
+                  className="text-xs font-semibold text-[#0040c4] hover:underline"
+                >
+                  O consultá con IA →
+                </button>
+              </div>
             </div>
-            <h2 className="mt-2 text-2xl sm:text-3xl font-semibold tracking-[-0.03em] text-[#001e50]">
-              ¿Ya comenzaste tu operación?
-            </h2>
-            <p className="mt-2 max-w-xl text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Consultá el estado de tu compra, documentación y próximos pasos ingresando tu número de operación o DNI.
-            </p>
-          </div>
-          <button
-            onClick={onOpenTrackerModal}
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-[#001e50] px-6 py-3.5 text-xs sm:text-sm font-bold text-white transition-all hover:bg-[#0040c4] hover:scale-[1.02] cursor-pointer"
-          >
-            <FileCheck2 className="h-4 w-4" />
-            <span>Ver mi operación</span>
-          </button>
-        </div>
-      </section>
 
-      {/* 5. UNIVERSO AUTOSOL SECTION (Deep navy card linking to commercial site) */}
-      <section className="bg-[#001e50] text-white py-14 sm:py-16">
-        <div className="mx-auto grid max-w-[1280px] gap-6 px-5 sm:px-8 md:grid-cols-[1fr_auto] md:items-center lg:px-12">
-          <div>
-            <p className="text-xs sm:text-sm font-semibold text-[#008cff] uppercase tracking-wider">
-              Universo Autosol
-            </p>
-            <h2 className="mt-2 max-w-2xl text-2xl sm:text-3xl font-semibold leading-tight text-white">
-              Descubrí modelos, postventa y promociones vigentes.
-            </h2>
-            <p className="mt-2 max-w-2xl text-xs sm:text-sm leading-relaxed text-blue-100/80">
-              Esta plataforma digital te acompaña durante tu operación. Para conocer toda la gama de 0km Volkswagen, repuestos y servicios del concesionario, visitá el portal oficial de Autosol.
-            </p>
+            {/* Card 2: Portal comercial oficial Autosol */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-7 sm:p-9 shadow-sm flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-2 text-xs font-bold text-[#008cff] uppercase tracking-wider">
+                  <CarFront className="h-4 w-4 text-[#0040c4]" />
+                  <span>Portal comercial oficial</span>
+                </div>
+                <h3 className="mt-3 text-2xl font-bold text-[#001e50]">
+                  Conocé la gama 0km y catálogo Autosol
+                </h3>
+                <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+                  Esta plataforma es tu centro de orientación transparente. Si querés explorar especificaciones técnicas, cotizaciones comerciales o agendar un Test Drive, visitá la web oficial de Autosol.
+                </p>
+              </div>
+              <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                <a
+                  href="https://autosol.com.ar/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#001e50] px-5 py-2.5 text-xs sm:text-sm font-bold text-white transition-all hover:bg-[#0040c4] cursor-pointer"
+                >
+                  <span>Visitar autosol.com.ar</span>
+                  <ExternalLink className="h-3.5 w-3.5" />
+                </a>
+                <span className="text-xs text-slate-400">Jujuy y Salta</span>
+              </div>
+            </div>
           </div>
-          <a
-            href="https://autosol.com.ar/"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3.5 text-xs sm:text-sm font-bold text-[#001e50] transition-colors hover:bg-[#008cff] hover:text-white cursor-pointer"
-          >
-            <span>Ir a autosol.com.ar</span>
-            <ExternalLink className="h-4 w-4" />
-          </a>
         </div>
-      </section>
-
-      {/* 6. FAQ BAR SHORTCUT */}
-      <section className="mx-auto max-w-[1280px] px-5 py-12 sm:px-8 lg:px-12">
-        <button
-          onClick={() => onNavigate('faq')}
-          className="group flex w-full items-center justify-between border-y border-slate-200 py-6 text-left cursor-pointer"
-        >
-          <span className="flex items-center gap-3 text-lg sm:text-xl font-semibold text-[#001e50]">
-            <CircleHelp className="h-5 w-5 text-[#0040c4]" />
-            <span>¿Tenés alguna pregunta sobre tu trámite?</span>
-          </span>
-          <span className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-[#0040c4] group-hover:underline">
-            <span>Ver respuestas</span>
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </span>
-        </button>
       </section>
     </div>
   );
 };
+

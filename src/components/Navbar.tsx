@@ -33,7 +33,7 @@ export type ActiveTab =
 interface NavbarProps {
   activeTab: ActiveTab;
   setActiveTab: (tab: ActiveTab) => void;
-  onOpenTrackerModal: () => void;
+  onOpenTrackerModal?: () => void;
   onOpenCaseDashboard: () => void;
 }
 
@@ -52,12 +52,13 @@ const navigation: { id: ActiveTab; label: string }[] = [
 export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   setActiveTab,
-  onOpenTrackerModal,
   onOpenCaseDashboard,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
   const [adminUsername, setAdminUsername] = useState('');
+
   const [adminPassword, setAdminPassword] = useState('');
   const [adminAuthenticated, setAdminAuthenticated] = useState(false);
   const [sessionRole, setSessionRole] = useState<'admin' | 'collaborator' | null>(null);
@@ -132,11 +133,26 @@ export const Navbar: React.FC<NavbarProps> = ({
     }
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 30);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <>
-      {/* Top Header Bar: Solid black, left-aligned logo & menu matching autosol.com.ar */}
-      <header className="sticky top-0 z-40 w-full bg-black text-white shadow-md border-b border-white/10">
-        <div className="mx-auto flex h-14 sm:h-16 max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-8">
+      {/* Top Header Bar: Transparent over hero with smooth transition on scroll */}
+      <header
+        className={`fixed top-0 left-0 right-0 z-40 w-full transition-all duration-300 ${
+          isScrolled
+            ? 'bg-black/95 backdrop-blur-md shadow-lg border-b border-white/10 py-0'
+            : 'bg-gradient-to-b from-black/85 via-black/35 to-transparent border-b border-transparent py-1'
+        }`}
+      >
+        <div className="mx-auto flex h-14 sm:h-16 w-full max-w-[1720px] items-center justify-between px-4 sm:px-8 lg:px-12">
           {/* Left Group: [VW Logo] [= Menú] [Autosol] */}
           <div className="flex items-center gap-3 sm:gap-5">
             {/* Official Volkswagen SVG round emblem */}
@@ -185,19 +201,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Right Group: Action Buttons */}
           <div className="flex items-center gap-3 sm:gap-4">
             <button
-              onClick={onOpenTrackerModal}
-              className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white transition-all hover:bg-white hover:text-black cursor-pointer"
+              onClick={() => navigate('assistant')}
+              className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white transition-all hover:bg-white hover:text-black cursor-pointer"
             >
-              <UserCheck className="h-3.5 w-3.5 text-[#008cff]" />
-              <span className="hidden sm:inline">Seguir mi 0km</span>
-              <span className="sm:hidden">Seguimiento</span>
+              <MessageCircleQuestion className="h-3.5 w-3.5 text-[#008cff]" />
+              <span>Asistente IA</span>
             </button>
 
             <a
               href="https://autosol.com.ar/"
               target="_blank"
               rel="noreferrer"
-              className="hidden md:inline-flex items-center gap-1.5 text-xs font-semibold text-white/80 hover:text-white transition-colors"
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-white/85 hover:text-white transition-colors"
             >
               <span>Sitio oficial Autosol</span>
               <ExternalLink className="h-3 w-3" />
@@ -260,26 +275,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               {/* Divider */}
               <hr className="my-6 border-slate-300" />
 
-              {/* Action Buttons: 2 dark navy pill buttons like autosol.com.ar */}
-              <div className="flex gap-2.5">
-                <button
-                  onClick={() => {
-                    setMenuOpen(false);
-                    onOpenTrackerModal();
-                  }}
-                  className="flex-1 rounded-full bg-[#001e50] py-2.5 px-3 text-center text-xs font-bold text-white transition-all hover:bg-[#0040c4] cursor-pointer"
-                >
-                  Seguir mi 0km
-                </button>
+              {/* Action Button: Asistente IA */}
+              <div>
                 <button
                   onClick={() => navigate('assistant')}
-                  className="flex-1 rounded-full bg-[#001e50] py-2.5 px-3 text-center text-xs font-bold text-white transition-all hover:bg-[#0040c4] cursor-pointer flex items-center justify-center gap-1.5"
+                  className="w-full rounded-full bg-[#001e50] py-3 px-4 text-center text-xs font-bold text-white transition-all hover:bg-[#0040c4] cursor-pointer flex items-center justify-center gap-2 shadow-sm"
                 >
-                  <MessageCircleQuestion className="h-3.5 w-3.5" />
-                  <span>Asistente IA</span>
+                  <MessageCircleQuestion className="h-4 w-4 text-[#008cff]" />
+                  <span>Consultar con Asistente IA</span>
                 </button>
               </div>
             </div>
+
 
             {/* Bottom section: External Link & Internal Access */}
             <div className="pt-6 border-t border-slate-200 mt-6 space-y-3">

@@ -39,14 +39,13 @@ import { ProcessStageId } from '../types';
 interface InfographicModelViewProps {
   onNavigate: (tab: ActiveTab, category?: string, stageId?: ProcessStageId) => void;
   onOpenAssistant: (query?: string) => void;
-  onOpenTracker: () => void;
 }
 
 export const InfographicModelView: React.FC<InfographicModelViewProps> = ({
   onNavigate,
   onOpenAssistant,
-  onOpenTracker,
 }) => {
+
   return (
     <div className="space-y-8 pb-12">
       {/* Top Controls / Header */}
