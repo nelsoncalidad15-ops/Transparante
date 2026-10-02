@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Menu, X, ArrowUpRight, ExternalLink, UserCheck, UserRound, LockKeyhole, BarChart3, FilePenLine, LoaderCircle } from 'lucide-react';
-import { AutosolLogo } from './AutosolLogo';
+import {
+  X,
+  ExternalLink,
+  UserCheck,
+  UserRound,
+  LockKeyhole,
+  BarChart3,
+  FilePenLine,
+  LoaderCircle,
+  MessageCircleQuestion,
+  ChevronRight,
+} from 'lucide-react';
 
 export type ActiveTab =
   | 'home'
@@ -27,15 +37,24 @@ interface NavbarProps {
   onOpenCaseDashboard: () => void;
 }
 
-const navigation = [
-  { id: 'home' as ActiveTab, label: 'Inicio', detail: 'Volvé a la portada' },
-  { id: 'process' as ActiveTab, label: 'Mi compra', detail: 'Seguí cada etapa' },
-  { id: 'financing' as ActiveTab, label: 'Financiación', detail: 'Opciones y pagos' },
-  { id: 'documents' as ActiveTab, label: 'Documentación', detail: 'Todo lo que necesitás' },
-  { id: 'delivery' as ActiveTab, label: 'Entrega', detail: 'Preparación y retiro' },
+const navigation: { id: ActiveTab; label: string }[] = [
+  { id: 'home', label: 'Inicio' },
+  { id: 'process', label: 'Mi proceso de compra' },
+  { id: 'documents', label: 'Documentación y trámites' },
+  { id: 'times', label: 'Tiempos orientativos' },
+  { id: 'delivery', label: 'Entrega del vehículo' },
+  { id: 'financing', label: 'Financiación y pagos' },
+  { id: 'dictionary', label: 'Diccionario del comprador' },
+  { id: 'faq', label: 'Preguntas frecuentes' },
+  { id: 'infographic', label: 'Mapa del modelo' },
 ];
 
-export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenTrackerModal, onOpenCaseDashboard }) => {
+export const Navbar: React.FC<NavbarProps> = ({
+  activeTab,
+  setActiveTab,
+  onOpenTrackerModal,
+  onOpenCaseDashboard,
+}) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
   const [adminUsername, setAdminUsername] = useState('');
@@ -44,16 +63,17 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenT
   const [sessionRole, setSessionRole] = useState<'admin' | 'collaborator' | null>(null);
   const [adminError, setAdminError] = useState('');
   const [isSubmittingAdmin, setIsSubmittingAdmin] = useState(false);
-  const isHome = activeTab === 'home';
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [menuOpen]);
 
   useEffect(() => {
     fetch('/api/auth/session')
-      .then((response) => response.ok ? response.json() : null)
+      .then((response) => (response.ok ? response.json() : null))
       .then((session) => {
         if (session?.authenticated) {
           setAdminAuthenticated(true);
@@ -71,13 +91,20 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenT
   const handleAdminLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!adminUsername.trim() || !adminPassword.trim()) return;
-    if (import.meta.env.DEV && adminPassword === 'demo' && ['admin', 'administrativo'].includes(adminUsername.trim().toLowerCase())) {
+    if (
+      import.meta.env.DEV &&
+      adminPassword === 'demo' &&
+      ['admin', 'administrativo'].includes(adminUsername.trim().toLowerCase())
+    ) {
       const isCollaborator = adminUsername.trim().toLowerCase() === 'administrativo';
       setAdminAuthenticated(true);
       setSessionRole(isCollaborator ? 'collaborator' : 'admin');
       setAdminUsername('');
       setAdminPassword('');
-      if (isCollaborator) { setMenuOpen(false); onOpenCaseDashboard(); }
+      if (isCollaborator) {
+        setMenuOpen(false);
+        onOpenCaseDashboard();
+      }
       return;
     }
     setIsSubmittingAdmin(true);
@@ -94,7 +121,10 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenT
       setSessionRole(result.role === 'admin' ? 'admin' : 'collaborator');
       setAdminUsername('');
       setAdminPassword('');
-      if (result.role === 'collaborator') { setMenuOpen(false); onOpenCaseDashboard(); }
+      if (result.role === 'collaborator') {
+        setMenuOpen(false);
+        onOpenCaseDashboard();
+      }
     } catch (error) {
       setAdminError(error instanceof Error ? error.message : 'No se pudo iniciar sesión.');
     } finally {
@@ -104,71 +134,265 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenT
 
   return (
     <>
-      <header className={`z-40 w-full ${isHome ? 'absolute top-0 left-0 text-white' : 'sticky top-0 bg-white text-[#001e50] border-b border-slate-200 shadow-sm'}`}>
-        <div className="mx-auto flex h-20 max-w-[1440px] items-center justify-between px-5 sm:px-8 lg:px-12">
-          <button onClick={() => navigate('home')} className="group cursor-pointer" aria-label="Ir al inicio">
-            <AutosolLogo size="md" variant={isHome ? 'white' : 'dark'} showSubtitle={false} />
-          </button>
-
+      {/* Top Header Bar: Solid black, left-aligned logo & menu matching autosol.com.ar */}
+      <header className="sticky top-0 z-40 w-full bg-black text-white shadow-md border-b border-white/10">
+        <div className="mx-auto flex h-14 sm:h-16 max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-8">
+          {/* Left Group: [VW Logo] [= Menú] [Autosol] */}
           <div className="flex items-center gap-3 sm:gap-5">
-            <a href="https://autosol.com.ar/" target="_blank" rel="noreferrer" className={`hidden items-center gap-1.5 text-sm font-semibold transition-colors lg:flex ${isHome ? 'text-white/90 hover:text-white' : 'text-[#001e50] hover:text-[#0040c4]'}`}>
-              Sitio oficial <ExternalLink className="h-3.5 w-3.5" />
+            {/* Official Volkswagen SVG round emblem */}
+            <button
+              onClick={() => navigate('home')}
+              className="flex items-center transition-opacity hover:opacity-85 cursor-pointer"
+              aria-label="Ir al inicio de Autosol"
+            >
+              <svg
+                className="h-7 w-7 sm:h-8 sm:w-8 text-white fill-current shrink-0"
+                viewBox="0 0 1024 1024"
+                aria-hidden="true"
+              >
+                <path d="M512 0c-283.307 0-512 228.693-512 512s228.693 512 512 512 512-228.693 512-512-228.693-512-512-512zM512 60.16c51.2 0 100.693 9.387 146.347 25.173l-140.8 304.213c-1.707 1.707-1.707 5.547-5.547 5.547s-3.84-3.84-5.547-5.547l-140.8-304.213c45.653-15.787 95.147-24.747 146.347-24.747zM294.4 116.907l162.987 351.147c3.413 7.253 7.253 9.387 11.947 9.387h85.333c5.12 0 8.533-2.133 12.373-9.387l160.853-351.147c67.413 38.4 125.44 93.44 166.4 159.147l-228.693 442.453c-1.707 3.84-4.267 5.547-5.547 5.547-3.413 0-3.413-3.413-5.547-5.547l-87.467-193.707c-3.84-7.253-7.253-8.96-12.373-8.96h-85.333c-4.693 0-8.533 1.707-12.373 8.96l-87.467 193.707c-2.133 2.133-1.707 5.547-5.547 5.547s-3.84-3.413-5.547-5.547l-230.4-442.453c40.107-65.707 98.987-120.747 166.4-159.147zM87.893 363.947l263.253 512c3.413 7.253 7.253 12.8 16.64 12.8 8.96 0 12.373-5.547 16.213-12.8l122.453-272.64c1.707-3.413 3.84-5.973 5.547-5.973 3.84 0 3.84 4.267 5.547 5.973l124.16 272.64c3.84 7.253 7.253 12.8 16.64 12.8 8.96 0 12.8-5.547 16.213-12.8l264.107-512c15.787 45.653 25.173 95.147 25.173 148.053-2.133 247.04-204.8 451.84-451.84 451.84s-449.707-204.8-449.707-451.84c0-51.2 8.96-100.267 25.6-148.053z" />
+              </svg>
+            </button>
+
+            {/* Hamburger trigger with 2 lines + "Menú" (exact match to autosol.com.ar) */}
+            <button
+              onClick={() => setMenuOpen(true)}
+              className="flex items-center gap-2 text-white hover:text-blue-300 transition-colors cursor-pointer py-1.5 px-1"
+              aria-label="Abrir menú"
+              aria-expanded={menuOpen}
+            >
+              <div className="flex flex-col justify-center gap-1.5 w-5">
+                <span className="block h-[2px] w-5 bg-white rounded-full transition-transform" />
+                <span className="block h-[2px] w-5 bg-white rounded-full transition-transform" />
+              </div>
+              <span className="font-semibold text-sm tracking-tight">Menú</span>
+            </button>
+
+            {/* Autosol Dealer Wordmark & Transparente Badge */}
+            <button
+              onClick={() => navigate('home')}
+              className="flex items-center gap-2 cursor-pointer text-left"
+            >
+              <span className="text-xl sm:text-2xl font-black tracking-[-0.03em] text-white">
+                Autosol
+              </span>
+              <span className="hidden sm:inline-flex items-center rounded-md bg-[#0040c4] px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-white">
+                Transparente
+              </span>
+            </button>
+          </div>
+
+          {/* Right Group: Action Buttons */}
+          <div className="flex items-center gap-3 sm:gap-4">
+            <button
+              onClick={onOpenTrackerModal}
+              className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white transition-all hover:bg-white hover:text-black cursor-pointer"
+            >
+              <UserCheck className="h-3.5 w-3.5 text-[#008cff]" />
+              <span className="hidden sm:inline">Seguir mi 0km</span>
+              <span className="sm:hidden">Seguimiento</span>
+            </button>
+
+            <a
+              href="https://autosol.com.ar/"
+              target="_blank"
+              rel="noreferrer"
+              className="hidden md:inline-flex items-center gap-1.5 text-xs font-semibold text-white/80 hover:text-white transition-colors"
+            >
+              <span>Sitio oficial Autosol</span>
+              <ExternalLink className="h-3 w-3" />
             </a>
-            <button onClick={onOpenTrackerModal} className={`hidden items-center gap-2 text-sm font-semibold transition-colors sm:flex ${isHome ? 'text-white/90 hover:text-white' : 'text-[#001e50] hover:text-[#0040c4]'}`}>
-              <UserCheck className="h-4 w-4" /> Seguir mi 0km
-            </button>
-            <button onClick={() => setMenuOpen(true)} className={`flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold transition-all ${isHome ? 'border-white/60 bg-white/10 text-white hover:bg-white hover:text-[#001e50]' : 'border-slate-300 bg-white text-[#001e50] hover:border-[#001e50]'}`} aria-label="Abrir menú">
-              <Menu className="h-5 w-5" /> <span className="hidden sm:inline">Menú</span>
-            </button>
           </div>
         </div>
       </header>
 
+      {/* LEFT DRAWER MENU (Matching Screenshot 2 exactly!) */}
       {menuOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#001e50] text-white">
-          <div className="mx-auto min-h-screen max-w-[1240px] px-5 py-4 sm:px-8 sm:py-5 lg:px-10">
-            <div className="flex items-center justify-between">
-              <AutosolLogo size="sm" variant="white" showSubtitle={false} />
-              <button onClick={() => setMenuOpen(false)} className="flex items-center gap-2 rounded-full border border-white/35 px-3 py-2 text-xs font-semibold hover:bg-white hover:text-[#001e50]">
-                <X className="h-5 w-5" /> Cerrar
-              </button>
-            </div>
+        <div className="fixed inset-0 z-50 overflow-hidden">
+          {/* Backdrop on the right */}
+          <div
+            onClick={() => setMenuOpen(false)}
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-300"
+            aria-hidden="true"
+          />
 
-            <div className="mt-6 grid gap-6 border-t border-white/20 pt-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(260px,.62fr)] lg:gap-8">
-              <nav aria-label="Navegación principal">
-                <p className="mb-3 text-[10px] font-bold tracking-[0.16em] text-[#008cff] uppercase">Navegación</p>
-                {navigation.map((item, index) => (
-                  <button key={item.id} onClick={() => navigate(item.id)} className="group grid w-full grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-3 border-t border-white/15 py-3 text-left transition-colors first:border-t-0 hover:bg-white/[0.035] sm:py-3.5">
-                    <span className="text-[11px] font-medium tabular-nums text-[#008cff]/75">0{index + 1}</span>
-                    <span><span className="block text-2xl font-light tracking-[-0.045em] text-white sm:text-[1.75rem]">{item.label}</span><span className="mt-0.5 block text-xs text-blue-200/75">{item.detail}</span></span>
-                    <ArrowUpRight className="h-4 w-4 text-[#008cff] transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
+          {/* Drawer container from LEFT */}
+          <aside
+            className="fixed inset-y-0 left-0 z-50 flex w-full max-w-[360px] sm:max-w-[420px] flex-col justify-between overflow-y-auto bg-[#f8f7f4] p-6 sm:p-8 text-[#001e50] shadow-2xl transition-transform duration-300 ease-out"
+            aria-label="Menú principal de Autosol Transparente"
+          >
+            <div>
+              {/* Top Row: Circular Close Button */}
+              <div className="flex items-center justify-between pb-6">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl font-bold tracking-tight text-[#001e50]">Autosol</span>
+                  <span className="rounded bg-[#001e50] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">
+                    Transparente
+                  </span>
+                </div>
+                <button
+                  onClick={() => setMenuOpen(false)}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 text-slate-700 transition-colors hover:border-[#001e50] hover:text-[#001e50] cursor-pointer"
+                  aria-label="Cerrar menú"
+                >
+                  <X className="h-5 w-5 stroke-[1.5]" />
+                </button>
+              </div>
+
+              {/* Navigation Links list (Large bold links in black/deep navy) */}
+              <nav className="flex flex-col space-y-4 pt-2">
+                {navigation.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => navigate(item.id)}
+                    className={`text-left text-lg sm:text-xl font-semibold tracking-[-0.02em] transition-colors cursor-pointer flex items-center justify-between group ${
+                      activeTab === item.id
+                        ? 'text-[#0040c4] font-bold'
+                        : 'text-[#001e50] hover:text-[#0040c4]'
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all text-[#0040c4]" />
                   </button>
                 ))}
               </nav>
 
-              <aside className="self-start rounded-xl border border-white/15 bg-white/[0.055] p-4">
-                <a href="https://autosol.com.ar/" target="_blank" rel="noreferrer" className="mb-4 flex items-center justify-between rounded-lg border border-white/15 px-3 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white hover:text-[#001e50]">
-                  Ir al sitio oficial Autosol <ExternalLink className="h-4 w-4" />
-                </a>
-                <div>
-                  {!adminOpen && !adminAuthenticated && <button onClick={() => setAdminOpen(true)} className="flex items-center gap-2 text-sm font-semibold text-blue-100 transition-colors hover:text-[#008cff]"><LockKeyhole className="h-4 w-4" /> Acceso interno</button>}
-                  {adminOpen && !adminAuthenticated && (
-                    <form onSubmit={handleAdminLogin} className="space-y-3 rounded-xl border border-white/15 bg-[#002244] p-4 shadow-inner">
-                      <div className="flex items-start justify-between gap-3"><div><span className="text-[10px] font-bold tracking-[0.14em] text-[#008cff] uppercase">Acceso interno</span><p className="mt-1 text-xs leading-relaxed text-blue-100/75">Ingresá con tu usuario para continuar.</p></div><button type="button" onClick={() => { setAdminOpen(false); setAdminError(''); }} className="text-xs font-semibold text-blue-200 hover:text-white">Cancelar</button></div>
-                      <label className="block text-xs font-semibold text-blue-100">Usuario<div className="relative mt-1.5"><UserRound className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#008cff]" /><input autoComplete="username" value={adminUsername} onChange={(event) => setAdminUsername(event.target.value)} placeholder="Ej: administrativo" className="w-full rounded-lg border border-white/20 bg-[#11192e] py-2.5 pl-9 pr-3 text-sm text-white outline-none placeholder:text-blue-200/45 focus:border-[#008cff]" /></div></label>
-                      <label className="block text-xs font-semibold text-blue-100">Contraseña<div className="relative mt-1.5"><LockKeyhole className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#008cff]" /><input type="password" autoComplete="current-password" value={adminPassword} onChange={(event) => setAdminPassword(event.target.value)} placeholder="Tu contraseña" className="w-full rounded-lg border border-white/20 bg-[#11192e] py-2.5 pl-9 pr-3 text-sm text-white outline-none placeholder:text-blue-200/45 focus:border-[#008cff]" /></div></label>
-                      {adminError && <p className="text-xs text-rose-300">{adminError}</p>}
-                      <button disabled={isSubmittingAdmin} className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#008cff] px-3.5 py-2.5 text-sm font-bold text-[#001e50] transition-colors hover:bg-white disabled:opacity-60">{isSubmittingAdmin ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <LockKeyhole className="h-4 w-4" />} Ingresar</button>
-                    </form>
-                  )}
-                  {adminAuthenticated && <button onClick={() => { setMenuOpen(false); onOpenCaseDashboard(); }} className="mb-3 flex w-full items-center gap-2 rounded-lg bg-[#008cff] px-3 py-2.5 text-left text-sm font-bold text-[#001e50] hover:bg-white"><UserCheck className="h-4 w-4" /> Casos a contactar{sessionRole === 'collaborator' && <span className="ml-auto text-xs font-medium">Colaborador</span>}</button>}
-                  {adminAuthenticated && sessionRole === 'admin' && (
-                    <div className="space-y-3"><div className="flex items-center gap-2 text-sm font-semibold text-emerald-300"><span className="h-2 w-2 rounded-full bg-emerald-400" /> Sesión de administrador</div><div className="grid gap-2"><button onClick={() => navigate('quality-dashboard')} className="flex items-center gap-2 rounded-lg border border-white/15 px-3 py-2.5 text-left text-sm text-blue-100 hover:bg-white/10"><BarChart3 className="h-4 w-4 text-[#008cff]" /> Ver indicadores</button><button onClick={() => navigate('admin-panel')} className="flex items-center gap-2 rounded-lg border border-white/15 px-3 py-2.5 text-left text-sm text-blue-100 hover:bg-white/10"><FilePenLine className="h-4 w-4 text-[#008cff]" /> Editar información</button></div></div>
-                  )}
-                </div>
-              </aside>
+              {/* Divider */}
+              <hr className="my-6 border-slate-300" />
+
+              {/* Action Buttons: 2 dark navy pill buttons like autosol.com.ar */}
+              <div className="flex gap-2.5">
+                <button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    onOpenTrackerModal();
+                  }}
+                  className="flex-1 rounded-full bg-[#001e50] py-2.5 px-3 text-center text-xs font-bold text-white transition-all hover:bg-[#0040c4] cursor-pointer"
+                >
+                  Seguir mi 0km
+                </button>
+                <button
+                  onClick={() => navigate('assistant')}
+                  className="flex-1 rounded-full bg-[#001e50] py-2.5 px-3 text-center text-xs font-bold text-white transition-all hover:bg-[#0040c4] cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <MessageCircleQuestion className="h-3.5 w-3.5" />
+                  <span>Asistente IA</span>
+                </button>
+              </div>
             </div>
-          </div>
+
+            {/* Bottom section: External Link & Internal Access */}
+            <div className="pt-6 border-t border-slate-200 mt-6 space-y-3">
+              <a
+                href="https://autosol.com.ar/"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-between text-xs font-semibold text-slate-600 hover:text-[#001e50] transition-colors"
+              >
+                <span>Ir al sitio comercial Autosol</span>
+                <ExternalLink className="h-3.5 w-3.5" />
+              </a>
+
+              {/* Admin / Collaborator Session or Login */}
+              <div className="pt-2">
+                {!adminOpen && !adminAuthenticated && (
+                  <button
+                    onClick={() => setAdminOpen(true)}
+                    className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 hover:text-[#001e50] transition-colors cursor-pointer"
+                  >
+                    <LockKeyhole className="h-3.5 w-3.5" />
+                    <span>Acceso interno</span>
+                  </button>
+                )}
+
+                {adminOpen && !adminAuthenticated && (
+                  <form
+                    onSubmit={handleAdminLogin}
+                    className="space-y-2.5 rounded-xl border border-slate-300 bg-white p-3.5 shadow-sm text-slate-800"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#001e50]">
+                        Acceso interno
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAdminOpen(false);
+                          setAdminError('');
+                        }}
+                        className="text-[11px] text-slate-400 hover:text-slate-700"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                    <input
+                      autoComplete="username"
+                      value={adminUsername}
+                      onChange={(e) => setAdminUsername(e.target.value)}
+                      placeholder="Usuario (ej: admin)"
+                      className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs text-slate-800 outline-none focus:border-[#0040c4]"
+                    />
+                    <input
+                      type="password"
+                      autoComplete="current-password"
+                      value={adminPassword}
+                      onChange={(e) => setAdminPassword(e.target.value)}
+                      placeholder="Contraseña"
+                      className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs text-slate-800 outline-none focus:border-[#0040c4]"
+                    />
+                    {adminError && <p className="text-[11px] text-rose-600">{adminError}</p>}
+                    <button
+                      disabled={isSubmittingAdmin}
+                      className="w-full rounded-lg bg-[#001e50] py-2 text-xs font-bold text-white hover:bg-[#0040c4] transition-colors disabled:opacity-60 flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      {isSubmittingAdmin ? (
+                        <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <LockKeyhole className="h-3.5 w-3.5" />
+                      )}
+                      <span>Ingresar</span>
+                    </button>
+                  </form>
+                )}
+
+                {adminAuthenticated && (
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => {
+                        setMenuOpen(false);
+                        onOpenCaseDashboard();
+                      }}
+                      className="flex w-full items-center justify-between rounded-lg bg-[#001e50] px-3 py-2 text-xs font-bold text-white hover:bg-[#0040c4]"
+                    >
+                      <span className="flex items-center gap-1.5">
+                        <UserCheck className="h-3.5 w-3.5" /> Casos a contactar
+                      </span>
+                      {sessionRole === 'collaborator' && (
+                        <span className="text-[10px] text-blue-200">Colaborador</span>
+                      )}
+                    </button>
+
+                    {sessionRole === 'admin' && (
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => navigate('quality-dashboard')}
+                          className="flex-1 rounded-lg border border-slate-300 bg-white py-1.5 px-2 text-[11px] font-semibold text-slate-700 hover:border-[#001e50] flex items-center justify-center gap-1"
+                        >
+                          <BarChart3 className="h-3 w-3 text-[#0040c4]" /> Indicadores
+                        </button>
+                        <button
+                          onClick={() => navigate('admin-panel')}
+                          className="flex-1 rounded-lg border border-slate-300 bg-white py-1.5 px-2 text-[11px] font-semibold text-slate-700 hover:border-[#001e50] flex items-center justify-center gap-1"
+                        >
+                          <FilePenLine className="h-3 w-3 text-[#0040c4]" /> Editar datos
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </aside>
         </div>
       )}
     </>
