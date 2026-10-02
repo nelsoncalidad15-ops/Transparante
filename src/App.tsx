@@ -46,6 +46,19 @@ function AppContent() {
   const [libraryInitialCategory, setLibraryInitialCategory] = useState<string | undefined>(undefined);
   const [assistantInitialQuery, setAssistantInitialQuery] = useState<string | undefined>(undefined);
   const [isFloatingAssistantOpen, setIsFloatingAssistantOpen] = useState(false);
+  const [isContactMenuOpen, setIsContactMenuOpen] = useState(false);
+
+  // Close contact menu when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (isContactMenuOpen && !target.closest('#fab-contact-container')) {
+        setIsContactMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isContactMenuOpen]);
 
   // Navigation Helpers
   const handleSelectStage = (stageId: ProcessStageId) => {
@@ -241,14 +254,12 @@ function AppContent() {
         {activeTab === 'client-alerts' && <ClientAlertDashboard onExit={() => setActiveTab('home')} />}
       </main>
 
-      {/* Floating Action Button for Quick Assistant (Modern VW Official Style) */}
-      {activeTab !== 'client-alerts' && <div className="fixed bottom-24 right-5 z-40 hidden flex-col gap-2.5 sm:flex">
-        <a href="https://www.google.com/maps/search/?api=1&query=Autosol+Jujuy,+Argentina" target="_blank" rel="noreferrer" className="group relative flex h-11 w-11 items-center justify-center rounded-full border border-white/80 bg-white text-[#0040c4] shadow-[0_8px_20px_rgba(7,30,58,0.16)] transition-all hover:-translate-y-0.5 hover:bg-[#0040c4] hover:text-white" aria-label="Ver ubicación de Autosol Jujuy"><MapPin className="h-4 w-4" /><span className="pointer-events-none absolute right-[calc(100%+10px)] top-1/2 hidden w-max -translate-y-1/2 rounded-md bg-[#001e50] px-3 py-2 text-xs font-semibold text-white shadow-lg group-hover:block">Autosol Jujuy · Argentina</span></a>
-        <a href="tel:+5493884399187" className="group relative flex h-11 w-11 items-center justify-center rounded-full border border-white/80 bg-white text-[#0040c4] shadow-[0_8px_20px_rgba(7,30,58,0.16)] transition-all hover:-translate-y-0.5 hover:bg-[#0040c4] hover:text-white" aria-label="Contactar a Autosol Jujuy"><Phone className="h-4 w-4" /><span className="pointer-events-none absolute right-[calc(100%+10px)] top-1/2 hidden w-max -translate-y-1/2 rounded-md bg-[#001e50] px-3 py-2 text-xs font-semibold text-white shadow-lg group-hover:block">Autosol Jujuy</span></a>
-        <a href={`https://wa.me/5493884399187?text=${encodeURIComponent(getText('whatsapp_message', 'Hola Autosol, tengo una consulta sobre mi operación.'))}`} target="_blank" rel="noreferrer" className="group relative flex h-11 w-11 items-center justify-center rounded-full border border-white/80 bg-[#25D366] text-white shadow-[0_8px_20px_rgba(7,30,58,0.16)] transition-all hover:-translate-y-0.5 hover:bg-[#1fb858]" aria-label="Consultar por WhatsApp"><MessageCircle className="h-4 w-4" /><span className="pointer-events-none absolute right-[calc(100%+10px)] top-1/2 hidden w-max -translate-y-1/2 rounded-md bg-[#001e50] px-3 py-2 text-xs font-semibold text-white shadow-lg group-hover:block">¿Tenés una duda? Consultanos</span></a>
-      </div>}
+      {/* 
+        OPCIÓN 1: BOTÓN FLOTANTE ÚNICO DESPLEGABLE (SPEED DIAL)
+        Solo 1 botón visible en pantalla. Al tocarlo se despliega un panel prolijo con Bot, WhatsApp, Teléfono y Ubicación.
+      */}
       {activeTab !== 'assistant' && activeTab !== 'client-alerts' && (
-        <div className="fixed bottom-5 right-5 z-50">
+        <div id="fab-contact-container" className="fixed bottom-5 right-5 z-50">
           {isFloatingAssistantOpen ? (
             <div className="animate-in slide-in-from-bottom-5 fade-in duration-200">
               <VirtualAssistant
@@ -265,16 +276,132 @@ function AppContent() {
               />
             </div>
           ) : (
-            <button
-              id="fab-open-assistant"
-              onClick={() => setIsFloatingAssistantOpen(true)}
-              className="group relative flex h-14 w-14 items-center justify-center rounded-full border border-white/70 bg-[#001e50] text-white shadow-[0_12px_28px_rgba(4,38,81,0.3)] transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:bg-[#0040c4] active:scale-95"
-              aria-label="Abrir Bot de consulta Autosol"
-            >
-              <Bot className="h-6 w-6 transition-transform duration-300 group-hover:rotate-6" />
-              <span className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full border-2 border-[#001e50] bg-emerald-400" />
-              <span className="pointer-events-none absolute right-[calc(100%+12px)] top-1/2 hidden w-max -translate-y-1/2 rounded-md bg-[#001e50] px-3 py-2 text-xs font-semibold text-white shadow-lg group-hover:block">Bot de consulta</span>
-            </button>
+            <div className="relative flex flex-col items-end">
+              {/* Menú Desplegable con opciones de contacto limpias */}
+              {isContactMenuOpen && (
+                <div className="mb-3 w-72 sm:w-80 rounded-2xl border border-slate-200 bg-white p-3.5 shadow-[0_16px_40px_rgba(0,30,80,0.18)] animate-in slide-in-from-bottom-3 fade-in duration-200 text-left">
+                  <div className="flex items-center justify-between pb-2.5 mb-2 border-b border-slate-100">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-black">
+                      Atención y Consultas Autosol
+                    </span>
+                    <span className="flex items-center gap-1.5 text-[10px] font-semibold text-emerald-600">
+                      <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                      En línea
+                    </span>
+                  </div>
+
+                  <div className="space-y-1">
+                    {/* Opción 1: Bot de Consulta Autosol */}
+                    <button
+                      onClick={() => {
+                        setIsContactMenuOpen(false);
+                        setIsFloatingAssistantOpen(true);
+                      }}
+                      className="w-full flex items-center gap-3 p-2.5 rounded-xl transition-all hover:bg-slate-50 text-left group cursor-pointer border border-transparent hover:border-slate-200"
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#001e50] text-white transition-transform group-hover:scale-105">
+                        <Bot className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-xs font-bold text-black group-hover:text-[#0040c4] flex items-center justify-between">
+                          <span>Bot de consulta</span>
+                          <span className="text-[9px] bg-[#ece5db] text-[#001e50] font-bold px-1.5 py-0.5 rounded">24/7</span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 truncate">
+                          Orientación sobre etapas, plazos y 0km
+                        </p>
+                      </div>
+                    </button>
+
+                    {/* Opción 2: WhatsApp Oficial */}
+                    <a
+                      href={`https://wa.me/5493884399187?text=${encodeURIComponent(getText('whatsapp_message', 'Hola Autosol, tengo una consulta sobre mi operación.'))}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={() => setIsContactMenuOpen(false)}
+                      className="flex items-center gap-3 p-2.5 rounded-xl transition-all hover:bg-emerald-50/60 text-left group cursor-pointer border border-transparent hover:border-emerald-200"
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#25D366] text-white transition-transform group-hover:scale-105 shadow-xs">
+                        <MessageCircle className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-xs font-bold text-black group-hover:text-emerald-700">
+                          WhatsApp Oficial
+                        </div>
+                        <p className="text-[11px] text-slate-500 truncate">
+                          Chateá con un asesor en Jujuy
+                        </p>
+                      </div>
+                    </a>
+
+                    {/* Opción 3: Llamar por Teléfono */}
+                    <a
+                      href="tel:+5493884399187"
+                      onClick={() => setIsContactMenuOpen(false)}
+                      className="flex items-center gap-3 p-2.5 rounded-xl transition-all hover:bg-slate-50 text-left group cursor-pointer border border-transparent hover:border-slate-200"
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ece5db] text-[#001e50] transition-transform group-hover:scale-105">
+                        <Phone className="h-4 w-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-xs font-bold text-black group-hover:text-[#0040c4]">
+                          Llamar a Autosol
+                        </div>
+                        <p className="text-[11px] text-slate-500 truncate">
+                          +54 9 388 439-9187
+                        </p>
+                      </div>
+                    </a>
+
+                    {/* Opción 4: Ubicación Concesionario */}
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=Autosol+Jujuy,+Argentina"
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={() => setIsContactMenuOpen(false)}
+                      className="flex items-center gap-3 p-2.5 rounded-xl transition-all hover:bg-slate-50 text-left group cursor-pointer border border-transparent hover:border-slate-200"
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ece5db] text-[#001e50] transition-transform group-hover:scale-105">
+                        <MapPin className="h-4 w-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-xs font-bold text-black group-hover:text-[#0040c4]">
+                          Concesionario Jujuy
+                        </div>
+                        <p className="text-[11px] text-slate-500 truncate">
+                          Colectora Acceso Sur, Ruta 9
+                        </p>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {/* Único Botón Flotante en Pantalla */}
+              <button
+                id="fab-contact-toggle"
+                onClick={() => setIsContactMenuOpen(!isContactMenuOpen)}
+                className={`group relative flex h-14 w-14 items-center justify-center rounded-full border border-white/70 shadow-[0_12px_28px_rgba(0,30,80,0.25)] transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer ${
+                  isContactMenuOpen
+                    ? 'bg-black text-white hover:bg-slate-800'
+                    : 'bg-[#001e50] text-white hover:bg-[#0040c4]'
+                }`}
+                aria-label={isContactMenuOpen ? 'Cerrar opciones de contacto' : 'Abrir opciones de contacto'}
+                aria-expanded={isContactMenuOpen}
+              >
+                {isContactMenuOpen ? (
+                  <X className="h-6 w-6 transition-transform rotate-90 duration-200" />
+                ) : (
+                  <>
+                    <MessageCircle className="h-6 w-6 transition-transform duration-300 group-hover:scale-110" />
+                    <span className="absolute right-1 top-1 h-3 w-3 rounded-full border-2 border-[#001e50] bg-emerald-400" />
+                    <span className="pointer-events-none absolute right-[calc(100%+12px)] top-1/2 hidden w-max -translate-y-1/2 rounded-md bg-[#001e50] px-3 py-1.5 text-xs font-bold text-white shadow-lg sm:group-hover:block">
+                      Contacto y Ayuda
+                    </span>
+                  </>
+                )}
+              </button>
+            </div>
           )}
         </div>
       )}
