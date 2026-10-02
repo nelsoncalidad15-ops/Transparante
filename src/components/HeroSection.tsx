@@ -31,26 +31,31 @@ const BANNERS = [
   {
     id: 'tera',
     image: `${import.meta.env.BASE_URL}images/banners/5-WEB.jpg`,
+    imageXs: `${import.meta.env.BASE_URL}images/banners/5-WEB_xs.jpg`,
     alt: 'Nuevo Volkswagen Tera',
   },
   {
     id: 'taos',
     image: `${import.meta.env.BASE_URL}images/banners/2-WEB.jpg`,
+    imageXs: `${import.meta.env.BASE_URL}images/banners/2-WEB_xs.jpg`,
     alt: 'Volkswagen Taos',
   },
   {
     id: 'tcross',
     image: `${import.meta.env.BASE_URL}images/banners/3-WEB.jpg`,
+    imageXs: `${import.meta.env.BASE_URL}images/banners/3-WEB_xs.jpg`,
     alt: 'Volkswagen T-Cross',
   },
   {
     id: 'amarok',
     image: `${import.meta.env.BASE_URL}images/banners/1-WEB.jpg`,
+    imageXs: `${import.meta.env.BASE_URL}images/banners/1-WEB_xs.jpg`,
     alt: 'Volkswagen Amarok V6',
   },
   {
     id: 'polo',
     image: `${import.meta.env.BASE_URL}images/banners/4-WEB.jpg`,
+    imageXs: `${import.meta.env.BASE_URL}images/banners/4-WEB_xs.jpg`,
     alt: 'Volkswagen Polo Track',
   },
 ];
@@ -137,7 +142,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
   return (
     <div className="bg-white text-slate-900">
-      {/* 1. HERO CAROUSEL: Official autosol.com.ar banners sliding sideways */}
+      {/* 1. HERO CAROUSEL: Official autosol.com.ar banners with exact aspect ratios */}
       <section
         className="relative w-full overflow-hidden bg-black select-none"
         onMouseEnter={() => setIsPaused(true)}
@@ -152,54 +157,49 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           {BANNERS.map((banner, index) => (
             <div
               key={banner.id}
-              className="relative w-full shrink-0 aspect-[16/9] sm:aspect-[21/9] lg:aspect-[24/9] min-h-[260px] sm:min-h-[400px] max-h-[580px] overflow-hidden bg-black"
+              className="relative w-full shrink-0 aspect-[601/680] md:aspect-[25/7] overflow-hidden bg-black"
             >
-              <img
-                src={banner.image}
-                alt={banner.alt}
-                className="w-full h-full object-cover object-center"
-                loading={index === 0 ? 'eager' : 'lazy'}
-              />
+              <picture className="block w-full h-full">
+                <source media="(max-width: 767px)" srcSet={banner.imageXs} />
+                <img
+                  src={banner.image}
+                  alt={banner.alt}
+                  className="w-full h-full object-cover object-center"
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                />
+              </picture>
             </div>
           ))}
         </div>
 
-        {/* Small, discreet floating badge on top-left (keeps image clean without covering cars) */}
-        <div className="absolute top-4 sm:top-6 left-4 sm:left-8 z-20 pointer-events-none">
-          <span className="inline-flex items-center gap-2 rounded-full bg-black/60 backdrop-blur-md border border-white/20 px-3.5 py-1 text-xs font-semibold text-white shadow-md">
-            <span className="h-2 w-2 rounded-full bg-[#008cff] animate-pulse" />
-            Autosol Transparente · Centro oficial de orientación
-          </span>
-        </div>
-
-        {/* Navigation Arrow Left (<) */}
+        {/* Navigation Arrow Left (<) - Elegant edge zone matching autosol.com.ar */}
         <button
           onClick={prevSlide}
-          className="absolute left-2 sm:left-5 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-black/35 text-white backdrop-blur-xs transition-all hover:bg-black/75 hover:scale-105 cursor-pointer"
+          className="absolute left-0 top-0 bottom-0 z-20 flex w-12 sm:w-16 items-center justify-center text-white/75 hover:text-white hover:bg-black/15 transition-all cursor-pointer group"
           aria-label="Banner anterior"
         >
-          <ChevronLeft className="h-5 w-5 sm:h-7 sm:w-7 stroke-[2]" />
+          <ChevronLeft className="h-8 w-8 sm:h-10 sm:w-10 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] transition-transform group-hover:-translate-x-1" strokeWidth={2} />
         </button>
 
-        {/* Navigation Arrow Right (>) */}
+        {/* Navigation Arrow Right (>) - Elegant edge zone matching autosol.com.ar */}
         <button
           onClick={nextSlide}
-          className="absolute right-2 sm:right-5 top-1/2 -translate-y-1/2 z-20 flex h-9 w-9 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-black/35 text-white backdrop-blur-xs transition-all hover:bg-black/75 hover:scale-105 cursor-pointer"
+          className="absolute right-0 top-0 bottom-0 z-20 flex w-12 sm:w-16 items-center justify-center text-white/75 hover:text-white hover:bg-black/15 transition-all cursor-pointer group"
           aria-label="Siguiente banner"
         >
-          <ChevronRight className="h-5 w-5 sm:h-7 sm:w-7 stroke-[2]" />
+          <ChevronRight className="h-8 w-8 sm:h-10 sm:w-10 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] transition-transform group-hover:translate-x-1" strokeWidth={2} />
         </button>
 
         {/* Pagination Dots */}
-        <div className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+        <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
           {BANNERS.map((_, idx) => (
             <button
               key={idx}
               onClick={() => setCurrentSlide(idx)}
-              className={`h-2 rounded-full transition-all cursor-pointer ${
+              className={`h-1.5 rounded-full transition-all cursor-pointer drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)] ${
                 currentSlide === idx
-                  ? 'w-7 bg-white'
-                  : 'w-2 bg-white/40 hover:bg-white/75'
+                  ? 'w-6 bg-white'
+                  : 'w-1.5 bg-white/50 hover:bg-white/80'
               }`}
               aria-label={`Ir al banner ${idx + 1}`}
             />
