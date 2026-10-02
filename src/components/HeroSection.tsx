@@ -30,27 +30,21 @@ interface HeroSectionProps {
 const BANNERS = [
   {
     id: 'tera',
-    image: `${import.meta.env.BASE_URL}images/banners/5-WEB.jpg`,
-    imageXs: `${import.meta.env.BASE_URL}images/banners/5-WEB_xs.jpg`,
-    alt: 'Nuevo Volkswagen Tera',
+    image: `${import.meta.env.BASE_URL}images/banners/1-WEB.jpg`,
+    imageXs: `${import.meta.env.BASE_URL}images/banners/1-WEB_xs.jpg`,
+    alt: 'Nuevo Volkswagen Tera - El nuevo ícono de Volkswagen',
   },
   {
-    id: 'taos',
+    id: 'nivus',
     image: `${import.meta.env.BASE_URL}images/banners/2-WEB.jpg`,
     imageXs: `${import.meta.env.BASE_URL}images/banners/2-WEB_xs.jpg`,
-    alt: 'Volkswagen Taos',
-  },
-  {
-    id: 'tcross',
-    image: `${import.meta.env.BASE_URL}images/banners/3-WEB.jpg`,
-    imageXs: `${import.meta.env.BASE_URL}images/banners/3-WEB_xs.jpg`,
-    alt: 'Volkswagen T-Cross',
+    alt: 'Nuevo Volkswagen Nivus - Nuevas emociones',
   },
   {
     id: 'amarok',
-    image: `${import.meta.env.BASE_URL}images/banners/1-WEB.jpg`,
-    imageXs: `${import.meta.env.BASE_URL}images/banners/1-WEB_xs.jpg`,
-    alt: 'Volkswagen Amarok V6',
+    image: `${import.meta.env.BASE_URL}images/banners/3-WEB.jpg`,
+    imageXs: `${import.meta.env.BASE_URL}images/banners/3-WEB_xs.jpg`,
+    alt: 'Nueva Volkswagen Amarok - Fuerza que nació para el campo',
   },
 ];
 

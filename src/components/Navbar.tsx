@@ -90,22 +90,29 @@ export const Navbar: React.FC<NavbarProps> = ({
   const handleAdminLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!adminUsername.trim() || !adminPassword.trim()) return;
+
+    const user = adminUsername.trim().toLowerCase();
+    const pass = adminPassword.trim().toLowerCase();
+
+    // Client-side authentication for static hosting / demo (e.g. GitHub Pages)
     if (
-      import.meta.env.DEV &&
-      adminPassword === 'demo' &&
-      ['admin', 'administrativo'].includes(adminUsername.trim().toLowerCase())
+      (user === 'admin' && (pass === 'admin' || pass === 'demo' || pass === 'autosol')) ||
+      (user === 'autosol' && (pass === 'autosol' || pass === 'admin' || pass === 'demo')) ||
+      (user === 'administrativo' && (pass === 'demo' || pass === 'admin'))
     ) {
-      const isCollaborator = adminUsername.trim().toLowerCase() === 'administrativo';
+      const isCollaborator = user === 'administrativo';
       setAdminAuthenticated(true);
       setSessionRole(isCollaborator ? 'collaborator' : 'admin');
       setAdminUsername('');
       setAdminPassword('');
+      setAdminError('');
       if (isCollaborator) {
         setMenuOpen(false);
         onOpenCaseDashboard();
       }
       return;
     }
+
     setIsSubmittingAdmin(true);
     setAdminError('');
     try {
@@ -142,13 +149,14 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <>
-      {/* Top Header Bar: Transparent over hero with smooth transition on scroll */}
+      {/* Top Header Bar: 100% transparent over hero with no bottom line or contour, solid on scroll */}
       <header
         className={`fixed top-0 left-0 right-0 z-40 w-full transition-all duration-300 ${
-          isScrolled
+          isScrolled || activeTab !== 'home'
             ? 'bg-black/95 backdrop-blur-md shadow-lg border-b border-white/10 py-0'
-            : 'bg-gradient-to-b from-black/85 via-black/35 to-transparent border-b border-transparent py-1'
+            : 'bg-transparent border-none shadow-none py-1'
         }`}
+        style={!isScrolled && activeTab === 'home' ? { borderBottom: 'none', boxShadow: 'none' } : undefined}
       >
         <div className="mx-auto flex h-14 sm:h-16 w-full max-w-[1720px] items-center justify-between px-4 sm:px-8 lg:px-12">
           {/* Left Group: [VW Logo] [= Menú] [Autosol] */}
@@ -359,6 +367,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       )}
                       <span>Ingresar</span>
                     </button>
+                    <p className="text-[10px] text-slate-400 text-center">Acceso directo: <span className="font-semibold text-slate-600">admin</span> / <span className="font-semibold text-slate-600">admin</span></p>
                   </form>
                 )}
 
