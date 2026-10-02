@@ -28,13 +28,13 @@ export const FinancingView: React.FC<FinancingViewProps> = ({
         <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full border-[36px] border-[#e6e6e6]/60" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="max-w-2xl">
-            <p className="text-xs sm:text-sm font-semibold tracking-[0.16em] text-[#0040c4] uppercase">
+            <p className="text-xs sm:text-sm font-bold tracking-[0.16em] text-black uppercase">
               Opciones Claras y Canales Oficiales
             </p>
-            <h1 className="mt-2 text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.05em] text-[#001e50]">
+            <h1 className="mt-2 text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.05em] text-black">
               Financiación y Pagos
             </h1>
-            <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl">
+            <p className="mt-3 text-sm sm:text-base text-slate-700 leading-relaxed max-w-xl">
               Conocé cómo operan los créditos prendarios, planes de ahorro y transferencias bancarias oficiales en Autosol.
             </p>
           </div>

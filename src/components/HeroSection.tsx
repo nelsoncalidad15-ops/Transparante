@@ -206,13 +206,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="mx-auto w-full max-w-[1720px] px-4 sm:px-8 lg:px-12 xl:px-16">
           {/* Section Header with Black / Deep Navy Typography */}
           <div className="text-center max-w-4xl mx-auto">
-            <p className="text-xs sm:text-sm font-bold tracking-[0.16em] text-[#0040c4] uppercase">
+            <p className="text-xs sm:text-sm font-bold tracking-[0.16em] text-black uppercase">
               {getText('information_eyebrow', 'Información clara, en un solo lugar')}
             </p>
-            <h1 className="mt-2 text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.04em] text-[#001e50]">
+            <h1 className="mt-2 text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.04em] text-black">
               {getText('information_title', 'Entender tu proceso también genera confianza.')}
             </h1>
-            <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
+            <p className="mt-3 text-sm sm:text-base text-slate-700 leading-relaxed max-w-2xl mx-auto font-normal">
               {getText(
                 'information_description',
                 'Acompañamos cada etapa de tu compra con información simple, clara y actualizada.'
@@ -234,7 +234,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   'search_placeholder',
                   'Buscá una duda, un término o una etapa (ej: patentamiento, gestoría, tiempos)...'
                 )}
-                className="min-w-0 flex-1 bg-transparent px-4 text-sm sm:text-base text-[#001e50] outline-none placeholder:text-slate-400 font-medium"
+                className="min-w-0 flex-1 bg-transparent px-4 text-sm sm:text-base text-black outline-none placeholder:text-slate-400 font-medium"
                 aria-label="Buscar información"
               />
               <button
@@ -248,15 +248,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </form>
 
             {/* Search Suggestions */}
-            <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2 text-xs text-slate-500">
-              <span className="font-semibold text-slate-400">Temas frecuentes:</span>
+            <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2 text-xs text-slate-600">
+              <span className="font-bold text-black">Temas frecuentes:</span>
               {['patentamiento', 'gestoría', 'fecha de entrega', 'documentación', 'chasis'].map(
                 (term) => (
                   <button
                     type="button"
                     onClick={() => onSearchSubmit(term)}
                     key={term}
-                    className="rounded-full bg-white border border-slate-200 px-3.5 py-1 text-xs text-slate-700 hover:border-[#001e50] hover:text-[#001e50] transition-colors cursor-pointer"
+                    className="rounded-full bg-white border border-slate-300 px-3.5 py-1 text-xs text-black font-medium hover:border-black hover:bg-slate-50 transition-colors cursor-pointer"
                   >
                     {term}
                   </button>
@@ -273,20 +273,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <button
                   key={card.title}
                   onClick={card.action}
-                  className="group rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-[0_4px_16px_rgba(0,30,80,0.04)] transition-all hover:-translate-y-1.5 hover:border-[#0040c4] hover:shadow-[0_14px_32px_rgba(0,30,80,0.09)] cursor-pointer flex flex-col justify-between"
+                  className="group rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-[0_4px_16px_rgba(0,30,80,0.04)] transition-all hover:-translate-y-1.5 hover:border-black hover:shadow-[0_14px_32px_rgba(0,30,80,0.09)] cursor-pointer flex flex-col justify-between"
                 >
                   <div>
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#ece5db] text-[#0040c4] transition-colors group-hover:bg-[#001e50] group-hover:text-white">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#ece5db] text-[#001e50] transition-colors group-hover:bg-[#001e50] group-hover:text-white">
                       <Icon className="h-6 w-6" strokeWidth={1.8} />
                     </div>
-                    <h2 className="mt-4 text-base font-bold leading-snug text-[#001e50] group-hover:text-[#0040c4] transition-colors">
+                    <h2 className="mt-4 text-base font-bold leading-snug text-black group-hover:text-[#0040c4] transition-colors">
                       {card.title}
                     </h2>
                     <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-600">
                       {card.text}
                     </p>
                   </div>
-                  <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center text-xs font-semibold text-[#0040c4]">
+                  <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center text-xs font-bold text-black group-hover:text-[#0040c4] transition-colors">
                     <span>Consultar guía</span>
                     <ArrowRight className="ml-1 h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                   </div>
@@ -302,13 +302,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="mx-auto w-full max-w-[1720px] px-4 sm:px-8 lg:px-12 xl:px-16">
           <div className="flex flex-wrap items-end justify-between gap-5">
             <div>
-              <p className="text-xs sm:text-sm font-bold tracking-[0.14em] text-[#0040c4] uppercase">
+              <p className="text-xs sm:text-sm font-bold tracking-[0.14em] text-black uppercase">
                 {getText('process_eyebrow', 'Etapas del proceso')}
               </p>
-              <h2 className="mt-2 text-3xl sm:text-4xl font-semibold tracking-[-0.04em] text-[#001e50]">
+              <h2 className="mt-2 text-3xl sm:text-4xl font-semibold tracking-[-0.04em] text-black">
                 {getText('process_title', '¿En qué etapa de tu compra estás?')}
               </h2>
-              <p className="mt-2 text-sm text-slate-600 max-w-2xl">
+              <p className="mt-2 text-sm text-slate-700 max-w-2xl">
                 {getText(
                   'process_description',
                   'Elegí una etapa para conocer qué sucede, qué documentación interviene y qué viene después.'
@@ -336,13 +336,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                       className="group flex w-32 shrink-0 flex-col items-center text-center cursor-pointer"
                       aria-label={`Ver etapa ${stage.name}`}
                     >
-                      <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#ece5db] text-[#001e50] shadow-sm transition-all group-hover:scale-110 group-hover:bg-[#001e50] group-hover:text-white">
+                      <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#ece5db] text-black shadow-sm transition-all group-hover:scale-110 group-hover:bg-[#001e50] group-hover:text-white">
                         <Icon className="h-7 w-7" strokeWidth={1.6} />
                       </span>
-                      <span className="mt-3 text-xs font-bold leading-tight text-[#001e50] group-hover:text-[#0040c4]">
+                      <span className="mt-3 text-xs font-bold leading-tight text-black group-hover:text-[#0040c4]">
                         {stage.name}
                       </span>
-                      <span className="mt-1 text-[10px] text-slate-400 font-medium">
+                      <span className="mt-1 text-[10px] text-slate-500 font-medium">
                         Paso 0{stage.stepNumber || index + 1}
                       </span>
                     </button>
@@ -366,11 +366,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             {/* Card 1: Preguntas Frecuentes */}
             <div className="rounded-2xl border border-slate-200 bg-white p-7 sm:p-9 shadow-sm flex flex-col justify-between">
               <div>
-                <div className="flex items-center gap-2 text-xs font-bold text-[#0040c4] uppercase tracking-wider">
-                  <CircleHelp className="h-4 w-4 text-[#0040c4]" />
+                <div className="flex items-center gap-2 text-xs font-bold text-black uppercase tracking-wider">
+                  <CircleHelp className="h-4 w-4 text-[#001e50]" />
                   <span>Centro de ayuda</span>
                 </div>
-                <h3 className="mt-3 text-2xl font-bold text-[#001e50]">
+                <h3 className="mt-3 text-2xl font-bold text-black">
                   ¿Tenés dudas sobre tu trámite?
                 </h3>
                 <p className="mt-2 text-sm text-slate-600 leading-relaxed">
@@ -387,9 +387,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 </button>
                 <button
                   onClick={() => onNavigate('assistant')}
-                  className="text-xs font-semibold text-[#0040c4] hover:underline"
+                  className="text-xs font-bold text-black hover:text-[#0040c4] hover:underline"
                 >
-                  O consultá con IA →
+                  O consultá con nuestro bot de consulta →
                 </button>
               </div>
             </div>
@@ -397,11 +397,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             {/* Card 2: Portal comercial oficial Autosol */}
             <div className="rounded-2xl border border-slate-200 bg-white p-7 sm:p-9 shadow-sm flex flex-col justify-between">
               <div>
-                <div className="flex items-center gap-2 text-xs font-bold text-[#008cff] uppercase tracking-wider">
-                  <CarFront className="h-4 w-4 text-[#0040c4]" />
+                <div className="flex items-center gap-2 text-xs font-bold text-black uppercase tracking-wider">
+                  <CarFront className="h-4 w-4 text-[#001e50]" />
                   <span>Portal comercial oficial</span>
                 </div>
-                <h3 className="mt-3 text-2xl font-bold text-[#001e50]">
+                <h3 className="mt-3 text-2xl font-bold text-black">
                   Conocé la gama 0km y catálogo Autosol
                 </h3>
                 <p className="mt-2 text-sm text-slate-600 leading-relaxed">
@@ -418,7 +418,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <span>Visitar autosol.com.ar</span>
                   <ExternalLink className="h-3.5 w-3.5" />
                 </a>
-                <span className="text-xs text-slate-400">Jujuy y Salta</span>
+                <span className="text-xs text-slate-500 font-medium">Jujuy y Salta</span>
               </div>
             </div>
           </div>

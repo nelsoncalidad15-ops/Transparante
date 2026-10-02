@@ -184,16 +184,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="font-semibold text-sm tracking-tight">Menú</span>
             </button>
 
-            {/* Autosol Dealer Wordmark & Transparente Badge */}
+            {/* Autosol Dealer Wordmark */}
             <button
               onClick={() => navigate('home')}
-              className="flex items-center gap-2 cursor-pointer text-left"
+              className="flex items-center cursor-pointer text-left"
             >
               <span className="text-xl sm:text-2xl font-black tracking-[-0.03em] text-white">
                 Autosol
-              </span>
-              <span className="hidden sm:inline-flex items-center rounded-md bg-[#0040c4] px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-white">
-                Transparente
               </span>
             </button>
           </div>
@@ -204,8 +201,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => navigate('assistant')}
               className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white transition-all hover:bg-white hover:text-black cursor-pointer"
             >
-              <MessageCircleQuestion className="h-3.5 w-3.5 text-[#008cff]" />
-              <span>Asistente IA</span>
+              <MessageCircleQuestion className="h-3.5 w-3.5 text-white" />
+              <span>Bot de consulta</span>
             </button>
 
             <a
@@ -234,55 +231,60 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Drawer container from LEFT */}
           <aside
             className="fixed inset-y-0 left-0 z-50 flex w-full max-w-[360px] sm:max-w-[420px] flex-col justify-between overflow-y-auto bg-[#f8f7f4] p-6 sm:p-8 text-[#001e50] shadow-2xl transition-transform duration-300 ease-out"
-            aria-label="Menú principal de Autosol Transparente"
+            aria-label="Menú principal de Autosol"
           >
             <div>
-              {/* Top Row: Circular Close Button */}
-              <div className="flex items-center justify-between pb-6">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl font-bold tracking-tight text-[#001e50]">Autosol</span>
-                  <span className="rounded bg-[#001e50] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">
-                    Transparente
-                  </span>
-                </div>
+              {/* Top Row: Official Autosol Logo & Clean Close Button (No black borders) */}
+              <div className="flex items-center justify-between pb-6 border-b border-slate-200">
+                <button
+                  onClick={() => navigate('home')}
+                  className="flex items-center cursor-pointer"
+                  aria-label="Ir a inicio de Autosol"
+                >
+                  <img
+                    src={`${import.meta.env.BASE_URL}images/autosol-logo-official.png`}
+                    alt="Volkswagen Autosol"
+                    className="h-8 sm:h-9 w-auto object-contain"
+                  />
+                </button>
                 <button
                   onClick={() => setMenuOpen(false)}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 text-slate-700 transition-colors hover:border-[#001e50] hover:text-[#001e50] cursor-pointer"
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-slate-600 transition-colors hover:bg-black/5 hover:text-black cursor-pointer"
                   aria-label="Cerrar menú"
                 >
-                  <X className="h-5 w-5 stroke-[1.5]" />
+                  <X className="h-6 w-6 stroke-[1.5]" />
                 </button>
               </div>
 
               {/* Navigation Links list (Large bold links in black/deep navy) */}
-              <nav className="flex flex-col space-y-4 pt-2">
+              <nav className="flex flex-col space-y-4 pt-6">
                 {navigation.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => navigate(item.id)}
                     className={`text-left text-lg sm:text-xl font-semibold tracking-[-0.02em] transition-colors cursor-pointer flex items-center justify-between group ${
                       activeTab === item.id
-                        ? 'text-[#0040c4] font-bold'
-                        : 'text-[#001e50] hover:text-[#0040c4]'
+                        ? 'text-black font-bold'
+                        : 'text-slate-800 hover:text-black'
                     }`}
                   >
                     <span>{item.label}</span>
-                    <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all text-[#0040c4]" />
+                    <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all text-black" />
                   </button>
                 ))}
               </nav>
 
               {/* Divider */}
-              <hr className="my-6 border-slate-300" />
+              <hr className="my-6 border-slate-200" />
 
-              {/* Action Button: Asistente IA */}
+              {/* Action Button: Bot de consulta */}
               <div>
                 <button
                   onClick={() => navigate('assistant')}
-                  className="w-full rounded-full bg-[#001e50] py-3 px-4 text-center text-xs font-bold text-white transition-all hover:bg-[#0040c4] cursor-pointer flex items-center justify-center gap-2 shadow-sm"
+                  className="w-full rounded-full bg-[#001e50] py-3.5 px-4 text-center text-xs font-bold text-white transition-all hover:bg-[#0040c4] cursor-pointer flex items-center justify-center gap-2 shadow-sm"
                 >
-                  <MessageCircleQuestion className="h-4 w-4 text-[#008cff]" />
-                  <span>Consultar con Asistente IA</span>
+                  <MessageCircleQuestion className="h-4 w-4 text-white" />
+                  <span>Bot de consulta</span>
                 </button>
               </div>
             </div>

@@ -76,13 +76,13 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
       {/* Top Search Header */}
       <div className="rounded-3xl bg-white border border-slate-200/80 p-6 sm:p-8 shadow-[0_5px_20px_rgba(7,30,58,0.04)] space-y-5">
         <div className="max-w-2xl">
-          <p className="text-xs sm:text-sm font-semibold tracking-[0.16em] text-[#0040c4] uppercase">
+          <p className="text-xs sm:text-sm font-bold tracking-[0.16em] text-black uppercase">
             Búsqueda Integral de Información
           </p>
-          <h1 className="mt-1 text-2xl sm:text-3xl font-semibold tracking-[-0.04em] text-[#001e50]">
-            Resultados para <span className="text-[#0040c4]">“{query}”</span>
+          <h1 className="mt-1 text-2xl sm:text-3xl font-semibold tracking-[-0.04em] text-black">
+            Resultados para <span>“{query}”</span>
           </h1>
-          <p className="mt-1 text-xs sm:text-sm text-slate-500 font-normal">
+          <p className="mt-1 text-xs sm:text-sm text-slate-600 font-normal">
             Se encontraron {results.length} resultados oficiales organizados por relevancia.
           </p>
         </div>

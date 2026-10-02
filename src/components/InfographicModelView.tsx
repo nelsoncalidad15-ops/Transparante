@@ -55,10 +55,10 @@ export const InfographicModelView: React.FC<InfographicModelViewProps> = ({
             <Layers className="w-6 h-6 text-[#0040c4]" strokeWidth={1.6} />
           </div>
           <div>
-            <p className="text-[11px] font-semibold text-[#0040c4] uppercase tracking-wider">
+            <p className="text-[11px] font-bold text-black uppercase tracking-wider">
               Arquitectura del Sistema
             </p>
-            <h1 className="text-lg sm:text-xl font-semibold text-[#001e50] tracking-tight">
+            <h1 className="text-lg sm:text-xl font-semibold text-black tracking-tight">
               Estructura Integral del Modelo Autosol Transparente
             </h1>
             <p className="text-xs text-slate-500 font-normal mt-0.5">
