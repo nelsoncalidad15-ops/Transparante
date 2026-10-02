@@ -94,11 +94,11 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Buscar en Autosol Transparente..."
-            className="min-w-0 flex-1 bg-transparent px-3 text-xs sm:text-sm text-[#001e50] outline-none placeholder:text-slate-400 font-medium"
+            className="min-w-0 flex-1 bg-transparent px-3 text-xs sm:text-sm text-[#002244] outline-none placeholder:text-slate-400 font-medium"
           />
           <button
             type="submit"
-            className="flex h-10 items-center justify-center gap-2 rounded-lg bg-[#0040c4] px-4 text-xs font-bold text-white transition-colors hover:bg-[#001e50]"
+            className="flex h-10 items-center justify-center gap-2 rounded-lg bg-[#002244] px-4 text-xs font-bold text-white transition-colors hover:bg-[#002244] hover:brightness-125"
           >
             <Search className="h-4 w-4" />
             <span className="hidden sm:inline">Buscar</span>
@@ -117,7 +117,7 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
               onClick={() => setSelectedType(type)}
               className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer border ${
                 selectedType === type
-                  ? 'bg-[#001e50] text-white border-[#001e50] shadow-sm'
+                  ? 'bg-[#002244] text-white border-[#002244] shadow-sm'
                   : 'bg-[#ece5db] hover:bg-slate-100 text-slate-600 border-slate-200'
               }`}
             >
@@ -130,11 +130,11 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
       {/* Results List */}
       {results.length === 0 ? (
         <div className="rounded-3xl bg-white border border-slate-200/80 p-12 text-center space-y-3 shadow-2xs">
-          <div className="w-12 h-12 rounded-full bg-[#e6e6e6] text-[#0040c4] flex items-center justify-center mx-auto">
+          <div className="w-12 h-12 rounded-full bg-[#e6e6e6] text-[#002244] flex items-center justify-center mx-auto">
             <Search className="w-6 h-6" />
           </div>
           <div className="space-y-1">
-            <h3 className="text-base font-semibold text-[#001e50]">
+            <h3 className="text-base font-semibold text-[#002244]">
               No encontramos resultados exactos para “{query}”
             </h3>
             <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
@@ -161,13 +161,13 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
             >
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#0040c4] bg-[#e6e6e6] px-2.5 py-0.5 rounded-full">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#002244] bg-[#e6e6e6] px-2.5 py-0.5 rounded-full">
                     {item.type}
                   </span>
                   <span className="text-[11px] text-slate-400 font-medium">{item.category}</span>
                 </div>
 
-                <h3 className="text-base font-semibold text-[#001e50] group-hover:text-[#0040c4] transition-colors leading-snug">
+                <h3 className="text-base font-semibold text-[#002244] group-hover:text-[#002244] transition-colors leading-snug">
                   {item.title}
                 </h3>
 

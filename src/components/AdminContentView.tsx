@@ -249,7 +249,7 @@ export const AdminContentView: React.FC = () => {
           onClick={() => setActiveSubTab('table')}
           className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-1.5 cursor-pointer ${
             activeSubTab === 'table'
-              ? 'bg-[#001e50] text-white shadow-xs'
+              ? 'bg-[#002244] text-white shadow-xs'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
@@ -260,7 +260,7 @@ export const AdminContentView: React.FC = () => {
         <button
           onClick={() => setActiveSubTab('stages')}
           className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-1.5 cursor-pointer ${
-            activeSubTab === 'stages' ? 'bg-[#001e50] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
+            activeSubTab === 'stages' ? 'bg-[#002244] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           <Settings className="w-3.5 h-3.5" />
@@ -270,7 +270,7 @@ export const AdminContentView: React.FC = () => {
         <button
           onClick={() => setActiveSubTab('faqs')}
           className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-1.5 cursor-pointer ${
-            activeSubTab === 'faqs' ? 'bg-[#001e50] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
+            activeSubTab === 'faqs' ? 'bg-[#002244] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           <Sparkles className="w-3.5 h-3.5 text-sky-400" />
@@ -280,7 +280,7 @@ export const AdminContentView: React.FC = () => {
         <button
           onClick={() => setActiveSubTab('texts')}
           className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-1.5 cursor-pointer ${
-            activeSubTab === 'texts' ? 'bg-[#001e50] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
+            activeSubTab === 'texts' ? 'bg-[#002244] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           <FileEdit className="w-3.5 h-3.5" />
@@ -291,7 +291,7 @@ export const AdminContentView: React.FC = () => {
           onClick={() => setActiveSubTab('validation')}
           className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-1.5 border border-blue-200 cursor-pointer ${
             activeSubTab === 'validation'
-              ? 'bg-[#0040c4] text-white shadow-xs'
+              ? 'bg-[#002244] text-white shadow-xs'
               : 'bg-blue-50/80 text-blue-900 hover:bg-blue-100'
           }`}
         >
@@ -303,7 +303,7 @@ export const AdminContentView: React.FC = () => {
           onClick={() => setActiveSubTab('sheets')}
           className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-1.5 cursor-pointer ${
             activeSubTab === 'sheets'
-              ? 'bg-[#001e50] text-white shadow-xs'
+              ? 'bg-[#002244] text-white shadow-xs'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
@@ -315,7 +315,7 @@ export const AdminContentView: React.FC = () => {
           onClick={() => setActiveSubTab('export')}
           className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-1.5 cursor-pointer ${
             activeSubTab === 'export'
-              ? 'bg-[#001e50] text-white shadow-xs'
+              ? 'bg-[#002244] text-white shadow-xs'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >

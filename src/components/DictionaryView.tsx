@@ -129,9 +129,9 @@ export const DictionaryView: React.FC<DictionaryViewProps> = ({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Buscar término (ej. VIN, PDI)..."
-              className="min-w-0 flex-1 bg-transparent px-3 text-xs sm:text-sm text-[#001e50] outline-none placeholder:text-slate-400"
+              className="min-w-0 flex-1 bg-transparent px-3 text-xs sm:text-sm text-[#002244] outline-none placeholder:text-slate-400"
             />
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#0040c4] text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#002244] text-white">
               <Search className="h-4 w-4" />
             </div>
           </div>
@@ -146,7 +146,7 @@ export const DictionaryView: React.FC<DictionaryViewProps> = ({
             onClick={() => setSelectedCategory(cat)}
             className={`px-4 py-2 rounded-full text-xs font-semibold transition-all shrink-0 cursor-pointer border ${
               selectedCategory === cat
-                ? 'bg-[#001e50] text-white border-[#001e50] shadow-sm'
+                ? 'bg-[#002244] text-white border-[#002244] shadow-sm'
                 : 'bg-white border-slate-200 text-slate-600 hover:border-[#a0a3aa]'
             }`}
           >
@@ -170,21 +170,21 @@ export const DictionaryView: React.FC<DictionaryViewProps> = ({
               </div>
 
               <div>
-                <h3 className="text-base font-semibold text-[#001e50] group-hover:text-[#0040c4] transition-colors">
+                <h3 className="text-base font-semibold text-[#002244] group-hover:text-[#002244] transition-colors">
                   {item.term}
                 </h3>
                 <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">{item.simpleDefinition}</p>
               </div>
 
               <div className="bg-[#ece5db] rounded-xl p-3 border border-slate-100 text-xs text-slate-600 leading-relaxed">
-                💡 <span className="font-medium text-[#001e50]">Ejemplo:</span> {item.example}
+                💡 <span className="font-medium text-[#002244]">Ejemplo:</span> {item.example}
               </div>
             </div>
 
             <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
               <button
                 onClick={() => onOpenAssistant(`¿Qué significa ${item.term}?`)}
-                className="text-xs font-semibold text-[#0040c4] hover:underline flex items-center gap-1 cursor-pointer"
+                className="text-xs font-semibold text-[#002244] hover:underline flex items-center gap-1 cursor-pointer"
               >
                 <span>Consultar con el asistente</span>
                 <ChevronRight className="w-3.5 h-3.5" />

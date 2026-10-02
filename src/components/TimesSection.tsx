@@ -133,8 +133,8 @@ export const TimesSection: React.FC<TimesSectionProps> = ({
             </p>
           </div>
 
-          <div className="bg-[#ece5db] px-4 py-2.5 rounded-full border border-slate-200/80 text-xs font-semibold text-[#001e50] flex items-center gap-2 shrink-0 self-start md:self-auto">
-            <Clock className="w-4 h-4 text-[#0040c4]" />
+          <div className="bg-[#ece5db] px-4 py-2.5 rounded-full border border-slate-200/80 text-xs font-semibold text-[#002244] flex items-center gap-2 shrink-0 self-start md:self-auto">
+            <Clock className="w-4 h-4 text-[#002244]" />
             <span>Días hábiles administrativos</span>
           </div>
         </div>
@@ -151,8 +151,8 @@ export const TimesSection: React.FC<TimesSectionProps> = ({
             >
               <div className="space-y-3.5">
                 <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-xl bg-[#e6e6e6] text-[#0040c4] flex items-center justify-center transition-transform group-hover:scale-105">
-                    <Icon className="w-5 h-5 text-[#0040c4]" strokeWidth={1.6} />
+                  <div className="w-10 h-10 rounded-xl bg-[#e6e6e6] text-[#002244] flex items-center justify-center transition-transform group-hover:scale-105">
+                    <Icon className="w-5 h-5 text-[#002244]" strokeWidth={1.6} />
                   </div>
                   <span className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-[#ece5db] text-slate-600 border border-slate-200">
                     ⏱️ {stage.estimatedTime}
@@ -160,7 +160,7 @@ export const TimesSection: React.FC<TimesSectionProps> = ({
                 </div>
 
                 <div>
-                  <h3 className="text-base font-semibold text-[#001e50] group-hover:text-[#0040c4] transition-colors">
+                  <h3 className="text-base font-semibold text-[#002244] group-hover:text-[#002244] transition-colors">
                     {stage.name}
                   </h3>
                   <p className="text-xs text-slate-600 mt-1 leading-relaxed">{stage.whenStarts}</p>
@@ -173,7 +173,7 @@ export const TimesSection: React.FC<TimesSectionProps> = ({
                   <ul className="space-y-1 text-xs text-slate-600">
                     {stage.keyFactors.map((f, i) => (
                       <li key={i} className="flex items-start gap-1.5">
-                        <span className="text-[#0040c4] font-bold">•</span>
+                        <span className="text-[#002244] font-bold">•</span>
                         <span className="leading-snug">{f}</span>
                       </li>
                     ))}
@@ -181,7 +181,7 @@ export const TimesSection: React.FC<TimesSectionProps> = ({
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-[#0040c4]">
+              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-[#002244]">
                 <button
                   onClick={() => onSelectStage(stage.id)}
                   className="flex items-center gap-1 hover:underline cursor-pointer"
@@ -197,9 +197,9 @@ export const TimesSection: React.FC<TimesSectionProps> = ({
 
       {/* Nota de Acompañamiento */}
       <div className="rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-5 shadow-2xs flex items-center gap-3 text-xs sm:text-sm text-slate-600">
-        <Info className="w-5 h-5 text-[#0040c4] shrink-0" />
+        <Info className="w-5 h-5 text-[#002244] shrink-0" />
         <span className="leading-relaxed">
-          <strong className="text-[#001e50]">Acompañamiento formal Autosol:</strong> Cada cliente cuenta con un gestor y asesor asignado que le comunica el avance de cada hito en tiempo y forma.
+          <strong className="text-[#002244]">Acompañamiento formal Autosol:</strong> Cada cliente cuenta con un gestor y asesor asignado que le comunica el avance de cada hito en tiempo y forma.
         </span>
       </div>
     </div>

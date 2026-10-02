@@ -92,7 +92,7 @@ export const DeliveryView: React.FC<DeliveryViewProps> = ({
           >
             <div className="space-y-3.5">
               <div className="flex items-center justify-between">
-                <span className="w-8 h-8 rounded-full bg-[#001e50] text-white text-xs font-bold flex items-center justify-center">
+                <span className="w-8 h-8 rounded-full bg-[#002244] text-white text-xs font-bold flex items-center justify-center">
                   0{item.step}
                 </span>
                 <span className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-[#ece5db] text-slate-600 border border-slate-200">
@@ -101,15 +101,15 @@ export const DeliveryView: React.FC<DeliveryViewProps> = ({
               </div>
 
               <div>
-                <h3 className="text-sm font-semibold text-[#001e50] group-hover:text-[#0040c4] transition-colors">
+                <h3 className="text-sm font-semibold text-[#002244] group-hover:text-[#002244] transition-colors">
                   {item.title}
                 </h3>
                 <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">{item.desc}</p>
               </div>
             </div>
 
-            <div className="mt-5 pt-3 border-t border-slate-100 flex items-center text-[11px] font-semibold text-[#0040c4]">
-              <ShieldCheck className="w-3.5 h-3.5 mr-1.5 text-[#0040c4]" />
+            <div className="mt-5 pt-3 border-t border-slate-100 flex items-center text-[11px] font-semibold text-[#002244]">
+              <ShieldCheck className="w-3.5 h-3.5 mr-1.5 text-[#002244]" />
               <span>Protocolo oficial de calidad</span>
             </div>
           </div>
@@ -120,17 +120,17 @@ export const DeliveryView: React.FC<DeliveryViewProps> = ({
       <div className="rounded-3xl bg-white border border-slate-200/80 p-6 sm:p-8 shadow-[0_5px_20px_rgba(7,30,58,0.04)] space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#e6e6e6] text-[#0040c4] flex items-center justify-center">
-              <KeyRound className="w-5 h-5 text-[#0040c4]" strokeWidth={1.6} />
+            <div className="w-10 h-10 rounded-xl bg-[#e6e6e6] text-[#002244] flex items-center justify-center">
+              <KeyRound className="w-5 h-5 text-[#002244]" strokeWidth={1.6} />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-semibold tracking-[-0.03em] text-[#001e50]">
+              <h3 className="text-base sm:text-lg font-semibold tracking-[-0.03em] text-[#002244]">
                 Checklist interactivo: ¿Qué traer el día de la entrega?
               </h3>
               <p className="text-xs text-slate-500">Marcá cada elemento para verificar que tu legajo esté completo</p>
             </div>
           </div>
-          <span className="text-xs font-semibold bg-[#e6e6e6] text-[#0040c4] px-3 py-1 rounded-full self-start sm:self-auto">
+          <span className="text-xs font-semibold bg-[#e6e6e6] text-[#002244] px-3 py-1 rounded-full self-start sm:self-auto">
             Verificación Rápida
           </span>
         </div>
@@ -144,13 +144,13 @@ export const DeliveryView: React.FC<DeliveryViewProps> = ({
                 onClick={() => toggleCheck(item.id)}
                 className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center gap-3.5 ${
                   isChecked
-                    ? 'bg-[#ece5db] border-[#0040c4] text-[#001e50] font-semibold shadow-2xs'
+                    ? 'bg-[#ece5db] border-[#002244] text-[#002244] font-semibold shadow-2xs'
                     : 'bg-white border-slate-200/80 text-slate-600 hover:border-[#a0a3aa]'
                 }`}
               >
                 <div
                   className={`w-5 h-5 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
-                    isChecked ? 'bg-[#0040c4] text-white' : 'border border-slate-300 bg-white'
+                    isChecked ? 'bg-[#002244] text-white' : 'border border-slate-300 bg-white'
                   }`}
                 >
                   {isChecked && <CheckCircle2 className="w-4 h-4 text-white" />}

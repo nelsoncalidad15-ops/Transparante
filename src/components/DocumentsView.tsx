@@ -110,8 +110,8 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
               onClick={() => setProfileType('fisica')}
               className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                 profileType === 'fisica'
-                  ? 'bg-[#001e50] text-white shadow-sm'
-                  : 'text-slate-600 hover:text-[#001e50]'
+                  ? 'bg-[#002244] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-[#002244]'
               }`}
             >
               Persona Física
@@ -120,8 +120,8 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
               onClick={() => setProfileType('juridica')}
               className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                 profileType === 'juridica'
-                  ? 'bg-[#001e50] text-white shadow-sm'
-                  : 'text-slate-600 hover:text-[#001e50]'
+                  ? 'bg-[#002244] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-[#002244]'
               }`}
             >
               Persona Jurídica
@@ -141,24 +141,24 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
             >
               <div className="space-y-3.5">
                 <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-xl bg-[#e6e6e6] text-[#0040c4] flex items-center justify-center transition-transform group-hover:scale-105">
-                    <Icon className="w-5 h-5 text-[#0040c4]" strokeWidth={1.6} />
+                  <div className="w-10 h-10 rounded-xl bg-[#e6e6e6] text-[#002244] flex items-center justify-center transition-transform group-hover:scale-105">
+                    <Icon className="w-5 h-5 text-[#002244]" strokeWidth={1.6} />
                   </div>
-                  <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#ece5db] text-[#001e50] border border-slate-200">
+                  <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#ece5db] text-[#002244] border border-slate-200">
                     {doc.status}
                   </span>
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-semibold text-[#001e50] group-hover:text-[#0040c4] transition-colors">
+                  <h3 className="text-sm font-semibold text-[#002244] group-hover:text-[#002244] transition-colors">
                     {doc.title}
                   </h3>
                   <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">{doc.desc}</p>
                 </div>
               </div>
 
-              <div className="mt-5 pt-3 border-t border-slate-100 flex items-center text-[11px] font-semibold text-[#0040c4]">
-                <CheckCircle2 className="w-3.5 h-3.5 mr-1.5 text-[#0040c4]" />
+              <div className="mt-5 pt-3 border-t border-slate-100 flex items-center text-[11px] font-semibold text-[#002244]">
+                <CheckCircle2 className="w-3.5 h-3.5 mr-1.5 text-[#002244]" />
                 <span>Gestoría Autosol incluida</span>
               </div>
             </div>
@@ -169,11 +169,11 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
       {/* Tarjeta de Asesoramiento Oficial */}
       <div className="rounded-3xl bg-white border border-slate-200/80 p-6 sm:p-7 shadow-[0_5px_20px_rgba(7,30,58,0.04)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-[#e6e6e6] text-[#0040c4] flex items-center justify-center shrink-0 border border-[#e6e6e6]">
-            <ShieldCheck className="w-6 h-6 text-[#0040c4]" strokeWidth={1.6} />
+          <div className="w-12 h-12 rounded-2xl bg-[#e6e6e6] text-[#002244] flex items-center justify-center shrink-0 border border-[#e6e6e6]">
+            <ShieldCheck className="w-6 h-6 text-[#002244]" strokeWidth={1.6} />
           </div>
           <div>
-            <div className="text-sm font-semibold text-[#001e50]">
+            <div className="text-sm font-semibold text-[#002244]">
               ¿Quién confecciona los formularios oficiales?
             </div>
             <div className="text-xs text-slate-600 mt-0.5 max-w-xl leading-relaxed">
@@ -184,7 +184,7 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
 
         <button
           onClick={() => onOpenAssistant('¿Qué papeles necesito para patentar?')}
-          className="inline-flex items-center gap-2 rounded-full bg-[#001e50] px-5 py-3 text-xs font-bold text-white transition-all hover:bg-[#0040c4] hover:scale-[1.02] cursor-pointer shrink-0"
+          className="inline-flex items-center gap-2 rounded-full bg-[#002244] px-5 py-3 text-xs font-bold text-white transition-all hover:bg-[#002244] hover:brightness-125 hover:scale-[1.02] cursor-pointer shrink-0"
         >
           Consultar al Asistente
         </button>

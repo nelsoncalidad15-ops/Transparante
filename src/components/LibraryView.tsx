@@ -85,9 +85,9 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Buscar por término, concepto o trámite (ej: patentamiento, seguro, gestoría)..."
-            className="min-w-0 flex-1 bg-transparent px-3 text-xs sm:text-sm text-[#001e50] outline-none placeholder:text-slate-400"
+            className="min-w-0 flex-1 bg-transparent px-3 text-xs sm:text-sm text-[#002244] outline-none placeholder:text-slate-400"
           />
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#0040c4] text-white">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#002244] text-white">
             <Search className="h-4 w-4" />
           </div>
         </div>
@@ -106,7 +106,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer border ${
                   isSelected
-                    ? 'bg-[#001e50] text-white border-[#001e50] shadow-sm'
+                    ? 'bg-[#002244] text-white border-[#002244] shadow-sm'
                     : 'bg-[#ece5db] hover:bg-slate-100 text-slate-600 border-slate-200'
                 }`}
               >
@@ -127,7 +127,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
           {selectedCategory !== 'Todo' && (
             <button
               onClick={() => setSelectedCategory('Todo')}
-              className="text-[#0040c4] hover:underline"
+              className="text-[#002244] hover:underline"
             >
               Ver todas las categorías
             </button>
@@ -136,10 +136,10 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
 
         {filteredArticles.length === 0 ? (
           <div className="rounded-3xl bg-white border border-slate-200/80 p-12 text-center space-y-3 shadow-2xs">
-            <div className="w-12 h-12 rounded-full bg-[#e6e6e6] text-[#0040c4] flex items-center justify-center mx-auto">
+            <div className="w-12 h-12 rounded-full bg-[#e6e6e6] text-[#002244] flex items-center justify-center mx-auto">
               <Search className="w-6 h-6" />
             </div>
-            <h3 className="text-base font-semibold text-[#001e50]">
+            <h3 className="text-base font-semibold text-[#002244]">
               No encontramos guías con ese término
             </h3>
             <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
@@ -150,7 +150,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
                 setSearchQuery('');
                 setSelectedCategory('Todo');
               }}
-              className="mt-2 text-xs font-bold text-[#0040c4] hover:underline"
+              className="mt-2 text-xs font-bold text-[#002244] hover:underline"
             >
               Restablecer filtros
             </button>
@@ -166,7 +166,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-semibold text-[#0040c4] bg-[#e6e6e6] px-2.5 py-1 rounded-full">
+                    <span className="text-[10px] font-semibold text-[#002244] bg-[#e6e6e6] px-2.5 py-1 rounded-full">
                       {article.category}
                     </span>
                     <span className="flex items-center gap-1 text-[11px] text-slate-400 font-medium">
@@ -175,7 +175,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
                     </span>
                   </div>
 
-                  <h3 className="text-base font-semibold text-[#001e50] group-hover:text-[#0040c4] transition-colors leading-snug">
+                  <h3 className="text-base font-semibold text-[#002244] group-hover:text-[#002244] transition-colors leading-snug">
                     {article.title}
                   </h3>
 
@@ -187,7 +187,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
                 <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between">
                   <div className="flex items-center gap-3 text-[11px] text-slate-400">
                     <span className="flex items-center gap-1">
-                      <ThumbsUp className="w-3.5 h-3.5 text-[#0040c4]" />
+                      <ThumbsUp className="w-3.5 h-3.5 text-[#002244]" />
                       <span>{article.helpfulCount}</span>
                     </span>
                     <span className="flex items-center gap-1">
@@ -196,7 +196,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
                     </span>
                   </div>
 
-                  <button className="inline-flex items-center gap-1 text-xs font-semibold text-[#0040c4] group-hover:underline">
+                  <button className="inline-flex items-center gap-1 text-xs font-semibold text-[#002244] group-hover:underline">
                     <span>Ver información</span>
                     <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
                   </button>

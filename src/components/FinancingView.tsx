@@ -49,25 +49,25 @@ export const FinancingView: React.FC<FinancingViewProps> = ({
           onClick={() => setSelectedMethod('prendario')}
           className={`p-6 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
             selectedMethod === 'prendario'
-              ? 'bg-[#ece5db] border-[#0040c4] shadow-[0_8px_24px_rgba(14,71,104,0.09)] ring-2 ring-[#e6e6e6]'
+              ? 'bg-[#ece5db] border-[#002244] shadow-[0_8px_24px_rgba(14,71,104,0.09)] ring-2 ring-[#e6e6e6]'
               : 'bg-white border-slate-200/80 hover:border-[#a0a3aa] shadow-[0_5px_18px_rgba(23,59,87,0.04)] hover:-translate-y-0.5'
           }`}
         >
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-xl bg-[#e6e6e6] text-[#0040c4] flex items-center justify-center">
-                <BadgePercent className="w-5 h-5 text-[#0040c4]" strokeWidth={1.6} />
+              <div className="w-10 h-10 rounded-xl bg-[#e6e6e6] text-[#002244] flex items-center justify-center">
+                <BadgePercent className="w-5 h-5 text-[#002244]" strokeWidth={1.6} />
               </div>
-              <span className="text-[11px] font-semibold bg-white text-[#001e50] px-3 py-1 rounded-full border border-slate-200">
+              <span className="text-[11px] font-semibold bg-white text-[#002244] px-3 py-1 rounded-full border border-slate-200">
                 Tasa Fija en Pesos
               </span>
             </div>
-            <h3 className="text-base font-semibold text-[#001e50]">Crédito Prendario Bancario</h3>
+            <h3 className="text-base font-semibold text-[#002244]">Crédito Prendario Bancario</h3>
             <p className="text-xs text-slate-600 leading-relaxed">
               Financiación bancaria directa con cuotas fijas en pesos e inscripción de reserva de prenda sobre la unidad.
             </p>
           </div>
-          <div className="mt-5 pt-3 border-t border-slate-200/70 text-xs font-semibold text-[#0040c4]">
+          <div className="mt-5 pt-3 border-t border-slate-200/70 text-xs font-semibold text-[#002244]">
             {selectedMethod === 'prendario' ? '● Seleccionado actualmente' : 'Ver requisitos y pasos →'}
           </div>
         </div>
@@ -77,25 +77,25 @@ export const FinancingView: React.FC<FinancingViewProps> = ({
           onClick={() => setSelectedMethod('contado')}
           className={`p-6 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
             selectedMethod === 'contado'
-              ? 'bg-[#ece5db] border-[#0040c4] shadow-[0_8px_24px_rgba(14,71,104,0.09)] ring-2 ring-[#e6e6e6]'
+              ? 'bg-[#ece5db] border-[#002244] shadow-[0_8px_24px_rgba(14,71,104,0.09)] ring-2 ring-[#e6e6e6]'
               : 'bg-white border-slate-200/80 hover:border-[#a0a3aa] shadow-[0_5px_18px_rgba(23,59,87,0.04)] hover:-translate-y-0.5'
           }`}
         >
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-xl bg-[#e6e6e6] text-[#0040c4] flex items-center justify-center">
-                <Landmark className="w-5 h-5 text-[#0040c4]" strokeWidth={1.6} />
+              <div className="w-10 h-10 rounded-xl bg-[#e6e6e6] text-[#002244] flex items-center justify-center">
+                <Landmark className="w-5 h-5 text-[#002244]" strokeWidth={1.6} />
               </div>
-              <span className="text-[11px] font-semibold bg-white text-[#001e50] px-3 py-1 rounded-full border border-slate-200">
+              <span className="text-[11px] font-semibold bg-white text-[#002244] px-3 py-1 rounded-full border border-slate-200">
                 Cuentas Oficiales
               </span>
             </div>
-            <h3 className="text-base font-semibold text-[#001e50]">Transferencia Oficial (Contado)</h3>
+            <h3 className="text-base font-semibold text-[#002244]">Transferencia Oficial (Contado)</h3>
             <p className="text-xs text-slate-600 leading-relaxed">
               Cancelación de saldos y seña exclusivamente en cuentas bancarias a nombre de Autosol S.A.
             </p>
           </div>
-          <div className="mt-5 pt-3 border-t border-slate-200/70 text-xs font-semibold text-[#0040c4]">
+          <div className="mt-5 pt-3 border-t border-slate-200/70 text-xs font-semibold text-[#002244]">
             {selectedMethod === 'contado' ? '● Seleccionado actualmente' : 'Ver requisitos y pasos →'}
           </div>
         </div>
@@ -106,7 +106,7 @@ export const FinancingView: React.FC<FinancingViewProps> = ({
         {selectedMethod === 'prendario' && (
           <div className="space-y-4">
             <div>
-              <h3 className="text-lg sm:text-xl font-semibold tracking-[-0.03em] text-[#001e50]">
+              <h3 className="text-lg sm:text-xl font-semibold tracking-[-0.03em] text-[#002244]">
                 ¿Cómo funciona el Crédito Prendario?
               </h3>
               <p className="mt-1 text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl">
@@ -115,15 +115,15 @@ export const FinancingView: React.FC<FinancingViewProps> = ({
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
               <div className="bg-[#ece5db] p-4 rounded-2xl border border-slate-200/70 text-xs space-y-1">
-                <strong className="text-[#001e50] block font-semibold text-sm">1. Aprobación Crediticia</strong>
+                <strong className="text-[#002244] block font-semibold text-sm">1. Aprobación Crediticia</strong>
                 <span className="text-slate-600 text-xs leading-relaxed">Presentación de recibos de sueldo/ingresos y scoring bancario.</span>
               </div>
               <div className="bg-[#ece5db] p-4 rounded-2xl border border-slate-200/70 text-xs space-y-1">
-                <strong className="text-[#001e50] block font-semibold text-sm">2. Firma de Contrato</strong>
+                <strong className="text-[#002244] block font-semibold text-sm">2. Firma de Contrato</strong>
                 <span className="text-slate-600 text-xs leading-relaxed">Suscripción del mutuo prendario y formularios oficiales 01 y 03.</span>
               </div>
               <div className="bg-[#ece5db] p-4 rounded-2xl border border-slate-200/70 text-xs space-y-1">
-                <strong className="text-[#001e50] block font-semibold text-sm">3. Inscripción Registral</strong>
+                <strong className="text-[#002244] block font-semibold text-sm">3. Inscripción Registral</strong>
                 <span className="text-slate-600 text-xs leading-relaxed">DNRPA inscribe el dominio a tu nombre y la prenda simultáneamente.</span>
               </div>
             </div>
@@ -133,15 +133,15 @@ export const FinancingView: React.FC<FinancingViewProps> = ({
         {selectedMethod === 'contado' && (
           <div className="space-y-4">
             <div>
-              <h3 className="text-lg sm:text-xl font-semibold tracking-[-0.03em] text-[#001e50]">
+              <h3 className="text-lg sm:text-xl font-semibold tracking-[-0.03em] text-[#002244]">
                 Transferencias Bancarias Seguras
               </h3>
               <p className="mt-1 text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl">
                 Para tu absoluta tranquilidad, todos los pagos y gastos administrativos se canalizan por transferencias bancarias a cuentas corrientes oficiales a nombre de <strong>Autosol S.A.</strong> (CUIT: 30-68194452-9).
               </p>
             </div>
-            <div className="p-4 bg-[#ece5db] border border-[#a0a3aa]/80 rounded-2xl text-xs text-[#001e50] flex items-center gap-3">
-              <ShieldCheck className="w-5 h-5 text-[#0040c4] shrink-0" strokeWidth={1.6} />
+            <div className="p-4 bg-[#ece5db] border border-[#a0a3aa]/80 rounded-2xl text-xs text-[#002244] flex items-center gap-3">
+              <ShieldCheck className="w-5 h-5 text-[#002244] shrink-0" strokeWidth={1.6} />
               <span className="leading-relaxed">
                 Por política estricta de seguridad y transparencia, nunca realices transferencias a cuentas de personas físicas ni asesores comerciales independientes.
               </span>

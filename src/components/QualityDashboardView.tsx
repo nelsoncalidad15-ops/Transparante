@@ -185,7 +185,7 @@ export const QualityDashboardView: React.FC<QualityDashboardViewProps> = ({
   return (
     <div className="space-y-8 animate-in fade-in duration-300 pb-16">
       {/* Header Banner - Executive styling */}
-      <div className="bg-[#001e50] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-blue-900/40 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+      <div className="bg-[#002244] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-blue-900/40 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
         <div className="space-y-2">
           <div className="inline-flex items-center space-x-2 text-xs font-bold text-sky-300 bg-blue-950/80 border border-sky-400/30 px-3 py-1 rounded-full uppercase tracking-wider">
             <BarChart3 className="w-3.5 h-3.5" />
@@ -209,7 +209,7 @@ export const QualityDashboardView: React.FC<QualityDashboardViewProps> = ({
                 onClick={() => setTimeRange(r)}
                 className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                   timeRange === r
-                    ? 'bg-white text-[#001e50] shadow-sm font-bold'
+                    ? 'bg-white text-[#002244] shadow-sm font-bold'
                     : 'text-blue-200 hover:text-white'
                 }`}
               >
@@ -228,7 +228,7 @@ export const QualityDashboardView: React.FC<QualityDashboardViewProps> = ({
 
           <button
             onClick={onOpenAdminPanel}
-            className="bg-[#0040c4] hover:bg-blue-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md flex items-center space-x-2 active:scale-95 cursor-pointer"
+            className="bg-[#002244] hover:bg-blue-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md flex items-center space-x-2 active:scale-95 cursor-pointer"
           >
             <FileEdit className="w-4 h-4" />
             <span>Editar contenidos</span>
@@ -609,7 +609,7 @@ export const QualityDashboardView: React.FC<QualityDashboardViewProps> = ({
             <button
               onClick={() => setActiveTab('uncertainty')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
-                activeTab === 'uncertainty' ? 'bg-[#001e50] text-white' : 'bg-slate-100 text-slate-600'
+                activeTab === 'uncertainty' ? 'bg-[#002244] text-white' : 'bg-slate-100 text-slate-600'
               }`}
             >
               Temas clave ({uncertaintyTopics.length})
@@ -617,7 +617,7 @@ export const QualityDashboardView: React.FC<QualityDashboardViewProps> = ({
             <button
               onClick={() => setActiveTab('unassisted')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
-                activeTab === 'unassisted' ? 'bg-[#001e50] text-white' : 'bg-slate-100 text-slate-600'
+                activeTab === 'unassisted' ? 'bg-[#002244] text-white' : 'bg-slate-100 text-slate-600'
               }`}
             >
               Búsquedas sin resultado ({unassistedSearches.length})

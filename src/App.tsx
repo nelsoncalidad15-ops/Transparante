@@ -99,7 +99,7 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#ece5db] flex flex-col text-slate-800 selection:bg-[#0040c4] selection:text-white">
+    <div className="min-h-screen bg-[#ece5db] flex flex-col text-slate-800 selection:bg-[#002244] selection:text-white">
       {/* Main Top Navigation with official VW | Autosol Branding */}
       {activeTab !== 'client-alerts' && <Navbar
         activeTab={activeTab}
@@ -278,13 +278,13 @@ function AppContent() {
                       }}
                       className="w-full flex items-center gap-3 p-2.5 rounded-xl transition-all hover:bg-slate-50 text-left group cursor-pointer border border-transparent hover:border-slate-200"
                     >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#001e50] text-white transition-transform group-hover:scale-105">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#002244] text-white transition-transform group-hover:scale-105">
                         <Bot className="h-5 w-5" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="text-xs font-bold text-black group-hover:text-[#0040c4] flex items-center justify-between">
+                        <div className="text-xs font-bold text-black group-hover:text-[#002244] flex items-center justify-between">
                           <span>Bot de consulta</span>
-                          <span className="text-[9px] bg-[#ece5db] text-[#001e50] font-bold px-1.5 py-0.5 rounded">24/7</span>
+                          <span className="text-[9px] bg-[#ece5db] text-[#002244] font-bold px-1.5 py-0.5 rounded">24/7</span>
                         </div>
                         <p className="text-[11px] text-slate-500 truncate">
                           Orientación sobre etapas, plazos y 0km
@@ -319,11 +319,11 @@ function AppContent() {
                       onClick={() => setIsContactMenuOpen(false)}
                       className="flex items-center gap-3 p-2.5 rounded-xl transition-all hover:bg-slate-50 text-left group cursor-pointer border border-transparent hover:border-slate-200"
                     >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ece5db] text-[#001e50] transition-transform group-hover:scale-105">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ece5db] text-[#002244] transition-transform group-hover:scale-105">
                         <Phone className="h-4 w-4" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="text-xs font-bold text-black group-hover:text-[#0040c4]">
+                        <div className="text-xs font-bold text-black group-hover:text-[#002244]">
                           Llamar a Autosol
                         </div>
                         <p className="text-[11px] text-slate-500 truncate">
@@ -340,11 +340,11 @@ function AppContent() {
                       onClick={() => setIsContactMenuOpen(false)}
                       className="flex items-center gap-3 p-2.5 rounded-xl transition-all hover:bg-slate-50 text-left group cursor-pointer border border-transparent hover:border-slate-200"
                     >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ece5db] text-[#001e50] transition-transform group-hover:scale-105">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ece5db] text-[#002244] transition-transform group-hover:scale-105">
                         <MapPin className="h-4 w-4" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="text-xs font-bold text-black group-hover:text-[#0040c4]">
+                        <div className="text-xs font-bold text-black group-hover:text-[#002244]">
                           Concesionario Jujuy
                         </div>
                         <p className="text-[11px] text-slate-500 truncate">
@@ -363,7 +363,7 @@ function AppContent() {
                 className={`group relative flex h-14 w-14 items-center justify-center rounded-full border border-white/70 shadow-[0_12px_28px_rgba(0,30,80,0.25)] transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer ${
                   isContactMenuOpen
                     ? 'bg-black text-white hover:bg-slate-800'
-                    : 'bg-[#001e50] text-white hover:bg-[#0040c4]'
+                    : 'bg-[#002244] text-white hover:bg-[#002244] hover:brightness-125'
                 }`}
                 aria-label={isContactMenuOpen ? 'Cerrar opciones de contacto' : 'Abrir opciones de contacto'}
                 aria-expanded={isContactMenuOpen}
@@ -373,8 +373,8 @@ function AppContent() {
                 ) : (
                   <>
                     <MessageCircle className="h-6 w-6 transition-transform duration-300 group-hover:scale-110" />
-                    <span className="absolute right-1 top-1 h-3 w-3 rounded-full border-2 border-[#001e50] bg-emerald-400" />
-                    <span className="pointer-events-none absolute right-[calc(100%+12px)] top-1/2 hidden w-max -translate-y-1/2 rounded-md bg-[#001e50] px-3 py-1.5 text-xs font-bold text-white shadow-lg sm:group-hover:block">
+                    <span className="absolute right-1 top-1 h-3 w-3 rounded-full border-2 border-[#002244] bg-emerald-400" />
+                    <span className="pointer-events-none absolute right-[calc(100%+12px)] top-1/2 hidden w-max -translate-y-1/2 rounded-md bg-[#002244] px-3 py-1.5 text-xs font-bold text-white shadow-lg sm:group-hover:block">
                       Contacto y Ayuda
                     </span>
                   </>
@@ -386,7 +386,7 @@ function AppContent() {
       )}
 
       {/* Platform Footer with VW | Autosol Branding (Expanded Full-Width Container) */}
-      <footer className="bg-[#001e50] text-white">
+      <footer className="bg-[#002244] text-white">
         <div className="mx-auto w-full max-w-[1720px] px-4 sm:px-8 lg:px-12 xl:px-16 py-12 sm:py-16">
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:items-start">
             <div className="sm:col-span-2 lg:col-span-1">

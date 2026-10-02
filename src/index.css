@@ -19,22 +19,22 @@
   --color-blue-200: #a0a3aa;
   --color-blue-300: #008cff;
   --color-blue-400: #008cff;
-  --color-blue-500: #0040c4;
-  --color-blue-600: #0040c4;
-  --color-blue-700: #0040c4;
+  --color-blue-500: #002244;
+  --color-blue-600: #002244;
+  --color-blue-700: #002244;
   --color-blue-800: #002244;
-  --color-blue-900: #001e50;
+  --color-blue-900: #002244;
   --color-blue-950: #11192e;
   --color-sky-100: #e6e6e6;
   --color-sky-200: #d0d1d5;
   --color-sky-300: #008cff;
   --color-sky-500: #008cff;
-  --color-sky-800: #001e50;
+  --color-sky-800: #002244;
   --color-indigo-100: #e6e6e6;
   --color-indigo-200: #d0d1d5;
-  --color-indigo-600: #0040c4;
-  --color-indigo-800: #001e50;
-  --color-indigo-900: #001e50;
+  --color-indigo-600: #002244;
+  --color-indigo-800: #002244;
+  --color-indigo-900: #002244;
 }
 
 @font-face { font-family: 'VW Head'; src: url('./fonts/VWHeadOffice-Regular.ttf') format('truetype'); font-style: normal; font-weight: 300 600; font-display: swap; }
@@ -51,8 +51,8 @@
 
 
 :root {
-  --vw-navy: #001e50;
-  --vw-blue: #0040c4;
+  --vw-navy: #002244;
+  --vw-blue: #002244;
   --vw-digital-blue: #008cff;
   --vw-grey: #e6e6e6;
   --vw-text: #11192e;

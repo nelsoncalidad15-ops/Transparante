@@ -196,7 +196,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       </section>
 
       {/* 2. INFORMATION & SEARCH SECTION (Expansive wide container, dark VW typography) */}
-      <section className="relative overflow-hidden bg-[#f7f5f0] py-14 sm:py-20 border-b border-slate-200">
+      <section id="informacion" className="relative overflow-hidden bg-[#ece5db] py-14 sm:py-20 border-b border-slate-200">
         <div className="mx-auto w-full max-w-[1720px] px-4 sm:px-8 lg:px-12 xl:px-16">
           {/* Section Header with Black / Deep Navy Typography */}
           <div className="text-center max-w-4xl mx-auto">
@@ -233,7 +233,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               />
               <button
                 type="submit"
-                className="flex h-11 px-5 items-center justify-center gap-2 rounded-lg bg-[#001e50] text-white transition-colors hover:bg-[#0040c4] cursor-pointer"
+                className="flex h-11 px-5 items-center justify-center gap-2 rounded-lg bg-[#002244] text-white transition-colors hover:bg-[#002244] hover:brightness-125 cursor-pointer"
                 aria-label="Buscar"
               >
                 <Search className="h-4 w-4" />
@@ -270,17 +270,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   className="group rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-[0_4px_16px_rgba(0,30,80,0.04)] transition-all hover:-translate-y-1.5 hover:border-black hover:shadow-[0_14px_32px_rgba(0,30,80,0.09)] cursor-pointer flex flex-col justify-between"
                 >
                   <div>
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#ece5db] text-[#001e50] transition-colors group-hover:bg-[#001e50] group-hover:text-white">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#ece5db] text-[#002244] transition-colors group-hover:bg-[#002244] hover:brightness-125 group-hover:text-white">
                       <Icon className="h-6 w-6" strokeWidth={1.8} />
                     </div>
-                    <h2 className="mt-4 text-base font-bold leading-snug text-black group-hover:text-[#0040c4] transition-colors">
+                    <h2 className="mt-4 text-base font-bold leading-snug text-black group-hover:text-[#002244] transition-colors">
                       {card.title}
                     </h2>
                     <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-600">
                       {card.text}
                     </p>
                   </div>
-                  <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center text-xs font-bold text-black group-hover:text-[#0040c4] transition-colors">
+                  <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center text-xs font-bold text-black group-hover:text-[#002244] transition-colors">
                     <span>Consultar guía</span>
                     <ArrowRight className="ml-1 h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                   </div>
@@ -311,7 +311,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
             <button
               onClick={() => onNavigate('process')}
-              className="inline-flex items-center gap-2 rounded-full bg-[#001e50] px-6 py-3 text-xs sm:text-sm font-bold text-white transition-all hover:bg-[#0040c4] hover:scale-[1.02] cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-full bg-[#002244] px-6 py-3 text-xs sm:text-sm font-bold text-white transition-all hover:bg-[#002244] hover:brightness-125 hover:scale-[1.02] cursor-pointer"
             >
               <span>Ver mi proceso completo</span>
               <ArrowRight className="h-4 w-4" />
@@ -330,10 +330,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                       className="group flex w-32 shrink-0 flex-col items-center text-center cursor-pointer"
                       aria-label={`Ver etapa ${stage.name}`}
                     >
-                      <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#ece5db] text-black shadow-sm transition-all group-hover:scale-110 group-hover:bg-[#001e50] group-hover:text-white">
+                      <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#ece5db] text-black shadow-sm transition-all group-hover:scale-110 group-hover:bg-[#002244] hover:brightness-125 group-hover:text-white">
                         <Icon className="h-7 w-7" strokeWidth={1.6} />
                       </span>
-                      <span className="mt-3 text-xs font-bold leading-tight text-black group-hover:text-[#0040c4]">
+                      <span className="mt-3 text-xs font-bold leading-tight text-black group-hover:text-[#002244]">
                         {stage.name}
                       </span>
                       <span className="mt-1 text-[10px] text-slate-500 font-medium">
@@ -354,14 +354,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       </section>
 
       {/* 4. UNIFIED CONCLUDING CARDS (Replaces all stacked horizontal stripes) */}
-      <section className="bg-[#f8f7f4] py-14 sm:py-20">
+      <section className="bg-[#e6e6e6] py-14 sm:py-20">
         <div className="mx-auto w-full max-w-[1720px] px-4 sm:px-8 lg:px-12 xl:px-16">
           <div className="grid gap-6 md:grid-cols-2">
             {/* Card 1: Preguntas Frecuentes */}
             <div className="rounded-2xl border border-slate-200 bg-white p-7 sm:p-9 shadow-sm flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 text-xs font-bold text-black uppercase tracking-wider">
-                  <CircleHelp className="h-4 w-4 text-[#001e50]" />
+                  <CircleHelp className="h-4 w-4 text-[#002244]" />
                   <span>Centro de ayuda</span>
                 </div>
                 <h3 className="mt-3 text-2xl font-bold text-black">
@@ -374,14 +374,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
                 <button
                   onClick={() => onNavigate('faq')}
-                  className="inline-flex items-center gap-2 rounded-full bg-[#001e50] px-5 py-2.5 text-xs sm:text-sm font-bold text-white transition-all hover:bg-[#0040c4] cursor-pointer"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#002244] px-5 py-2.5 text-xs sm:text-sm font-bold text-white transition-all hover:bg-[#002244] hover:brightness-125 cursor-pointer"
                 >
                   <span>Ver preguntas frecuentes</span>
                   <ArrowRight className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => onNavigate('assistant')}
-                  className="text-xs font-bold text-black hover:text-[#0040c4] hover:underline"
+                  className="text-xs font-bold text-black hover:text-[#002244] hover:underline"
                 >
                   O consultá con nuestro bot de consulta →
                 </button>
@@ -392,14 +392,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className="rounded-2xl border border-slate-200 bg-white p-7 sm:p-9 shadow-sm flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 text-xs font-bold text-black uppercase tracking-wider">
-                  <CarFront className="h-4 w-4 text-[#001e50]" />
-                  <span>Portal comercial oficial</span>
+                  <CarFront className="h-4 w-4 text-[#002244]" />
+                  <span>Otro tipo de consulta</span>
                 </div>
                 <h3 className="mt-3 text-2xl font-bold text-black">
-                  Conocé la gama 0km y catálogo Autosol
+                  ¿Buscás modelos, precios o un test drive?
                 </h3>
                 <p className="mt-2 text-sm text-slate-600 leading-relaxed">
-                  Esta plataforma es tu centro de orientación transparente. Si querés explorar especificaciones técnicas, cotizaciones comerciales o agendar un Test Drive, visitá la web oficial de Autosol.
+                  Esta página explica las etapas de compra y entrega. Para información comercial, consultá el sitio principal de Autosol.
                 </p>
               </div>
               <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
@@ -407,7 +407,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   href="https://autosol.com.ar/"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full bg-[#001e50] px-5 py-2.5 text-xs sm:text-sm font-bold text-white transition-all hover:bg-[#0040c4] cursor-pointer"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#002244] px-5 py-2.5 text-xs sm:text-sm font-bold text-white transition-all hover:bg-[#002244] hover:brightness-125 cursor-pointer"
                 >
                   <span>Visitar autosol.com.ar</span>
                   <ExternalLink className="h-3.5 w-3.5" />
@@ -421,4 +421,3 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     </div>
   );
 };
-

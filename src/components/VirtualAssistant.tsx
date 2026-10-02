@@ -258,12 +258,12 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
       }`}
     >
       {/* 1. Header: Sleek Volkswagen Deep Navy with Official Avatar & Status */}
-      <div className="flex shrink-0 items-center justify-between bg-[#001e50] px-4 sm:px-5 py-3 text-white border-b border-white/10">
+      <div className="flex shrink-0 items-center justify-between bg-[#002244] px-4 sm:px-5 py-3 text-white border-b border-white/10">
         <div className="flex items-center space-x-3">
           {/* Avatar with soft glow */}
-          <div className="relative flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-[#0040c4] text-white shadow-sm ring-2 ring-white/20 shrink-0">
+          <div className="relative flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-[#002244] text-white shadow-sm ring-2 ring-white/20 shrink-0">
             <Bot className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-[#001e50]" />
+            <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-[#002244]" />
           </div>
 
           <div>
@@ -304,7 +304,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
       </div>
 
       {/* 2. Quick Topic Pills Bar (Compact, horizontal scroll with smooth pills) */}
-      <div className="flex shrink-0 items-center space-x-1.5 overflow-x-auto bg-[#f8f7f4] px-3 sm:px-4 py-2 border-b border-slate-200/70 scrollbar-none">
+      <div className="flex shrink-0 items-center space-x-1.5 overflow-x-auto bg-[#e6e6e6] px-3 sm:px-4 py-2 border-b border-slate-200/70 scrollbar-none">
         <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider shrink-0 pr-1">
           Temas:
         </span>
@@ -312,7 +312,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
           <button
             key={pill}
             onClick={() => handleUserSendMessage(pill)}
-            className="whitespace-nowrap rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-700 transition-all hover:border-[#0040c4] hover:bg-blue-50 hover:text-[#0040c4] cursor-pointer shrink-0 shadow-2xs"
+            className="whitespace-nowrap rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-700 transition-all hover:border-[#002244] hover:bg-blue-50 hover:text-[#002244] cursor-pointer shrink-0 shadow-2xs"
           >
             {pill}
           </button>
@@ -332,7 +332,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
               className={`flex items-start space-x-2 ${isBot ? 'justify-start' : 'justify-end'}`}
             >
               {isBot && (
-                <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#001e50] text-white shadow-2xs">
+                <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#002244] text-white shadow-2xs">
                   <Bot className="w-3.5 h-3.5" />
                 </div>
               )}
@@ -342,7 +342,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
                   className={`rounded-2xl p-3 sm:p-3.5 text-xs sm:text-[13px] leading-relaxed shadow-2xs ${
                     isBot
                       ? 'rounded-tl-xs border border-slate-200/80 bg-white text-slate-800'
-                      : 'rounded-tr-xs bg-[#0040c4] font-medium text-white shadow-sm'
+                      : 'rounded-tr-xs bg-[#002244] font-medium text-white shadow-sm'
                   }`}
                 >
                   <p>{msg.text}</p>
@@ -352,7 +352,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
                     <div className="pt-2 mt-2 border-t border-slate-100">
                       <button
                         onClick={() => onNavigateToArticle(msg.articleSlug!)}
-                        className="inline-flex items-center space-x-1.5 rounded-lg bg-blue-50 px-2.5 py-1.5 text-xs font-bold text-[#0040c4] hover:bg-blue-100 transition-colors cursor-pointer"
+                        className="inline-flex items-center space-x-1.5 rounded-lg bg-blue-50 px-2.5 py-1.5 text-xs font-bold text-[#002244] hover:bg-blue-100 transition-colors cursor-pointer"
                       >
                         <BookOpen className="w-3.5 h-3.5" />
                         <span>Ver guía oficial completa</span>
@@ -367,7 +367,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
                         onClick={() => onNavigateToStage(msg.stageId!)}
                         className="inline-flex items-center space-x-1.5 rounded-lg bg-slate-100 px-2.5 py-1.5 text-xs font-bold text-slate-800 hover:bg-slate-200 transition-colors cursor-pointer"
                       >
-                        <CarFront className="w-3.5 h-3.5 text-[#0040c4]" />
+                        <CarFront className="w-3.5 h-3.5 text-[#002244]" />
                         <span>Ver etapa en Mi Proceso</span>
                       </button>
                     </div>
@@ -381,7 +381,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
                       <button
                         key={i}
                         onClick={() => handleUserSendMessage(sug)}
-                        className="inline-flex items-center space-x-1 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-[#0040c4] hover:bg-blue-50 hover:border-blue-300 transition-all cursor-pointer shadow-2xs"
+                        className="inline-flex items-center space-x-1 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-[#002244] hover:bg-blue-50 hover:border-blue-300 transition-all cursor-pointer shadow-2xs"
                       >
                         <span>{sug}</span>
                         <ChevronRight className="w-2.5 h-2.5 text-blue-400" />
@@ -405,7 +405,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
         {/* Typing indicator */}
         {isTyping && (
           <div className="flex items-center space-x-2">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#001e50] text-white shadow-2xs">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#002244] text-white shadow-2xs">
               <Bot className="w-3.5 h-3.5" />
             </div>
             <div className="rounded-2xl rounded-tl-xs bg-white border border-slate-200/80 px-3.5 py-2 shadow-2xs flex items-center space-x-1">
@@ -432,13 +432,13 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             placeholder="Escribí tu consulta (ej: ¿Qué es gestoría?)..."
-            className="flex-1 rounded-full border border-slate-300 bg-slate-50/80 px-4 py-2 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:border-[#0040c4] focus:outline-none focus:ring-2 focus:ring-[#0040c4]/15"
+            className="flex-1 rounded-full border border-slate-300 bg-slate-50/80 px-4 py-2 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:border-[#002244] focus:outline-none focus:ring-2 focus:ring-[#002244]/15"
           />
           <button
             type="submit"
             id="btn-send-assistant-msg"
             disabled={!inputMessage.trim()}
-            className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-[#0040c4] text-white transition-all hover:bg-[#001e50] active:scale-95 disabled:opacity-40 cursor-pointer shadow-sm"
+            className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-[#002244] text-white transition-all hover:bg-[#002244] hover:brightness-125 active:scale-95 disabled:opacity-40 cursor-pointer shadow-sm"
             aria-label="Enviar consulta"
           >
             <Send className="w-4 h-4" />

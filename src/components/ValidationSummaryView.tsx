@@ -52,7 +52,7 @@ ${faqs.map((f, i) => `${i + 1}. ${f.question} -> ${f.answer}`).join('\n\n')}
   return (
     <div className="space-y-8 animate-in fade-in duration-300 pb-12">
       {/* Top Banner with Print / Export Actions */}
-      <div className="rounded-3xl bg-[#001e50] p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 print:hidden">
+      <div className="rounded-3xl bg-[#002244] p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 print:hidden">
         <div className="space-y-2">
           <div className="inline-flex items-center space-x-2 text-xs font-bold text-sky-300 bg-blue-950/80 px-3 py-1 rounded-full uppercase tracking-wider">
             <FileCheck2 className="w-3.5 h-3.5" />
@@ -78,7 +78,7 @@ ${faqs.map((f, i) => `${i + 1}. ${f.question} -> ${f.answer}`).join('\n\n')}
 
           <button
             onClick={handlePrint}
-            className="inline-flex items-center space-x-2 rounded-xl bg-[#0040c4] hover:bg-blue-600 px-4 py-2 text-xs font-bold text-white transition-all shadow-md active:scale-95 cursor-pointer"
+            className="inline-flex items-center space-x-2 rounded-xl bg-[#002244] hover:bg-blue-600 px-4 py-2 text-xs font-bold text-white transition-all shadow-md active:scale-95 cursor-pointer"
           >
             <Printer className="w-4 h-4" />
             <span>Imprimir / Guardar PDF</span>
@@ -88,7 +88,7 @@ ${faqs.map((f, i) => `${i + 1}. ${f.question} -> ${f.answer}`).join('\n\n')}
 
       {/* Scope Alert Badge */}
       <div className="p-4 bg-sky-50 border border-sky-200 rounded-2xl flex items-start gap-3 text-xs text-sky-900 print:bg-slate-50 print:border-slate-300">
-        <UserCheck className="w-5 h-5 text-[#0040c4] shrink-0 mt-0.5" />
+        <UserCheck className="w-5 h-5 text-[#002244] shrink-0 mt-0.5" />
         <div className="space-y-0.5">
           <strong className="font-bold text-sky-950 block text-xs">
             Alcance Exclusivo: Operaciones de Venta Tradicional / Convencional 0km
@@ -106,7 +106,7 @@ ${faqs.map((f, i) => `${i + 1}. ${f.question} -> ${f.answer}`).join('\n\n')}
         {/* Document Header (Visible in print) */}
         <div className="border-b border-slate-200 pb-6 flex items-center justify-between">
           <div>
-            <span className="text-xs font-bold tracking-widest text-[#0040c4] uppercase block">
+            <span className="text-xs font-bold tracking-widest text-[#002244] uppercase block">
               Volkswagen Autosol Jujuy • Calidad y Operaciones
             </span>
             <h2 className="text-2xl font-black text-slate-900 mt-1">
@@ -127,7 +127,7 @@ ${faqs.map((f, i) => `${i + 1}. ${f.question} -> ${f.answer}`).join('\n\n')}
         <section className="space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 pb-2">
             <div className="flex items-center space-x-2">
-              <Clock className="w-5 h-5 text-[#0040c4]" />
+              <Clock className="w-5 h-5 text-[#002244]" />
               <h3 className="text-base sm:text-lg font-bold text-slate-900">
                 1. Las 7 Etapas del Proceso y Plazos Informados
               </h3>
@@ -149,12 +149,12 @@ ${faqs.map((f, i) => `${i + 1}. ${f.question} -> ${f.answer}`).join('\n\n')}
               <div key={stage.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                   <div className="flex items-center space-x-2">
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#001e50] text-[10px] font-bold text-white">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#002244] text-[10px] font-bold text-white">
                       {stage.stepNumber}
                     </span>
                     <span className="font-bold text-sm text-slate-900">{stage.name}</span>
                   </div>
-                  <span className="text-xs font-bold text-[#0040c4] bg-blue-50 px-2.5 py-0.5 rounded-md self-start sm:self-auto border border-blue-100">
+                  <span className="text-xs font-bold text-[#002244] bg-blue-50 px-2.5 py-0.5 rounded-md self-start sm:self-auto border border-blue-100">
                     Plazo informado: {stage.estimatedTime}
                   </span>
                 </div>
@@ -191,7 +191,7 @@ ${faqs.map((f, i) => `${i + 1}. ${f.question} -> ${f.answer}`).join('\n\n')}
         <section className="space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 pb-2">
             <div className="flex items-center space-x-2">
-              <FileCheck2 className="w-5 h-5 text-[#0040c4]" />
+              <FileCheck2 className="w-5 h-5 text-[#002244]" />
               <h3 className="text-base sm:text-lg font-bold text-slate-900">
                 2. Documentación y Trámites Requeridos
               </h3>
@@ -211,7 +211,7 @@ ${faqs.map((f, i) => `${i + 1}. ${f.question} -> ${f.answer}`).join('\n\n')}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
               <div className="flex items-center gap-2">
-                <UserCheck className="w-4 h-4 text-[#0040c4]" />
+                <UserCheck className="w-4 h-4 text-[#002244]" />
                 <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wide">
                   Personas Físicas (Titulares particulares)
                 </h4>
@@ -226,7 +226,7 @@ ${faqs.map((f, i) => `${i + 1}. ${f.question} -> ${f.answer}`).join('\n\n')}
 
             <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
               <div className="flex items-center gap-2">
-                <Building className="w-4 h-4 text-[#0040c4]" />
+                <Building className="w-4 h-4 text-[#002244]" />
                 <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wide">
                   Personas Jurídicas (Empresas / Sociedades)
                 </h4>
@@ -245,7 +245,7 @@ ${faqs.map((f, i) => `${i + 1}. ${f.question} -> ${f.answer}`).join('\n\n')}
         <section className="space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 pb-2">
             <div className="flex items-center space-x-2">
-              <CarFront className="w-5 h-5 text-[#0040c4]" />
+              <CarFront className="w-5 h-5 text-[#002244]" />
               <h3 className="text-base sm:text-lg font-bold text-slate-900">
                 3. Protocolo de Entrega del Vehículo
               </h3>
@@ -288,7 +288,7 @@ ${faqs.map((f, i) => `${i + 1}. ${f.question} -> ${f.answer}`).join('\n\n')}
         <section className="space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 pb-2">
             <div className="flex items-center space-x-2">
-              <HelpCircle className="w-5 h-5 text-[#0040c4]" />
+              <HelpCircle className="w-5 h-5 text-[#002244]" />
               <h3 className="text-base sm:text-lg font-bold text-slate-900">
                 4. Respuestas Oficiales a Preguntas Frecuentes ({faqs.length} ítems)
               </h3>

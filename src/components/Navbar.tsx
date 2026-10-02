@@ -91,28 +91,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     event.preventDefault();
     if (!adminUsername.trim() || !adminPassword.trim()) return;
 
-    const user = adminUsername.trim().toLowerCase();
-    const pass = adminPassword.trim().toLowerCase();
-
-    // Client-side authentication for static hosting / demo (e.g. GitHub Pages)
-    if (
-      (user === 'admin' && (pass === 'admin' || pass === 'demo' || pass === 'autosol')) ||
-      (user === 'autosol' && (pass === 'autosol' || pass === 'admin' || pass === 'demo')) ||
-      (user === 'administrativo' && (pass === 'demo' || pass === 'admin'))
-    ) {
-      const isCollaborator = user === 'administrativo';
-      setAdminAuthenticated(true);
-      setSessionRole(isCollaborator ? 'collaborator' : 'admin');
-      setAdminUsername('');
-      setAdminPassword('');
-      setAdminError('');
-      if (isCollaborator) {
-        setMenuOpen(false);
-        onOpenCaseDashboard();
-      }
-      return;
-    }
-
     setIsSubmittingAdmin(true);
     setAdminError('');
     try {
@@ -153,30 +131,16 @@ export const Navbar: React.FC<NavbarProps> = ({
       <header
         className={`fixed top-0 left-0 right-0 z-40 w-full transition-all duration-300 ${
           isScrolled || activeTab !== 'home'
-            ? 'bg-black/95 backdrop-blur-md shadow-lg border-b border-white/10 py-0'
+            ? 'bg-[#002244] shadow-lg border-b border-white/10 py-0'
             : 'bg-transparent border-none shadow-none py-1'
         }`}
         style={!isScrolled && activeTab === 'home' ? { borderBottom: 'none', boxShadow: 'none' } : undefined}
       >
         <div className="mx-auto flex h-14 sm:h-16 w-full max-w-[1720px] items-center justify-between px-4 sm:px-8 lg:px-12">
-          {/* Left Group: [VW Logo] [= Menú] [Autosol] */}
-          <div className="flex items-center gap-3 sm:gap-5">
-            {/* Official Volkswagen SVG round emblem */}
-            <button
-              onClick={() => navigate('home')}
-              className="flex items-center transition-opacity hover:opacity-85 cursor-pointer"
-              aria-label="Ir al inicio de Autosol"
-            >
-              <svg
-                className="h-7 w-7 sm:h-8 sm:w-8 text-white fill-current shrink-0"
-                viewBox="0 0 1024 1024"
-                aria-hidden="true"
-              >
-                <path d="M512 0c-283.307 0-512 228.693-512 512s228.693 512 512 512 512-228.693 512-512-228.693-512-512-512zM512 60.16c51.2 0 100.693 9.387 146.347 25.173l-140.8 304.213c-1.707 1.707-1.707 5.547-5.547 5.547s-3.84-3.84-5.547-5.547l-140.8-304.213c45.653-15.787 95.147-24.747 146.347-24.747zM294.4 116.907l162.987 351.147c3.413 7.253 7.253 9.387 11.947 9.387h85.333c5.12 0 8.533-2.133 12.373-9.387l160.853-351.147c67.413 38.4 125.44 93.44 166.4 159.147l-228.693 442.453c-1.707 3.84-4.267 5.547-5.547 5.547-3.413 0-3.413-3.413-5.547-5.547l-87.467-193.707c-3.84-7.253-7.253-8.96-12.373-8.96h-85.333c-4.693 0-8.533 1.707-12.373 8.96l-87.467 193.707c-2.133 2.133-1.707 5.547-5.547 5.547s-3.84-3.413-5.547-5.547l-230.4-442.453c40.107-65.707 98.987-120.747 166.4-159.147zM87.893 363.947l263.253 512c3.413 7.253 7.253 12.8 16.64 12.8 8.96 0 12.373-5.547 16.213-12.8l122.453-272.64c1.707-3.413 3.84-5.973 5.547-5.973 3.84 0 3.84 4.267 5.547 5.973l124.16 272.64c3.84 7.253 7.253 12.8 16.64 12.8 8.96 0 12.8-5.547 16.213-12.8l264.107-512c15.787 45.653 25.173 95.147 25.173 148.053-2.133 247.04-204.8 451.84-451.84 451.84s-449.707-204.8-449.707-451.84c0-51.2 8.96-100.267 25.6-148.053z" />
-              </svg>
+          <div className="flex items-center gap-3 sm:gap-6">
+            <button onClick={() => navigate('home')} className="flex shrink-0 items-center" aria-label="Ir al inicio de Autosol Jujuy">
+              <img src={`${import.meta.env.BASE_URL}images/autosol-logo-official.png`} alt="Volkswagen Autosol" className="h-8 w-auto max-w-[145px] brightness-0 invert sm:h-10 sm:max-w-[210px]" />
             </button>
-
-            {/* Hamburger trigger with 2 lines + "Menú" (exact match to autosol.com.ar) */}
             <button
               onClick={() => setMenuOpen(true)}
               className="flex items-center gap-2 text-white hover:text-blue-300 transition-colors cursor-pointer py-1.5 px-1"
@@ -190,22 +154,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="font-semibold text-sm tracking-tight">Menú</span>
             </button>
 
-            {/* Autosol Dealer Wordmark */}
-            <button
-              onClick={() => navigate('home')}
-              className="flex items-center cursor-pointer text-left"
-            >
-              <span className="text-xl sm:text-2xl font-black tracking-[-0.03em] text-white">
-                Autosol
-              </span>
-            </button>
           </div>
 
           {/* Right Group: Action Buttons */}
           <div className="flex items-center gap-3 sm:gap-4">
             <button
               onClick={() => navigate('assistant')}
-              className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white transition-all hover:bg-white hover:text-black cursor-pointer"
+              className="hidden sm:inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white transition-all hover:bg-white hover:text-black cursor-pointer"
             >
               <MessageCircleQuestion className="h-3.5 w-3.5 text-white" />
               <span>Bot de consulta</span>
@@ -236,7 +191,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Drawer container from LEFT */}
           <aside
-            className="fixed inset-y-0 left-0 z-50 flex w-full max-w-[360px] sm:max-w-[420px] flex-col justify-between overflow-y-auto bg-[#f8f7f4] p-6 sm:p-8 text-[#001e50] shadow-2xl transition-transform duration-300 ease-out"
+            className="fixed inset-y-0 left-0 z-50 flex w-full max-w-[360px] sm:max-w-[420px] flex-col justify-between overflow-y-auto bg-[#e6e6e6] p-6 sm:p-8 text-[#002244] shadow-2xl transition-transform duration-300 ease-out"
             aria-label="Menú principal de Autosol"
           >
             <div>
@@ -287,7 +242,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div>
                 <button
                   onClick={() => navigate('assistant')}
-                  className="w-full rounded-full bg-[#001e50] py-3.5 px-4 text-center text-xs font-bold text-white transition-all hover:bg-[#0040c4] cursor-pointer flex items-center justify-center gap-2 shadow-sm"
+                  className="w-full rounded-full bg-[#002244] py-3.5 px-4 text-center text-xs font-bold text-white transition-all hover:bg-[#002244] hover:brightness-125 cursor-pointer flex items-center justify-center gap-2 shadow-sm"
                 >
                   <MessageCircleQuestion className="h-4 w-4 text-white" />
                   <span>Bot de consulta</span>
@@ -302,7 +257,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 href="https://autosol.com.ar/"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-between text-xs font-semibold text-slate-600 hover:text-[#001e50] transition-colors"
+                className="flex items-center justify-between text-xs font-semibold text-slate-600 hover:text-[#002244] transition-colors"
               >
                 <span>Ir al sitio comercial Autosol</span>
                 <ExternalLink className="h-3.5 w-3.5" />
@@ -313,7 +268,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 {!adminOpen && !adminAuthenticated && (
                   <button
                     onClick={() => setAdminOpen(true)}
-                    className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 hover:text-[#001e50] transition-colors cursor-pointer"
+                    className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 hover:text-[#002244] transition-colors cursor-pointer"
                   >
                     <LockKeyhole className="h-3.5 w-3.5" />
                     <span>Acceso interno</span>
@@ -326,7 +281,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     className="space-y-2.5 rounded-xl border border-slate-300 bg-white p-3.5 shadow-sm text-slate-800"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#001e50]">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#002244]">
                         Acceso interno
                       </span>
                       <button
@@ -345,7 +300,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       value={adminUsername}
                       onChange={(e) => setAdminUsername(e.target.value)}
                       placeholder="Usuario (ej: admin)"
-                      className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs text-slate-800 outline-none focus:border-[#0040c4]"
+                      className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs text-slate-800 outline-none focus:border-[#002244]"
                     />
                     <input
                       type="password"
@@ -353,12 +308,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                       value={adminPassword}
                       onChange={(e) => setAdminPassword(e.target.value)}
                       placeholder="Contraseña"
-                      className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs text-slate-800 outline-none focus:border-[#0040c4]"
+                      className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs text-slate-800 outline-none focus:border-[#002244]"
                     />
                     {adminError && <p className="text-[11px] text-rose-600">{adminError}</p>}
                     <button
                       disabled={isSubmittingAdmin}
-                      className="w-full rounded-lg bg-[#001e50] py-2 text-xs font-bold text-white hover:bg-[#0040c4] transition-colors disabled:opacity-60 flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="w-full rounded-lg bg-[#002244] py-2 text-xs font-bold text-white hover:bg-[#002244] hover:brightness-125 transition-colors disabled:opacity-60 flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       {isSubmittingAdmin ? (
                         <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
@@ -367,7 +322,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                       )}
                       <span>Ingresar</span>
                     </button>
-                    <p className="text-[10px] text-slate-400 text-center">Acceso directo: <span className="font-semibold text-slate-600">admin</span> / <span className="font-semibold text-slate-600">admin</span></p>
                   </form>
                 )}
 
@@ -378,7 +332,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setMenuOpen(false);
                         onOpenCaseDashboard();
                       }}
-                      className="flex w-full items-center justify-between rounded-lg bg-[#001e50] px-3 py-2 text-xs font-bold text-white hover:bg-[#0040c4]"
+                      className="flex w-full items-center justify-between rounded-lg bg-[#002244] px-3 py-2 text-xs font-bold text-white hover:bg-[#002244] hover:brightness-125"
                     >
                       <span className="flex items-center gap-1.5">
                         <UserCheck className="h-3.5 w-3.5" /> Casos a contactar
@@ -392,15 +346,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                       <div className="flex gap-2">
                         <button
                           onClick={() => navigate('quality-dashboard')}
-                          className="flex-1 rounded-lg border border-slate-300 bg-white py-1.5 px-2 text-[11px] font-semibold text-slate-700 hover:border-[#001e50] flex items-center justify-center gap-1"
+                          className="flex-1 rounded-lg border border-slate-300 bg-white py-1.5 px-2 text-[11px] font-semibold text-slate-700 hover:border-[#002244] flex items-center justify-center gap-1"
                         >
-                          <BarChart3 className="h-3 w-3 text-[#0040c4]" /> Indicadores
+                          <BarChart3 className="h-3 w-3 text-[#002244]" /> Indicadores
                         </button>
                         <button
                           onClick={() => navigate('admin-panel')}
-                          className="flex-1 rounded-lg border border-slate-300 bg-white py-1.5 px-2 text-[11px] font-semibold text-slate-700 hover:border-[#001e50] flex items-center justify-center gap-1"
+                          className="flex-1 rounded-lg border border-slate-300 bg-white py-1.5 px-2 text-[11px] font-semibold text-slate-700 hover:border-[#002244] flex items-center justify-center gap-1"
                         >
-                          <FilePenLine className="h-3 w-3 text-[#0040c4]" /> Editar datos
+                          <FilePenLine className="h-3 w-3 text-[#002244]" /> Editar datos
                         </button>
                       </div>
                     )}

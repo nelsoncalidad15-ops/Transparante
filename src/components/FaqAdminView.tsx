@@ -8,6 +8,8 @@ const newFaq = (idNum: number): FAQItem => ({
   question: 'Nueva pregunta frecuente',
   answer: 'Respuesta oficial y clara para el comprador.',
   category: 'Tiempos y plazos',
+  order: idNum,
+  viewsCount: 0,
 });
 
 const FAQ_CATEGORIES: ContentCategory[] = [
@@ -68,7 +70,7 @@ export const FaqAdminView: React.FC = () => {
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
         <div>
           <div className="flex items-center gap-2">
-            <HelpCircle className="h-5 w-5 text-[#0040c4]" />
+            <HelpCircle className="h-5 w-5 text-[#002244]" />
             <h2 className="text-lg font-black text-slate-900">
               Preguntas Frecuentes y Respuestas del Bot ({draft.length})
             </h2>
@@ -94,7 +96,7 @@ export const FaqAdminView: React.FC = () => {
         {draft.map((faq, index) => (
           <div key={faq.id} className="overflow-hidden rounded-2xl border border-slate-200">
             <div className="flex items-center gap-3 bg-slate-50 px-3 py-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-[#001e50] text-[11px] font-bold text-white">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-[#002244] text-[11px] font-bold text-white">
                 {index + 1}
               </span>
               <button
@@ -138,7 +140,7 @@ export const FaqAdminView: React.FC = () => {
                   <input
                     value={faq.question}
                     onChange={(e) => update(faq.id, { question: e.target.value })}
-                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-normal text-xs text-slate-900 outline-none focus:border-[#0040c4]"
+                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-normal text-xs text-slate-900 outline-none focus:border-[#002244]"
                   />
                 </label>
 
@@ -148,7 +150,7 @@ export const FaqAdminView: React.FC = () => {
                     rows={4}
                     value={faq.answer}
                     onChange={(e) => update(faq.id, { answer: e.target.value })}
-                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-normal text-xs leading-relaxed text-slate-900 outline-none focus:border-[#0040c4]"
+                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-normal text-xs leading-relaxed text-slate-900 outline-none focus:border-[#002244]"
                   />
                 </label>
 
@@ -157,7 +159,7 @@ export const FaqAdminView: React.FC = () => {
                   <select
                     value={faq.category}
                     onChange={(e) => update(faq.id, { category: e.target.value as ContentCategory })}
-                    className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-normal text-xs text-slate-900 outline-none focus:border-[#0040c4]"
+                    className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-normal text-xs text-slate-900 outline-none focus:border-[#002244]"
                   >
                     {FAQ_CATEGORIES.map((c) => (
                       <option key={c} value={c}>
@@ -177,7 +179,7 @@ export const FaqAdminView: React.FC = () => {
         <button
           onClick={save}
           disabled={saving || !draft.length}
-          className="ml-auto inline-flex items-center gap-2 rounded-xl bg-[#0040c4] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#001e50] transition-colors disabled:opacity-60 cursor-pointer"
+          className="ml-auto inline-flex items-center gap-2 rounded-xl bg-[#002244] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#002244] hover:brightness-125 transition-colors disabled:opacity-60 cursor-pointer"
         >
           <Save className="h-4 w-4" /> {saving ? 'Guardando…' : 'Guardar preguntas'}
         </button>
