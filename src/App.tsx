@@ -47,6 +47,11 @@ function AppContent() {
   const [isFloatingAssistantOpen, setIsFloatingAssistantOpen] = useState(false);
   const [isContactMenuOpen, setIsContactMenuOpen] = useState(false);
 
+  // Scroll to top instantly whenever tab changes so the user is always at the top of the new view
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [activeTab]);
+
   // Close contact menu when clicking outside
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -107,7 +112,7 @@ function AppContent() {
       />}
 
       {/* Main Container */}
-      <main className={activeTab === 'client-alerts' ? 'flex-1 w-full pt-16' : activeTab === 'home' ? 'flex-1 w-full' : 'flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-12'}>
+      <main className={activeTab === 'client-alerts' ? 'flex-1 w-full pt-16' : activeTab === 'home' ? 'flex-1 w-full' : activeTab === 'assistant' ? 'flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 pb-6' : 'flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-12'}>
         {/* VIEW 1: HOME (Centro Digital del Cliente) */}
         {activeTab === 'home' && (
           <HeroSection
@@ -183,21 +188,7 @@ function AppContent() {
 
         {/* VIEW 11: BOT DE CONSULTA AUTOSOL */}
         {activeTab === 'assistant' && (
-          <div className="space-y-6">
-            <div className="text-center max-w-xl mx-auto space-y-2">
-              <div className="inline-flex items-center space-x-2 text-slate-800 bg-[#ece5db] px-3.5 py-1 rounded-full text-xs font-bold border border-slate-300">
-                <Bot className="w-3.5 h-3.5 text-black" />
-                <span>Orientación Oficial Autosol</span>
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-black text-black tracking-tight">
-                Bot de consulta Autosol
-              </h1>
-              <p className="text-xs sm:text-sm text-slate-600">
-                Escribí tu consulta sobre trámites, plazos o documentación para recibir una
-                explicación directa y enlaces a las guías oficiales.
-              </p>
-            </div>
-
+          <div className="w-full max-w-2xl mx-auto py-1 sm:py-2 animate-in fade-in duration-300">
             <VirtualAssistant
               initialQuery={assistantInitialQuery}
               onNavigateToArticle={handleNavigateToArticle}

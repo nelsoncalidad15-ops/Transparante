@@ -6,14 +6,15 @@ import {
   ShieldCheck,
   ArrowRight,
   BookOpen,
-  Car,
+  CarFront,
   Clock,
   FileText,
-  UserCheck,
-  RefreshCw,
+  RotateCcw,
   X,
   ChevronRight,
   Info,
+  CheckCircle2,
+  ExternalLink,
 } from 'lucide-react';
 import { useData } from '../context/DataContext';
 
@@ -25,17 +26,39 @@ interface Message {
   articleSlug?: string;
   stageId?: string;
   suggestions?: string[];
-  isTrackingPrompt?: boolean;
 }
 
 interface VirtualAssistantProps {
   initialQuery?: string;
   onNavigateToArticle: (slug: string) => void;
   onNavigateToStage: (stageId: string) => void;
-  onOpenTracker?: () => void;
   isFloatingModal?: boolean;
   onCloseModal?: () => void;
 }
+
+const DEFAULT_WELCOME_MESSAGE: Message = {
+  id: 'welcome-msg',
+  sender: 'bot',
+  text: '¡Hola! 👋 Soy el Bot de Consulta de Autosol. Estoy acá para orientarte con información clara y oficial sobre cada etapa de tu 0km, plazos orientativos, trámites de gestoría y documentación.',
+  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  suggestions: [
+    '¿Cuánto tarda el patentamiento?',
+    '¿Qué significa gestoría?',
+    '¿Cuándo comienza el tiempo de entrega?',
+    'Documentación requerida',
+    'Financiación prendaria',
+    'Tiempos y plazos',
+  ],
+};
+
+const QUICK_PILLS = [
+  '¿Qué es gestoría?',
+  'Patentamiento',
+  'Tiempos de entrega',
+  'Documentación requerida',
+  'Financiación',
+  'Preparación PDI',
+];
 
 export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
   initialQuery,
@@ -44,181 +67,173 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
   isFloatingModal = false,
   onCloseModal,
 }) => {
-
-  const { articles, stages, faqs, searchAll, recordSearchQuery } = useData();
+  const { articles, stages, searchAll, recordSearchQuery } = useData();
   const [inputMessage, setInputMessage] = useState('');
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 'welcome-msg',
-      sender: 'bot',
-      text: '¡Hola! 👋 Soy el Asistente Autosol. Estoy acá para ayudarte a comprender cada etapa, tiempos orientativos, documentación requerida y conceptos de tu compra de forma clara y transparente.',
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      suggestions: [
-        'Estado de mi operación',
-        '¿Qué significa gestoría?',
-        '¿Cuánto tarda el patentamiento?',
-        '¿Cuándo comienza el tiempo de entrega?',
-        'Documentación requerida',
-        'Financiación prendaria',
-      ],
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([DEFAULT_WELCOME_MESSAGE]);
+  const [isTyping, setIsTyping] = useState(false);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const isFirstRender = useRef(true);
   const lastHandledInitialQueryRef = useRef<string | null>(null);
 
-  const quickPills = [
-    'Estado de mi operación',
-    '¿Qué es gestoría?',
-    'Patentamiento',
-    'Fecha de entrega',
-    'Documentación',
-    'Entrega',
-    'Financiación',
-    'Tiempos orientativos',
-  ];
-
-  const handleUserSendMessage = useCallback((textToSend: string) => {
-    const text = textToSend.trim();
-    if (!text) return;
-
-    const userMsg: Message = {
-      id: `user-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-      sender: 'user',
-      text,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    };
-
-    setMessages((prev) => [...prev, userMsg]);
-    setInputMessage('');
-
-    // Process Bot Response
-    setTimeout(() => {
-      const q = text.toLowerCase();
-      let botResponse: Partial<Message> = {};
-
-      // Check for personalized unit tracking intent
-      if (
-        q.includes('mi operacion') ||
-        q.includes('mi unidad') ||
-        q.includes('estado') ||
-        q.includes('donde esta mi auto') ||
-        q.includes('mi auto') ||
-        q.includes('seguimiento')
-      ) {
-        botResponse = {
-          text: 'Podés consultar el estado real de tu unidad ingresando tu número de boleto o DNI en el visualizador personalizado de Mi Operación.',
-          isTrackingPrompt: true,
-          suggestions: ['Ingresar a mi operación', '¿Qué es gestoría?', 'Tiempos orientativos'],
-        };
-      }
-      // Check for gestoria
-      else if (q.includes('gestor') || q.includes('tramite previo')) {
-        const art = articles.find((a) => a.slug.includes('gestoria'));
-        botResponse = {
-          text: 'La gestoría es la etapa en la que nuestros profesionales matriculados realizan los trámites administrativos, sellados provinciales y verificaciones documentales necesarias para habilitar el patentamiento del vehículo.',
-          articleSlug: art?.slug || 'que-es-gestoria',
-          stageId: 'gestoria',
-          suggestions: ['¿Cuánto tarda la gestoría?', '¿Qué es patentamiento?', 'Documentación necesaria'],
-        };
-      }
-      // Check for patentamiento
-      else if (q.includes('patent') || q.includes('chapa') || q.includes('dominio') || q.includes('registro')) {
-        const art = articles.find((a) => a.slug.includes('patentamiento'));
-        botResponse = {
-          text: 'El patentamiento es el trámite oficial mediante el cual el vehículo se inscribe a tu nombre en el Registro Automotor (DNRPA) y obtiene su chapa patente. El plazo orientativo habitual es de 15 a 30 días hábiles.',
-          articleSlug: art?.slug || 'que-es-patentamiento',
-          stageId: 'patentamiento',
-          suggestions: ['¿Qué factores modifican el plazo?', '¿Qué sigue después de patentar?', 'Preparación de la unidad'],
-        };
-      }
-      // Check for delivery / entrega / tiempo
-      else if (q.includes('tiempo') || q.includes('cuando') || q.includes('fecha') || q.includes('plazo') || q.includes('demor')) {
-        const art = articles.find((a) => a.slug.includes('cuando-empieza-a-correr'));
-        botResponse = {
-          text: 'El tiempo estimado de entrega comienza a computarse una vez que la unidad se encuentra 100% facturada, con número de chasis asignado y saldos administrativos cancelados. El plazo total orientativo suele rondar entre 25 y 45 días hábiles.',
-          articleSlug: art?.slug || 'cuando-empieza-a-correr-tiempo-entrega',
-          suggestions: ['¿Por qué puede demorar?', 'Ver Tiempos Orientativos', 'Facturación'],
-        };
-      }
-      // Check for facturacion
-      else if (q.includes('factura') || q.includes('chasis') || q.includes('motor')) {
-        const art = articles.find((a) => a.slug.includes('facturar'));
-        botResponse = {
-          text: 'Cuando tu unidad está facturada significa que la terminal emitió el comprobante fiscal legal a tu nombre, asignándole chasis y motor definitivos. Desde allí se habilita el pase inmediato a gestoría.',
-          articleSlug: art?.slug || 'que-pasa-despues-de-facturar-unidad',
-          stageId: 'facturacion',
-          suggestions: ['¿Qué es gestoría?', 'Documentación requerida', 'Tiempos orientativos'],
-        };
-      }
-      // Check for documentacion
-      else if (q.includes('document') || q.includes('dni') || q.includes('papel') || q.includes('requisito')) {
-        const art = articles.find((a) => a.slug.includes('documentacion'));
-        botResponse = {
-          text: 'La documentación básica incluye DNI vigente, constancia de CUIL/CUIT y justificaciones de fondos si superan montos normativos. Para empresas se requiere estatuto y poderes vigentes.',
-          articleSlug: art?.slug || 'que-documentacion-puede-solicitarse',
-          suggestions: ['¿Qué es gestoría?', 'Personas jurídicas', 'Día de la entrega'],
-        };
-      }
-      // Check for preparacion / pdi
-      else if (q.includes('prepara') || q.includes('pdi') || q.includes('taller') || q.includes('accesorio') || q.includes('lavado')) {
-        const art = articles.find((a) => a.slug.includes('pdi'));
-        botResponse = {
-          text: 'En la preparación (PDI), nuestros técnicos revisan más de 40 puntos mecánicos y electrónicos, colocan los accesorios opcionales contratados, fijan las patentes y realizan el lavado de salón.',
-          articleSlug: art?.slug || 'que-es-la-inspeccion-pre-entrega-pdi',
-          stageId: 'preparacion',
-          suggestions: ['Coordinación de turno', 'Día de la entrega', 'Tiempos'],
-        };
-      }
-      // Fallback search in data context
-      else {
-        const searchResults = searchAll(text);
-        recordSearchQuery(text, searchResults.length);
-
-        if (searchResults.length > 0) {
-          const top = searchResults[0];
-          botResponse = {
-            text: `Encontré información oficial relacionada con tu consulta sobre "${text}".`,
-            articleSlug: top.urlOrSlug.startsWith('article:') ? top.urlOrSlug.replace('article:', '') : undefined,
-            stageId: top.urlOrSlug.startsWith('stage:') ? top.urlOrSlug.replace('stage:', '') : undefined,
-            suggestions: ['¿Qué es gestoría?', 'Patentamiento', 'Tiempos de entrega'],
-          };
-        } else {
-          botResponse = {
-            text: 'No encontré una respuesta exacta para tu consulta en nuestra base oficial. Podés revisar los temas más consultados a continuación o contactar a tu asesor comercial.',
-            suggestions: [
-              '¿Qué es gestoría?',
-              'Patentamiento',
-              'Fecha de entrega',
-              'Documentación requerida',
-            ],
-          };
-        }
-      }
-
-      const botMsg: Message = {
-        id: `bot-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-        sender: 'bot',
-        text: botResponse.text || '',
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        articleSlug: botResponse.articleSlug,
-        stageId: botResponse.stageId,
-        suggestions: botResponse.suggestions,
-        isTrackingPrompt: botResponse.isTrackingPrompt,
-      };
-
-      setMessages((prev) => [...prev, botMsg]);
-    }, 400);
-  }, [articles, searchAll, recordSearchQuery]);
+  // Scroll ONLY the internal chat container, NEVER the window/browser viewport
+  const scrollChatToBottom = (behavior: ScrollBehavior = 'smooth') => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior,
+      });
+    }
+  };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    scrollChatToBottom('smooth');
+  }, [messages, isTyping]);
+
+  const handleResetChat = () => {
+    setMessages([
+      {
+        ...DEFAULT_WELCOME_MESSAGE,
+        id: `welcome-${Date.now()}`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      },
+    ]);
+  };
+
+  const handleUserSendMessage = useCallback(
+    (textToSend: string) => {
+      const text = textToSend.trim();
+      if (!text) return;
+
+      const userMsg: Message = {
+        id: `user-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        sender: 'user',
+        text,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+
+      setMessages((prev) => [...prev, userMsg]);
+      setInputMessage('');
+      setIsTyping(true);
+
+      // Natural response delay (350ms)
+      setTimeout(() => {
+        const q = text.toLowerCase();
+        let botResponse: Partial<Message> = {};
+
+        // 1. Gestoría
+        if (q.includes('gestor') || q.includes('tramite previo')) {
+          const art = articles.find((a) => a.slug.includes('gestoria'));
+          botResponse = {
+            text: 'La gestoría es la etapa donde nuestros profesionales matriculados gestionan los sellados provinciales, bajas/altas y trámites ante el Registro Automotor para inscribir la unidad a tu nombre.',
+            articleSlug: art?.slug || 'que-es-gestoria',
+            stageId: 'gestoria',
+            suggestions: ['¿Cuánto tarda el patentamiento?', 'Documentación requerida', 'Tiempos orientativos'],
+          };
+        }
+        // 2. Patentamiento / Registro
+        else if (q.includes('patent') || q.includes('chapa') || q.includes('dominio') || q.includes('registro')) {
+          const art = articles.find((a) => a.slug.includes('patentamiento'));
+          botResponse = {
+            text: 'El patentamiento es la inscripción formal de tu vehículo en la Dirección Nacional de los Registros del Automotor (DNRPA). El plazo orientativo habitual en Jujuy suele rondar entre 15 y 30 días hábiles una vez ingresado el legajo.',
+            articleSlug: art?.slug || 'que-es-patentamiento',
+            stageId: 'patentamiento',
+            suggestions: ['¿Qué factores modifican el plazo?', '¿Qué sigue después de patentar?', 'Preparación PDI'],
+          };
+        }
+        // 3. Tiempos / Entrega / Fechas
+        else if (q.includes('tiempo') || q.includes('cuando') || q.includes('fecha') || q.includes('plazo') || q.includes('demor') || q.includes('camion')) {
+          const art = articles.find((a) => a.slug.includes('cuando-empieza-a-correr'));
+          botResponse = {
+            text: 'El plazo orientativo de entrega comienza a computarse una vez que la unidad se encuentra 100% facturada con chasis asignado y saldos administrativos cancelados. El tiempo promedio suele rondar entre 25 y 45 días hábiles.',
+            articleSlug: art?.slug || 'cuando-empieza-a-correr-tiempo-entrega',
+            suggestions: ['¿Por qué puede variar el plazo?', 'Ver Tiempos Orientativos', 'Día de la entrega'],
+          };
+        }
+        // 4. Facturación / Chasis
+        else if (q.includes('factura') || q.includes('chasis') || q.includes('motor')) {
+          const art = articles.find((a) => a.slug.includes('facturar'));
+          botResponse = {
+            text: 'Cuando tu unidad está facturada significa que Volkswagen Argentina emitió el comprobante fiscal definitivo a tu nombre con número de chasis y motor asignados. Con esto se da curso inmediato al patentamiento.',
+            articleSlug: art?.slug || 'que-pasa-despues-de-facturar-unidad',
+            stageId: 'facturacion',
+            suggestions: ['¿Qué es gestoría?', 'Documentación necesaria', 'Plazos orientativos'],
+          };
+        }
+        // 5. Documentación / DNI / Requisitos
+        else if (q.includes('document') || q.includes('dni') || q.includes('papel') || q.includes('requisito')) {
+          const art = articles.find((a) => a.slug.includes('documentacion'));
+          botResponse = {
+            text: 'Para personas físicas se solicita DNI vigente, constancia de CUIL/CUIT y justificación de fondos si el monto supera los límites de UIF. Para personas jurídicas se requiere estatuto social, actas de designación y poderes.',
+            articleSlug: art?.slug || 'que-documentacion-puede-solicitarse',
+            suggestions: ['¿Qué es gestoría?', 'Financiación prendaria', 'Día de la entrega'],
+          };
+        }
+        // 6. Financiación / Prenda
+        else if (q.includes('prenda') || q.includes('financi') || q.includes('credito') || q.includes('banco') || q.includes('pago')) {
+          const art = articles.find((a) => a.slug.includes('financiacion') || a.slug.includes('prenda'));
+          botResponse = {
+            text: 'En operaciones con crédito prendario, la prenda se inscribe junto con el patentamiento en el Registro Automotor. Solo se autoriza la entrega del vehículo una vez que el banco o entidad financiera liquida y confirma la operación.',
+            articleSlug: art?.slug || 'financiacion-y-pagos',
+            suggestions: ['Documentación para crédito', '¿Cuánto tarda el patentamiento?', 'Tiempos orientativos'],
+          };
+        }
+        // 7. Preparación / PDI
+        else if (q.includes('prepara') || q.includes('pdi') || q.includes('taller') || q.includes('accesorio') || q.includes('lavado')) {
+          const art = articles.find((a) => a.slug.includes('pdi'));
+          botResponse = {
+            text: 'En la Inspección Pre-Entrega (PDI), nuestros técnicos oficiales revisan más de 40 puntos mecánicos y de software, instalan accesorios contratados, colocan las chapas patentes y realizan el lavado de salón.',
+            articleSlug: art?.slug || 'que-es-la-inspeccion-pre-entrega-pdi',
+            stageId: 'preparacion',
+            suggestions: ['Coordinación de turno de entrega', 'Día del retiro', 'Garantía oficial'],
+          };
+        }
+        // 8. Fallback con buscador contextual
+        else {
+          const searchResults = searchAll(text);
+          recordSearchQuery(text, searchResults.length);
+
+          if (searchResults.length > 0) {
+            const top = searchResults[0];
+            botResponse = {
+              text: `Encontré información oficial relacionada con tu consulta sobre "${text}". Podés revisar el detalle completo a continuación:`,
+              articleSlug: top.urlOrSlug.startsWith('article:') ? top.urlOrSlug.replace('article:', '') : undefined,
+              stageId: top.urlOrSlug.startsWith('stage:') ? top.urlOrSlug.replace('stage:', '') : undefined,
+              suggestions: ['¿Cuánto tarda el patentamiento?', '¿Qué es gestoría?', 'Tiempos de entrega'],
+            };
+          } else {
+            botResponse = {
+              text: 'No encontré una respuesta directa para ese término exacto. Podés consultar sobre estos temas principales o contactarte con tu asesor de Autosol:',
+              suggestions: [
+                '¿Cuánto tarda el patentamiento?',
+                '¿Qué es gestoría?',
+                'Tiempos orientativos',
+                'Documentación requerida',
+              ],
+            };
+          }
+        }
+
+        const botMsg: Message = {
+          id: `bot-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+          sender: 'bot',
+          text: botResponse.text || '',
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          articleSlug: botResponse.articleSlug,
+          stageId: botResponse.stageId,
+          suggestions: botResponse.suggestions,
+        };
+
+        setMessages((prev) => [...prev, botMsg]);
+        setIsTyping(false);
+      }, 350);
+    },
+    [articles, searchAll, recordSearchQuery]
+  );
 
   useEffect(() => {
     if (initialQuery && initialQuery.trim() && lastHandledInitialQueryRef.current !== initialQuery.trim()) {
@@ -229,118 +244,140 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
 
   return (
     <div
-      className={`flex flex-col overflow-hidden rounded-[1.75rem] border border-slate-200/90 bg-white shadow-[0_24px_70px_rgba(7,30,58,0.18)] ${
-        isFloatingModal ? 'h-[560px] w-[min(390px,calc(100vw-2.5rem))] max-w-none' : 'h-[640px] max-w-4xl mx-auto'
+      className={`flex flex-col overflow-hidden rounded-2xl sm:rounded-3xl border border-slate-200/90 bg-white shadow-[0_12px_40px_rgba(0,30,80,0.08)] ${
+        isFloatingModal
+          ? 'h-[520px] w-[min(380px,calc(100vw-2rem))]'
+          : 'h-[520px] sm:h-[560px] w-full max-w-2xl mx-auto'
       }`}
     >
-      {/* Top Header */}
-      <div className="flex shrink-0 items-center justify-between bg-[#001e50] px-5 py-3.5 text-white">
+      {/* 1. Header: Sleek Volkswagen Deep Navy with Official Avatar & Status */}
+      <div className="flex shrink-0 items-center justify-between bg-[#001e50] px-4 sm:px-5 py-3 text-white border-b border-white/10">
         <div className="flex items-center space-x-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0040c4] text-white shadow-inner shadow-white/20">
-            <Bot className="w-5 h-5" />
+          {/* Avatar with soft glow */}
+          <div className="relative flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-[#0040c4] text-white shadow-sm ring-2 ring-white/20 shrink-0">
+            <Bot className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-[#001e50]" />
           </div>
+
           <div>
             <div className="flex items-center space-x-2">
-              <h2 className="text-sm font-semibold tracking-tight text-white">Asistente Autosol</h2>
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <h2 className="text-xs sm:text-sm font-bold tracking-tight text-white">
+                Bot de consulta Autosol
+              </h2>
             </div>
-            <p className="text-[11px] text-blue-200/80 flex items-center space-x-1">
-              <ShieldCheck className="w-3 h-3 text-emerald-400" />
-              <span>Orientación basada en contenidos oficiales</span>
+            <p className="text-[10px] sm:text-[11px] text-blue-200/80 flex items-center space-x-1 font-normal">
+              <ShieldCheck className="w-3 h-3 text-emerald-400 shrink-0" />
+              <span>En línea • Respuestas oficiales</span>
             </p>
           </div>
         </div>
 
-        {onCloseModal && (
+        <div className="flex items-center space-x-1">
+          {/* Reset / Clear Chat Button */}
           <button
-            onClick={onCloseModal}
-            className="rounded-full p-1.5 text-blue-200 transition-colors hover:bg-white/10 hover:text-white"
+            onClick={handleResetChat}
+            className="flex items-center space-x-1 rounded-lg px-2.5 py-1 text-[11px] text-blue-200 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            title="Reiniciar conversación"
+            aria-label="Reiniciar conversación"
           >
-            <X className="w-5 h-5" />
+            <RotateCcw className="w-3 h-3" />
+            <span className="hidden sm:inline">Limpiar</span>
           </button>
-        )}
+
+          {onCloseModal && (
+            <button
+              onClick={onCloseModal}
+              className="rounded-full p-1.5 text-blue-200 transition-colors hover:bg-white/10 hover:text-white cursor-pointer"
+              aria-label="Cerrar ventana"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Suggestion Chips Banner */}
-      <div className="flex shrink-0 items-center space-x-2 overflow-x-auto border-b border-slate-100 bg-white px-4 py-3 scrollbar-thin">
-        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider shrink-0">
-          Sugerencias:
+      {/* 2. Quick Topic Pills Bar (Compact, horizontal scroll with smooth pills) */}
+      <div className="flex shrink-0 items-center space-x-1.5 overflow-x-auto bg-[#f8f7f4] px-3 sm:px-4 py-2 border-b border-slate-200/70 scrollbar-none">
+        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider shrink-0 pr-1">
+          Temas:
         </span>
-        {quickPills.map((pill) => (
+        {QUICK_PILLS.map((pill) => (
           <button
             key={pill}
             onClick={() => handleUserSendMessage(pill)}
-            className="whitespace-nowrap rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-medium text-slate-600 transition-colors hover:border-[#a0a3aa] hover:bg-[#ece5db] hover:text-[#0040c4]"
+            className="whitespace-nowrap rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-700 transition-all hover:border-[#0040c4] hover:bg-blue-50 hover:text-[#0040c4] cursor-pointer shrink-0 shadow-2xs"
           >
             {pill}
           </button>
         ))}
       </div>
 
-      {/* Messages Scroll Area */}
-      <div className="flex-1 space-y-4 overflow-y-auto bg-[linear-gradient(180deg,#ece5db_0%,#ffffff_28%)] p-4 sm:p-5">
+      {/* 3. Messages Chat Area (Controlled scrolling without jumping the window) */}
+      <div
+        ref={chatContainerRef}
+        className="flex-1 space-y-3.5 overflow-y-auto bg-[#faf9f6] p-3.5 sm:p-4 text-slate-900"
+      >
         {messages.map((msg) => {
           const isBot = msg.sender === 'bot';
           return (
             <div
               key={msg.id}
-              className={`flex items-start space-x-2.5 ${isBot ? 'justify-start' : 'justify-end'}`}
+              className={`flex items-start space-x-2 ${isBot ? 'justify-start' : 'justify-end'}`}
             >
               {isBot && (
-                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#e6e6e6] text-[#0040c4]">
-                  <Bot className="w-4 h-4" />
+                <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#001e50] text-white shadow-2xs">
+                  <Bot className="w-3.5 h-3.5" />
                 </div>
               )}
 
-              <div className={`max-w-[85%] sm:max-w-[75%] space-y-2`}>
+              <div className="max-w-[85%] sm:max-w-[78%] space-y-1.5">
                 <div
-                  className={`rounded-2xl p-3.5 text-xs leading-relaxed shadow-sm sm:p-4 sm:text-sm ${
+                  className={`rounded-2xl p-3 sm:p-3.5 text-xs sm:text-[13px] leading-relaxed shadow-2xs ${
                     isBot
-                      ? 'rounded-tl-md border border-slate-100 bg-white text-slate-700'
-                      : 'rounded-tr-md bg-[#0040c4] font-medium text-white'
+                      ? 'rounded-tl-xs border border-slate-200/80 bg-white text-slate-800'
+                      : 'rounded-tr-xs bg-[#0040c4] font-medium text-white shadow-sm'
                   }`}
                 >
                   <p>{msg.text}</p>
 
-                  {/* Contextual Action Button inside Bot Message */}
+                  {/* Contextual Action Link Card inside Bot Message */}
                   {msg.articleSlug && (
-                    <div className="pt-2.5 mt-2.5 border-t border-slate-100 flex flex-wrap gap-2">
+                    <div className="pt-2 mt-2 border-t border-slate-100">
                       <button
                         onClick={() => onNavigateToArticle(msg.articleSlug!)}
-                        className="inline-flex items-center space-x-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors"
+                        className="inline-flex items-center space-x-1.5 rounded-lg bg-blue-50 px-2.5 py-1.5 text-xs font-bold text-[#0040c4] hover:bg-blue-100 transition-colors cursor-pointer"
                       >
                         <BookOpen className="w-3.5 h-3.5" />
-                        <span>Ver información completa</span>
+                        <span>Ver guía oficial completa</span>
                         <ArrowRight className="w-3 h-3" />
                       </button>
                     </div>
                   )}
 
                   {msg.stageId && (
-                    <div className="pt-2">
+                    <div className="pt-1.5">
                       <button
                         onClick={() => onNavigateToStage(msg.stageId!)}
-                        className="inline-flex items-center space-x-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold px-3 py-1.5 rounded-lg text-xs transition-colors"
+                        className="inline-flex items-center space-x-1.5 rounded-lg bg-slate-100 px-2.5 py-1.5 text-xs font-bold text-slate-800 hover:bg-slate-200 transition-colors cursor-pointer"
                       >
-                        <Car className="w-3.5 h-3.5 text-blue-600" />
+                        <CarFront className="w-3.5 h-3.5 text-[#0040c4]" />
                         <span>Ver etapa en Mi Proceso</span>
                       </button>
                     </div>
                   )}
                 </div>
 
-
-                {/* Micro Suggestions under bot message */}
+                {/* Micro Follow-up Suggestions under bot message */}
                 {msg.suggestions && msg.suggestions.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 pt-1">
+                  <div className="flex flex-wrap gap-1.5 pt-0.5">
                     {msg.suggestions.map((sug, i) => (
                       <button
                         key={i}
                         onClick={() => handleUserSendMessage(sug)}
-                        className="flex items-center space-x-1 rounded-full border border-[#d0d1d5] bg-white px-2.5 py-1 text-[11px] font-medium text-[#0040c4] transition-colors hover:bg-[#ece5db]"
+                        className="inline-flex items-center space-x-1 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-[#0040c4] hover:bg-blue-50 hover:border-blue-300 transition-all cursor-pointer shadow-2xs"
                       >
                         <span>{sug}</span>
-                        <ChevronRight className="w-3 h-3 text-blue-400" />
+                        <ChevronRight className="w-2.5 h-2.5 text-blue-400" />
                       </button>
                     ))}
                   </div>
@@ -357,34 +394,54 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
             </div>
           );
         })}
-        <div ref={messagesEndRef} />
+
+        {/* Typing indicator */}
+        {isTyping && (
+          <div className="flex items-center space-x-2">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#001e50] text-white shadow-2xs">
+              <Bot className="w-3.5 h-3.5" />
+            </div>
+            <div className="rounded-2xl rounded-tl-xs bg-white border border-slate-200/80 px-3.5 py-2 shadow-2xs flex items-center space-x-1">
+              <span className="h-1.5 w-1.5 rounded-full bg-slate-400 animate-bounce" />
+              <span className="h-1.5 w-1.5 rounded-full bg-slate-400 animate-bounce [animation-delay:0.2s]" />
+              <span className="h-1.5 w-1.5 rounded-full bg-slate-400 animate-bounce [animation-delay:0.4s]" />
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Input Box */}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleUserSendMessage(inputMessage);
-        }}
-        className="flex shrink-0 items-center space-x-2 border-t border-slate-100 bg-white p-3"
-      >
-        <input
-          id="assistant-chat-input"
-          type="text"
-          value={inputMessage}
-          onChange={(e) => setInputMessage(e.target.value)}
-          placeholder="Escribí tu consulta (ej: ¿Qué es gestoría?)..."
-          className="flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0040c4]/25 sm:text-sm"
-        />
-        <button
-          type="submit"
-          id="btn-send-assistant-msg"
-          disabled={!inputMessage.trim()}
-          className="shrink-0 rounded-full bg-[#0040c4] p-3 text-white shadow-[0_5px_14px_rgba(0,105,180,0.3)] transition-all hover:-translate-y-0.5 hover:bg-[#001e50] active:scale-95 disabled:opacity-40"
+      {/* 4. Bottom Input Bar */}
+      <div className="shrink-0 border-t border-slate-200/80 bg-white p-2.5 sm:p-3">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleUserSendMessage(inputMessage);
+          }}
+          className="flex items-center space-x-2"
         >
-          <Send className="w-4 h-4" />
-        </button>
-      </form>
+          <input
+            id="assistant-chat-input"
+            type="text"
+            value={inputMessage}
+            onChange={(e) => setInputMessage(e.target.value)}
+            placeholder="Escribí tu consulta (ej: ¿Qué es gestoría?)..."
+            className="flex-1 rounded-full border border-slate-300 bg-slate-50/80 px-4 py-2 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:border-[#0040c4] focus:outline-none focus:ring-2 focus:ring-[#0040c4]/15"
+          />
+          <button
+            type="submit"
+            id="btn-send-assistant-msg"
+            disabled={!inputMessage.trim()}
+            className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-[#0040c4] text-white transition-all hover:bg-[#001e50] active:scale-95 disabled:opacity-40 cursor-pointer shadow-sm"
+            aria-label="Enviar consulta"
+          >
+            <Send className="w-4 h-4" />
+          </button>
+        </form>
+
+        <p className="mt-1.5 text-center text-[10px] text-slate-400">
+          Orientación oficial de Autosol Jujuy • Basado en el manual de procesos 0km
+        </p>
+      </div>
     </div>
   );
 };
