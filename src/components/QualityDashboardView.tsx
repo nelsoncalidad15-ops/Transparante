@@ -46,7 +46,7 @@ export const QualityDashboardView: React.FC<QualityDashboardViewProps> = ({
 
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('30d');
   const [activeTab, setActiveTab] = useState<'uncertainty' | 'unassisted' | 'topArticles'>('uncertainty');
-  const [selectedBuyerType, setSelectedBuyerType] = useState<'all' | 'plan' | 'direct'>('all');
+  const [selectedBuyerType, setSelectedBuyerType] = useState<'all' | 'direct' | 'prendario'>('all');
 
   // "¿Qué es lo que más pregunta el cliente?" - Top preguntas con volumen y variación
   const topQueries = [
@@ -325,7 +325,7 @@ export const QualityDashboardView: React.FC<QualityDashboardViewProps> = ({
             </p>
           </div>
 
-          {/* Buyer type selector */}
+          {/* Buyer type selector - Venta Convencional */}
           <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-xs font-semibold">
             <button
               onClick={() => setSelectedBuyerType('all')}
@@ -333,15 +333,7 @@ export const QualityDashboardView: React.FC<QualityDashboardViewProps> = ({
                 selectedBuyerType === 'all' ? 'bg-white text-slate-900 shadow-xs font-bold' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Todos
-            </button>
-            <button
-              onClick={() => setSelectedBuyerType('plan')}
-              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
-                selectedBuyerType === 'plan' ? 'bg-white text-slate-900 shadow-xs font-bold' : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Autoahorro (Plan)
+              Todos (Convencional)
             </button>
             <button
               onClick={() => setSelectedBuyerType('direct')}
@@ -349,7 +341,15 @@ export const QualityDashboardView: React.FC<QualityDashboardViewProps> = ({
                 selectedBuyerType === 'direct' ? 'bg-white text-slate-900 shadow-xs font-bold' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Venta Directa
+              Venta Salón (Contado)
+            </button>
+            <button
+              onClick={() => setSelectedBuyerType('prendario')}
+              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                selectedBuyerType === 'prendario' ? 'bg-white text-slate-900 shadow-xs font-bold' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Crédito Prendario
             </button>
           </div>
         </div>
@@ -407,25 +407,25 @@ export const QualityDashboardView: React.FC<QualityDashboardViewProps> = ({
           ))}
         </div>
 
-        {/* Modalidad de Compra Insights Box */}
+        {/* Modalidad de Compra Insights Box - Venta Convencional */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-slate-100">
           <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-blue-900">Autoahorro VW (58% del volumen)</span>
-              <span className="text-xs font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md">3.178 consultas</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-900">Venta Salón / Transferencia (62% del volumen)</span>
+              <span className="text-xs font-bold text-slate-700 bg-slate-200 px-2 py-0.5 rounded-md">3.397 consultas</span>
             </div>
             <p className="text-xs text-slate-600 leading-relaxed">
-              Las principales dudas se concentran en <strong>Adjudicación y Cuotas Puras (Etapa 3)</strong> y los <strong>Gastos de Entrega y Retiro (Etapa 5)</strong>. Reclaman saber de antemano el monto exacto de la integración de cuotas.
+              La mayor consulta radica en <strong>Arribo de Unidad desde Fábrica (Etapa 3)</strong> y los <strong>Tiempos de Patentamiento (Etapa 4)</strong>. El cliente busca agendar su viaje al concesionario apenas se emite la factura comercial.
             </p>
           </div>
 
           <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-900">Venta Convencional (42% del volumen)</span>
-              <span className="text-xs font-bold text-slate-700 bg-slate-200 px-2 py-0.5 rounded-md">2.302 consultas</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-blue-900">Crédito Prendario Bancario (38% del volumen)</span>
+              <span className="text-xs font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded-md">2.083 consultas</span>
             </div>
             <p className="text-xs text-slate-600 leading-relaxed">
-              La mayor consulta radica en <strong>Arribo del Camión Cigüeña (Etapa 3)</strong> y los <strong>Tiempos de Patentamiento (Etapa 5)</strong>. El cliente busca agendar su viaje al concesionario apenas se emite la factura.
+              Las principales dudas se concentran en <strong>Aprobación de Scoring Bancario</strong>, liquidación de fondos por la entidad bancaria e inscripción conjunta de prenda en la etapa de <strong>Gestoría y Patentamiento</strong>.
             </p>
           </div>
         </div>

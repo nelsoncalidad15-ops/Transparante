@@ -182,6 +182,13 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
             suggestions: ['Documentación para crédito', '¿Cuánto tarda el patentamiento?', 'Tiempos orientativos'],
           };
         }
+        // 6b. Consulta sobre Autoahorro / Planes (Redirección al canal de Autoahorro)
+        else if (q.includes('autoahorro') || q.includes('plan de ahorro') || q.includes('licita') || q.includes('adjudic')) {
+          botResponse = {
+            text: 'Este portal de información está enfocado exclusivamente en las operaciones de Venta Tradicional / Convencional 0km (Contado y Crédito Prendario). Si tenés consultas sobre un Plan de Autoahorro Volkswagen (adjudicaciones, licitaciones o cuotas mensuales), por favor contactá al sector exclusivo de Autoahorro Autosol o a tu asesor de plan.',
+            suggestions: ['Financiación prendaria', '¿Cuánto tarda el patentamiento?', 'Tiempos orientativos'],
+          };
+        }
         // 7. Preparación / PDI
         else if (q.includes('prepara') || q.includes('pdi') || q.includes('taller') || q.includes('accesorio') || q.includes('lavado')) {
           const art = articles.find((a) => a.slug.includes('pdi'));

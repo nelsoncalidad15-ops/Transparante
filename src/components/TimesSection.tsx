@@ -41,7 +41,7 @@ export const TimesSection: React.FC<TimesSectionProps> = ({
       id: 'facturacion' as ProcessStageId,
       name: 'Facturación & Chasis',
       estimatedTime: 'Según validaciones administrativas',
-      whenStarts: 'Tras la aprobación de fábrica y acreditación del pago inicial o adjudicación.',
+      whenStarts: 'Tras la asignación de fábrica y acreditación del pago acordado o saldo inicial.',
       keyFactors: [
         'Disponibilidad de cupo en terminal',
         'Acreditación de transferencias',

@@ -34,7 +34,7 @@ export const INITIAL_STAGES: ProcessStage[] = [
       'Es el inicio formal de la operación: se confirman las condiciones comerciales, la documentación disponible y la modalidad de pago. No implica por sí sola que la unidad esté facturada, patentada o lista para entregar.',
     whatHappens: [
       'Firma de solicitud de reserva / boleto de compra.',
-      'Definición de modalidad de pago (contado, financiación prendaria, plan de ahorro o entrega de usado).',
+      'Definición de modalidad de pago convencional (contado, financiación prendaria bancaria o entrega de usado).',
       'Asignación inicial del pedido en el sistema comercial del concesionario.',
       'Apertura del legajo digital y recopilación de datos de contacto.',
     ],

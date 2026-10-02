@@ -56,14 +56,14 @@ ${faqs.map((f, i) => `${i + 1}. ${f.question} -> ${f.answer}`).join('\n\n')}
         <div className="space-y-2">
           <div className="inline-flex items-center space-x-2 text-xs font-bold text-sky-300 bg-blue-950/80 px-3 py-1 rounded-full uppercase tracking-wider">
             <FileCheck2 className="w-3.5 h-3.5" />
-            <span>Ficha de Validación para el Administrativo</span>
+            <span>Ficha de Validación Operativa • Venta Tradicional</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
-            Resumen Integral para Validación Operativa
+            Resumen Integral para Validación con Administración
           </h1>
           <p className="text-xs sm:text-sm text-blue-100/80 max-w-2xl font-normal leading-relaxed">
             Revisá junto al responsable administrativo punto por punto la exactitud de plazos,
-            trámites de gestoría, formularios requeridos y respuestas que el cliente ve en la web.
+            trámites de gestoría, formularios requeridos y respuestas que el cliente ve en la web para <strong>Venta Convencional (Contado y Crédito Prendario)</strong>.
           </p>
         </div>
 
@@ -86,6 +86,20 @@ ${faqs.map((f, i) => `${i + 1}. ${f.question} -> ${f.answer}`).join('\n\n')}
         </div>
       </div>
 
+      {/* Scope Alert Badge */}
+      <div className="p-4 bg-sky-50 border border-sky-200 rounded-2xl flex items-start gap-3 text-xs text-sky-900 print:bg-slate-50 print:border-slate-300">
+        <UserCheck className="w-5 h-5 text-[#0040c4] shrink-0 mt-0.5" />
+        <div className="space-y-0.5">
+          <strong className="font-bold text-sky-950 block text-xs">
+            Alcance Exclusivo: Operaciones de Venta Tradicional / Convencional 0km
+          </strong>
+          <span className="text-slate-600 leading-relaxed block">
+            Esta ficha técnica abarca exclusivamente ventas de salón bajo modalidad de pago contado/transferencia oficial y créditos prendarios bancarios. 
+            Los procesos relativos a <strong>Autoahorro Volkswagen</strong> (sorteos, licitaciones y adjudicaciones) están deliberadamente separados y se gestionarán en su propio módulo independiente.
+          </span>
+        </div>
+      </div>
+
       {/* Printable Sheet Container */}
       <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-8 text-slate-800 print:border-none print:shadow-none print:p-0">
         
@@ -96,15 +110,15 @@ ${faqs.map((f, i) => `${i + 1}. ${f.question} -> ${f.answer}`).join('\n\n')}
               Volkswagen Autosol Jujuy • Calidad y Operaciones
             </span>
             <h2 className="text-2xl font-black text-slate-900 mt-1">
-              Ficha de Conformidad de Contenidos Públicos
+              Ficha de Conformidad de Contenidos Públicos — Venta Convencional
             </h2>
             <p className="text-xs text-slate-500 mt-1">
-              Fecha de emisión: {new Date().toLocaleDateString('es-AR', { day: '2-digit', month: 'long', year: 'numeric' })}
+              Fecha de emisión: {new Date().toLocaleDateString('es-AR', { day: '2-digit', month: 'long', year: 'numeric' })} • Alcance: Venta Tradicional 0km
             </p>
           </div>
           <div className="hidden sm:block text-right text-xs text-slate-400">
             <span className="inline-block px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 font-semibold">
-              Versión Operativa 2.5
+              Versión Tradicional 2.5
             </span>
           </div>
         </div>
