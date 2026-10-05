@@ -24,6 +24,7 @@ const readBody = async (request) => {
 const cookieValue = (request) => (request.headers.get('cookie') || '').split(';').map((part) => part.trim()).find((part) => part.startsWith(`${COOKIE}=`))?.slice(COOKIE.length + 1);
 const DEFAULT_SESSION_SECRET = 'autosol_secure_session_secret_2026_VW_jujuy_key';
 const DEFAULT_SHARED_SECRET = '3a12d686acfeb2cdba16326a4565a632f1f4cae2564d5740';
+const DEFAULT_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3cAWV0C4Qw3JZHNLkd3EFkFCItuj1c9Xchvq3ZQMCrHUq1iVxgU-b0QgBjbU2wYq4/exec';
 
 const getSession = async (request, env) => {
   const secret = env.SESSION_SECRET || DEFAULT_SESSION_SECRET;
@@ -42,7 +43,7 @@ const sessionCookie = async (role, env) => {
   return `${COOKIE}=${value}.${await sign(value, secret)}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${SESSION_SECONDS}`;
 };
 const callScript = async (action, payload, env) => {
-  const url = env.APPS_SCRIPT_URL;
+  const url = env.APPS_SCRIPT_URL || DEFAULT_APPS_SCRIPT_URL;
   const secret = env.APPS_SCRIPT_SHARED_SECRET || env.APPS_SCRIPT_SHARED_SE || env.BACKEND_SHARED_SECRET || DEFAULT_SHARED_SECRET;
   if (!url) throw new Error('Falta configurar la variable APPS_SCRIPT_URL en Cloudflare.');
   const response = await fetch(url, {
