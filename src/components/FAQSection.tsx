@@ -109,7 +109,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
       </div>
 
       {/* Listado de Preguntas */}
-      <div className="space-y-3.5">
+      <div className="min-w-0 space-y-3.5">
         {filteredFaqs.length === 0 ? (
           <div className="rounded-3xl bg-white border border-slate-200/80 p-8 text-center space-y-3 shadow-2xs">
             <HelpCircle className="w-10 h-10 text-slate-300 mx-auto" />
@@ -131,13 +131,10 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
               >
                 <button
                   onClick={() => setExpandedId(isExpanded ? null : faq.id)}
-                  className="w-full text-left p-5 flex items-center justify-between gap-4 cursor-pointer"
+                  className="w-full min-w-0 text-left p-5 flex items-center justify-between gap-4 cursor-pointer"
                 >
-                  <div className="flex items-center gap-3.5">
-                    <span className="w-7 h-7 rounded-lg bg-[#e6e6e6] text-[#002244] text-xs font-bold flex items-center justify-center shrink-0">
-                      ?
-                    </span>
-                    <span className="text-sm sm:text-base font-semibold text-[#002244]">
+                  <div className="min-w-0 flex-1 flex items-center gap-3.5">
+                    <span className="min-w-0 break-words text-sm sm:text-base font-semibold text-[#002244]">
                       {faq.question}
                     </span>
                   </div>
