@@ -12,12 +12,10 @@ import {
 
 interface DeliveryViewProps {
   onNavigateToArticle: (slug: string) => void;
-  onOpenAssistant: (query?: string) => void;
 }
 
 export const DeliveryView: React.FC<DeliveryViewProps> = ({
   onNavigateToArticle,
-  onOpenAssistant,
 }) => {
   const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({});
 

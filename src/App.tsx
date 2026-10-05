@@ -10,17 +10,13 @@ import { DeliveryView } from './components/DeliveryView';
 import { DictionaryView } from './components/DictionaryView';
 import { LibraryView } from './components/LibraryView';
 import { ArticleDetail } from './components/ArticleDetail';
-import { VirtualAssistant } from './components/VirtualAssistant';
+import { InternalAccess } from './components/InternalAccess';
 import { SearchResultsView } from './components/SearchResultsView';
 import { FAQSection } from './components/FAQSection';
-import { QualityDashboardView } from './components/QualityDashboardView';
-
-import { AdminContentView } from './components/AdminContentView';
 import { AutosolLogo } from './components/AutosolLogo';
 import { ProcessStageId, ContentCategory } from './types';
 import {
   Car,
-  Bot,
   ShieldCheck,
   Phone,
   Mail,
@@ -37,13 +33,11 @@ import {
 
 function AppContent() {
   const { getText } = useData();
-  const [activeTab, setActiveTab] = useState<ActiveTab>('home');
+  const [activeTab, setActiveTab] = useState<ActiveTab>(window.location.hash === '#acceso-interno' ? 'internal-access' : 'home');
   const [selectedStageId, setSelectedStageId] = useState<ProcessStageId | undefined>(undefined);
   const [selectedArticleSlug, setSelectedArticleSlug] = useState<string>('que-es-patentamiento');
   const [searchQuery, setSearchQuery] = useState<string>('gestoría');
   const [libraryInitialCategory, setLibraryInitialCategory] = useState<string | undefined>(undefined);
-  const [assistantInitialQuery, setAssistantInitialQuery] = useState<string | undefined>(undefined);
-  const [isFloatingAssistantOpen, setIsFloatingAssistantOpen] = useState(false);
   const [isContactMenuOpen, setIsContactMenuOpen] = useState(false);
 
   // Scroll to top instantly whenever tab changes so the user is always at the top of the new view
@@ -82,14 +76,6 @@ function AppContent() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleOpenAssistant = (query?: string) => {
-    if (query) {
-      setAssistantInitialQuery(query);
-    }
-    setActiveTab('assistant');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   const handleNavigate = (tab: ActiveTab, category?: string, stageId?: ProcessStageId) => {
     if (stageId) setSelectedStageId(stageId);
     if (category) setLibraryInitialCategory(category);
@@ -110,7 +96,8 @@ function AppContent() {
       />
 
       {/* Main Container */}
-      <main className={activeTab === 'home' ? 'flex-1 w-full' : activeTab === 'assistant' ? 'flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 pb-6' : 'flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-12'}>
+      <main className={activeTab === 'home' ? 'flex-1 w-full' : 'flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-12'}>
+        {activeTab === 'internal-access' && <InternalAccess />}
         {/* VIEW 1: HOME (Centro Digital del Cliente) */}
         {activeTab === 'home' && (
           <HeroSection
@@ -132,7 +119,6 @@ function AppContent() {
         {activeTab === 'documents' && (
           <DocumentsView
             onNavigateToArticle={handleNavigateToArticle}
-            onOpenAssistant={handleOpenAssistant}
           />
         )}
 
@@ -148,7 +134,6 @@ function AppContent() {
         {activeTab === 'financing' && (
           <FinancingView
             onNavigateToArticle={handleNavigateToArticle}
-            onOpenAssistant={handleOpenAssistant}
           />
         )}
 
@@ -156,7 +141,6 @@ function AppContent() {
         {activeTab === 'delivery' && (
           <DeliveryView
             onNavigateToArticle={handleNavigateToArticle}
-            onOpenAssistant={handleOpenAssistant}
           />
         )}
 
@@ -164,7 +148,6 @@ function AppContent() {
         {activeTab === 'dictionary' && (
           <DictionaryView
             onNavigateToArticle={handleNavigateToArticle}
-            onOpenAssistant={handleOpenAssistant}
           />
         )}
 
@@ -180,19 +163,7 @@ function AppContent() {
         {activeTab === 'faq' && (
           <FAQSection
             onNavigateToArticle={handleNavigateToArticle}
-            onOpenAssistant={handleOpenAssistant}
           />
-        )}
-
-        {/* VIEW 11: BOT DE CONSULTA AUTOSOL */}
-        {activeTab === 'assistant' && (
-          <div className="w-full max-w-2xl mx-auto py-1 sm:py-2 animate-in fade-in duration-300">
-            <VirtualAssistant
-              initialQuery={assistantInitialQuery}
-              onNavigateToArticle={handleNavigateToArticle}
-              onNavigateToStage={handleSelectStage}
-            />
-          </div>
         )}
 
         {/* VIEW 12: SEARCH RESULTS */}
@@ -213,44 +184,24 @@ function AppContent() {
             onSelectRelated={(topicOrSlug) => {
               handleSearchSubmit(topicOrSlug);
             }}
-            onOpenAssistant={handleOpenAssistant}
           />
         )}
 
-        {/* VIEW 14: QUALITY DASHBOARD (Internal) */}
-        {activeTab === 'quality-dashboard' && (
-          <QualityDashboardView
-            onOpenAdminPanel={() => setActiveTab('admin-panel')}
-            onNavigateToArticle={handleNavigateToArticle}
-          />
+        {['process', 'documents', 'times', 'financing', 'delivery', 'faq'].includes(activeTab) && (
+          <div className="rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-5 shadow-2xs text-xs sm:text-sm text-slate-600 space-y-2">
+            <h2 className="font-semibold text-[#002244]">¿Necesitás información sobre tu operación?</h2>
+            <p className="leading-relaxed">El Centro Digital brinda información general para ayudarte a comprender el proceso. Para conocer una situación particular de tu operación, comunicate con los canales oficiales de Autosol.</p>
+            <button type="button" onClick={() => setIsContactMenuOpen(true)} className="font-semibold text-[#002244] hover:underline cursor-pointer">
+              Ver canales de contacto
+            </button>
+          </div>
         )}
 
-        {/* VIEW 15: ADMIN CONTENT PANEL (Internal / Sheets) */}
-        {activeTab === 'admin-panel' && <AdminContentView onExit={() => setActiveTab('home')} />}
       </main>
 
-      {/* 
-        OPCIÓN 1: BOTÓN FLOTANTE ÚNICO DESPLEGABLE (SPEED DIAL)
-        Solo 1 botón visible en pantalla. Al tocarlo se despliega un panel prolijo con Bot, WhatsApp, Teléfono y Ubicación.
-      */}
-      {activeTab !== 'assistant' && (
+      {/* Contacto directo con Autosol */}
+      {activeTab !== 'internal-access' && (
         <div id="fab-contact-container" className="fixed bottom-5 right-5 z-50">
-          {isFloatingAssistantOpen ? (
-            <div className="animate-in slide-in-from-bottom-5 fade-in duration-200">
-              <VirtualAssistant
-                isFloatingModal={true}
-                onCloseModal={() => setIsFloatingAssistantOpen(false)}
-                onNavigateToArticle={(slug) => {
-                  setIsFloatingAssistantOpen(false);
-                  handleNavigateToArticle(slug);
-                }}
-                onNavigateToStage={(stageId) => {
-                  setIsFloatingAssistantOpen(false);
-                  handleSelectStage(stageId as ProcessStageId);
-                }}
-              />
-            </div>
-          ) : (
             <div className="relative flex flex-col items-end">
               {/* Menú Desplegable con opciones de contacto limpias */}
               {isContactMenuOpen && (
@@ -266,28 +217,6 @@ function AppContent() {
                   </div>
 
                   <div className="space-y-1">
-                    {/* Opción 1: Bot de Consulta Autosol */}
-                    <button
-                      onClick={() => {
-                        setIsContactMenuOpen(false);
-                        setIsFloatingAssistantOpen(true);
-                      }}
-                      className="w-full flex items-center gap-3 p-2.5 rounded-xl transition-all hover:bg-slate-50 text-left group cursor-pointer border border-transparent hover:border-slate-200"
-                    >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#002244] text-white transition-transform group-hover:scale-105">
-                        <Bot className="h-5 w-5" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="text-xs font-bold text-black group-hover:text-[#002244] flex items-center justify-between">
-                          <span>Bot de consulta</span>
-                          <span className="text-[9px] bg-[#ece5db] text-[#002244] font-bold px-1.5 py-0.5 rounded">24/7</span>
-                        </div>
-                        <p className="text-[11px] text-slate-500 truncate">
-                          Orientación sobre etapas, plazos y 0km
-                        </p>
-                      </div>
-                    </button>
-
                     {/* Opción 2: WhatsApp Oficial */}
                     <a
                       href={`https://wa.me/5493884399187?text=${encodeURIComponent(getText('whatsapp_message', 'Hola Autosol, tengo una consulta sobre mi operación.'))}`}
@@ -377,7 +306,6 @@ function AppContent() {
                 )}
               </button>
             </div>
-          )}
         </div>
       )}
 
@@ -408,7 +336,6 @@ function AppContent() {
                 <button onClick={() => handleNavigate('documents')} className="transition-colors hover:text-white">Documentación y gestoría</button>
                 <button onClick={() => handleNavigate('times')} className="transition-colors hover:text-white">Tiempos orientativos</button>
                 <button onClick={() => handleNavigate('dictionary')} className="transition-colors hover:text-white">Diccionario del comprador</button>
-                <button onClick={() => handleNavigate('assistant')} className="transition-colors hover:text-white">Bot de consulta</button>
               </div>
             </div>
 

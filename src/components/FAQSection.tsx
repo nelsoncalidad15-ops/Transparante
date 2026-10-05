@@ -8,19 +8,16 @@ import {
   BookOpen,
   Filter,
   MessageSquare,
-  Bot,
   Sparkles,
 } from 'lucide-react';
 import { useData } from '../context/DataContext';
 
 interface FAQSectionProps {
   onNavigateToArticle: (slug: string) => void;
-  onOpenAssistant: (initialQuery?: string) => void;
 }
 
 export const FAQSection: React.FC<FAQSectionProps> = ({
   onNavigateToArticle,
-  onOpenAssistant,
 }) => {
   const { faqs } = useData();
   const [searchQuery, setSearchQuery] = useState('');
@@ -69,13 +66,6 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
             </p>
           </div>
 
-          <button
-            onClick={() => onOpenAssistant()}
-            className="inline-flex items-center gap-2 rounded-full bg-[#002244] px-5 py-3 text-xs sm:text-sm font-bold text-white transition-all hover:bg-[#002244] hover:brightness-125 hover:scale-[1.02] cursor-pointer shrink-0 self-start md:self-auto"
-          >
-            <Bot className="w-4 h-4" />
-            <span>Bot de consulta</span>
-          </button>
         </div>
       </div>
 
@@ -126,13 +116,6 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
             <div className="text-sm font-semibold text-slate-700">
               No encontramos respuestas para "{searchQuery}"
             </div>
-            <button
-              onClick={() => onOpenAssistant(searchQuery)}
-              className="inline-flex items-center gap-2 bg-[#002244] hover:bg-[#002244] hover:brightness-125 text-white text-xs font-bold px-4 py-2.5 rounded-full transition-all"
-            >
-              <Bot className="w-4 h-4" />
-              <span>Preguntarle a nuestro bot de consulta</span>
-            </button>
           </div>
         ) : (
           filteredFaqs.map((faq) => {
