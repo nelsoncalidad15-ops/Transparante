@@ -31,7 +31,7 @@ export const AutosolLogo: React.FC<AutosolLogoProps> = ({
       />
       {showSubtitle && (
         <span className={`mt-1 hidden pl-[22%] font-normal leading-none sm:block ${sizeConfig.subtitle} ${isLight ? 'text-white/75' : 'text-[#404759]'}`}>
-          Centro digital de orientación
+          Centro Digital Autosol Confianza
         </span>
       )}
     </div>
