@@ -1,352 +1,155 @@
-import React, { useState } from 'react';
-import {
-  Printer,
-  CheckCircle2,
-  FileCheck2,
-  Clock,
-  CarFront,
-  ShieldCheck,
-  CreditCard,
-  HelpCircle,
-  Download,
-  Copy,
-  Check,
-  Building,
-  AlertTriangle,
-  UserCheck,
-} from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Check, Copy, Printer, Save } from 'lucide-react';
 import { useData } from '../context/DataContext';
+import type { FAQItem, ProcessStage } from '../types';
 
-export const ValidationSummaryView: React.FC = () => {
-  const { stages, faqs, articles, siteTexts } = useData();
+type ReviewEntry = { id: string; status: 'pendiente' | 'validado'; note: string; reviewedAt: string };
+type ReviewDraft = { stages: ProcessStage[]; faqs: FAQItem[]; validations: ReviewEntry[] };
+const DRAFT_KEY = 'autosol_revision_operativa_borrador_v1';
+const TOPICS = [
+  { id: 'documentacion', title: 'Documentación según el titular', detail: 'Confirmar DNI, CUIT/CUIL, sociedades, condominio y cuándo corresponde cada formulario o trámite digital.' },
+  { id: 'pagos', title: 'Precio, gastos y medios de pago', detail: 'Confirmar qué incluye la cotización, quién paga patentamiento, sellos, gestoría, seguro y accesorios.' },
+  { id: 'plazo-total', title: 'Plazo total e inicio del cómputo', detail: 'Confirmar si existe un plazo general de entrega, desde qué hito se cuenta y qué se informa por escrito.' },
+  { id: 'pdi', title: 'Preparación de la unidad', detail: 'Confirmar el procedimiento real de PDI, cantidad de controles si se publica y tiempo operativo en Jujuy.' },
+  { id: 'entrega', title: 'Seguro, turno y retiro', detail: 'Confirmar seguro, retiro por terceros, documentación entregada y responsable del turno.' },
+];
+
+const readDraft = (): ReviewDraft | null => {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    const value = raw ? JSON.parse(raw) as ReviewDraft : null;
+    return value && Array.isArray(value.stages) && Array.isArray(value.faqs) && Array.isArray(value.validations) ? value : null;
+  } catch { return null; }
+};
+
+const ReviewControl = ({ item, onChange }: { item: ReviewEntry; onChange: (patch: Partial<ReviewEntry>) => void }) => <div className="mt-3 flex flex-col gap-2 border-t border-slate-200 pt-3 sm:flex-row sm:items-center">
+  <label className="flex shrink-0 items-center gap-2 text-xs font-bold text-[#002244]"><input type="checkbox" checked={item.status === 'validado'} onChange={(event) => onChange({ status: event.target.checked ? 'validado' : 'pendiente' })} />{item.status === 'validado' ? 'Validado' : 'Marcar como validado'}</label>
+  <input aria-label="Nota o corrección del administrativo" value={item.note} onChange={(event) => onChange({ note: event.target.value })} placeholder="Nota o dato pendiente" className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs" />
+</div>;
+
+export const ValidationSummaryView: React.FC<{ onEdit?: (tab: 'table' | 'stages' | 'faqs' | 'texts') => void }> = ({ onEdit }) => {
+  const { stages, faqs, updateStages, updateFaqs } = useData();
+  const [draftStages, setDraftStages] = useState(stages);
+  const [draftFaqs, setDraftFaqs] = useState(faqs);
+  const [validations, setValidations] = useState<ReviewEntry[]>([]);
+  const [connection, setConnection] = useState<'checking' | 'connected' | 'local'>('checking');
+  const [message, setMessage] = useState('');
+  const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [validatedSections, setValidatedSections] = useState<{ [key: string]: boolean }>({});
 
-  const toggleValidate = (key: string) => {
-    setValidatedSections((prev) => ({ ...prev, [key]: !prev[key] }));
+  useEffect(() => {
+    const local = readDraft();
+    if (local) { setDraftStages(local.stages); setDraftFaqs(local.faqs); setValidations(local.validations); setMessage('Se recuperó el borrador de este navegador.'); }
+    let cancelled = false;
+    fetch('/api/admin/review').then(async (response) => {
+      if (!response.ok) throw new Error('Backend no disponible');
+      return response.json();
+    }).then((result) => {
+      if (cancelled) return;
+      setConnection('connected');
+      if (local) return;
+      const data = result.data || result;
+      if (Array.isArray(data.stages) && data.stages.length) setDraftStages(data.stages);
+      if (Array.isArray(data.faqs) && data.faqs.length) setDraftFaqs(data.faqs);
+      if (Array.isArray(data.validations)) setValidations(data.validations.map((item: ReviewEntry) => ({ ...item, status: item.status === 'validado' ? 'validado' : 'pendiente' })));
+    }).catch(() => { if (!cancelled) setConnection('local'); });
+    return () => { cancelled = true; };
+  }, []);
+
+  const byId = useMemo(() => new Map(validations.map((item) => [item.id, item])), [validations]);
+  const getReview = (id: string): ReviewEntry => byId.get(id) || { id, status: 'pendiente', note: '', reviewedAt: '' };
+  const ids = [...draftStages.map((item) => `stage:${item.id}`), ...draftFaqs.map((item) => `faq:${item.id}`), ...TOPICS.map((item) => `topic:${item.id}`)];
+  const approved = ids.filter((id) => getReview(id).status === 'validado').length;
+  const remember = (next: ReviewDraft) => { try { localStorage.setItem(DRAFT_KEY, JSON.stringify(next)); } catch { /* almacenamiento no disponible */ } };
+  const changeReview = (id: string, patch: Partial<ReviewEntry>) => {
+    const current = getReview(id);
+    const next = [...validations.filter((item) => item.id !== id), { ...current, ...patch, reviewedAt: patch.status === 'validado' ? new Date().toISOString() : patch.status === 'pendiente' ? '' : current.reviewedAt }];
+    setValidations(next); remember({ stages: draftStages, faqs: draftFaqs, validations: next }); setMessage('Borrador guardado en este navegador.');
+  };
+  const changeStage = (id: string, patch: Partial<ProcessStage>) => {
+    const next = draftStages.map((item) => item.id === id ? { ...item, ...patch } : item);
+    const reviews = validations.map((item) => item.id === `stage:${id}` ? { ...item, status: 'pendiente' as const, reviewedAt: '' } : item);
+    setDraftStages(next); setValidations(reviews); remember({ stages: next, faqs: draftFaqs, validations: reviews }); setMessage('Texto corregido. Revisalo y volvé a validarlo.');
+  };
+  const changeFaq = (id: string, patch: Partial<FAQItem>) => {
+    const next = draftFaqs.map((item) => item.id === id ? { ...item, ...patch } : item);
+    const reviews = validations.map((item) => item.id === `faq:${id}` ? { ...item, status: 'pendiente' as const, reviewedAt: '' } : item);
+    setDraftFaqs(next); setValidations(reviews); remember({ stages: draftStages, faqs: next, validations: reviews }); setMessage('Respuesta corregida. Revisala y volvé a validarla.');
+  };
+  const save = async () => {
+    setSaving(true); setMessage('');
+    const payload = { stages: draftStages, faqs: draftFaqs, validations };
+    remember(payload);
+    try {
+      const response = await fetch('/api/admin/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result.ok === false) throw new Error();
+      localStorage.removeItem(DRAFT_KEY);
+      setConnection('connected'); setMessage('Borrador guardado en Google Sheets. La web pública todavía no cambió.');
+    } catch { setConnection('local'); setMessage('No se guardó para todos. El borrador sigue en este navegador; falta conectar el backend.'); }
+    finally { setSaving(false); }
+  };
+  const publish = async () => {
+    if (approved !== ids.length || connection !== 'connected') return;
+    setSaving(true); setMessage('');
+    const payload = { stages: draftStages, faqs: draftFaqs, validations };
+    remember(payload);
+    try {
+      const response = await fetch('/api/admin/review', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result.ok === false) throw new Error(result.error || 'No se pudo publicar.');
+      updateStages(draftStages); updateFaqs(draftFaqs); localStorage.removeItem(DRAFT_KEY);
+      setMessage('Información validada y publicada en Google Sheets. Los visitantes la verán al recargar.');
+    } catch { setMessage('No se pudo publicar. El borrador quedó guardado en este navegador.'); }
+    finally { setSaving(false); }
+  };
+  const copy = async () => {
+    const lines = ['REVISIÓN OPERATIVA · AUTOSOL JUJUY', `Validados: ${approved} de ${ids.length}`, 'ETAPAS', ...draftStages.map((item) => `${item.stepNumber}. ${item.name} [${getReview(`stage:${item.id}`).status}]\n${item.definition}\nPlazo: ${item.estimatedTime}\nNota: ${getReview(`stage:${item.id}`).note}`), 'PREGUNTAS', ...draftFaqs.map((item) => `${item.question} [${getReview(`faq:${item.id}`).status}]\n${item.answer}\nNota: ${getReview(`faq:${item.id}`).note}`), 'TEMAS A CONFIRMAR', ...TOPICS.map((item) => `${item.title} [${getReview(`topic:${item.id}`).status}]\n${item.detail}\nNota: ${getReview(`topic:${item.id}`).note}`)];
+    await navigator.clipboard.writeText(lines.join('\n\n')); setCopied(true); setTimeout(() => setCopied(false), 2000);
   };
 
-  const handlePrint = () => {
-    window.print();
-  };
-
-  const handleCopyText = () => {
-    const summary = `FICHA DE VALIDACIÓN OPERATIVA - AUTOSOL TRANSPARENTE
-Fecha: ${new Date().toLocaleDateString('es-AR')}
-
-1. ETAPAS DEL PROCESO (${stages.length} etapas):
-${stages.map((s) => `- ${s.stepNumber}. ${s.name}: ${s.estimatedTime} (${s.shortDesc})`).join('\n')}
-
-2. DOCUMENTACIÓN EXIGIDA:
-- Personas Físicas: DNI original, Constancia CUIT/CUIL, Formularios 01 y 12, Declaración UIF.
-- Personas Jurídicas: Estatuto Social certificado, Actas de designación, Poderes vigentes.
-
-3. PREGUNTAS FRECUENTES Y BOT (${faqs.length} preguntas):
-${faqs.map((f, i) => `${i + 1}. ${f.question} -> ${f.answer}`).join('\n\n')}
-`;
-    navigator.clipboard.writeText(summary);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    <div className="space-y-8 animate-in fade-in duration-300 pb-12">
-      {/* Top Banner with Print / Export Actions */}
-      <div className="rounded-3xl bg-[#002244] p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 print:hidden">
-        <div className="space-y-2">
-          <div className="inline-flex items-center space-x-2 text-xs font-bold text-sky-300 bg-blue-950/80 px-3 py-1 rounded-full uppercase tracking-wider">
-            <FileCheck2 className="w-3.5 h-3.5" />
-            <span>Ficha de Validación Operativa • Venta Tradicional</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
-            Resumen Integral para Validación con Administración
-          </h1>
-          <p className="text-xs sm:text-sm text-blue-100/80 max-w-2xl font-normal leading-relaxed">
-            Revisá junto al responsable administrativo punto por punto la exactitud de plazos,
-            trámites de gestoría, formularios requeridos y respuestas que el cliente ve en la web para <strong>Venta Convencional (Contado y Crédito Prendario)</strong>.
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2.5 shrink-0">
-          <button
-            onClick={handleCopyText}
-            className="inline-flex items-center space-x-1.5 rounded-xl border border-white/20 bg-white/10 px-3.5 py-2 text-xs font-bold text-white hover:bg-white/20 transition-all cursor-pointer"
-          >
-            {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-            <span>{copied ? 'Copiado' : 'Copiar Resumen'}</span>
-          </button>
-
-          <button
-            onClick={handlePrint}
-            className="inline-flex items-center space-x-2 rounded-xl bg-[#002244] hover:bg-blue-600 px-4 py-2 text-xs font-bold text-white transition-all shadow-md active:scale-95 cursor-pointer"
-          >
-            <Printer className="w-4 h-4" />
-            <span>Imprimir / Guardar PDF</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Scope Alert Badge */}
-      <div className="p-4 bg-sky-50 border border-sky-200 rounded-2xl flex items-start gap-3 text-xs text-sky-900 print:bg-slate-50 print:border-slate-300">
-        <UserCheck className="w-5 h-5 text-[#002244] shrink-0 mt-0.5" />
-        <div className="space-y-0.5">
-          <strong className="font-bold text-sky-950 block text-xs">
-            Alcance Exclusivo: Operaciones de Venta Tradicional / Convencional 0km
-          </strong>
-          <span className="text-slate-600 leading-relaxed block">
-            Esta ficha técnica abarca exclusivamente ventas de salón bajo modalidad de pago contado/transferencia oficial y créditos prendarios bancarios. 
-            Los procesos relativos a <strong>Autoahorro Volkswagen</strong> (sorteos, licitaciones y adjudicaciones) están deliberadamente separados y se gestionarán en su propio módulo independiente.
-          </span>
-        </div>
-      </div>
-
-      {/* Printable Sheet Container */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-8 text-slate-800 print:border-none print:shadow-none print:p-0">
-        
-        {/* Document Header (Visible in print) */}
-        <div className="border-b border-slate-200 pb-6 flex items-center justify-between">
-          <div>
-            <span className="text-xs font-bold tracking-widest text-[#002244] uppercase block">
-              Volkswagen Autosol Jujuy • Calidad y Operaciones
-            </span>
-            <h2 className="text-2xl font-black text-slate-900 mt-1">
-              Ficha de Conformidad de Contenidos Públicos — Venta Convencional
-            </h2>
-            <p className="text-xs text-slate-500 mt-1">
-              Fecha de emisión: {new Date().toLocaleDateString('es-AR', { day: '2-digit', month: 'long', year: 'numeric' })} • Alcance: Venta Tradicional 0km
-            </p>
-          </div>
-          <div className="hidden sm:block text-right text-xs text-slate-400">
-            <span className="inline-block px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 font-semibold">
-              Versión Tradicional 2.5
-            </span>
-          </div>
-        </div>
-
-        {/* 1. SECCIÓN: LAS 7 ETAPAS Y PLAZOS ORIENTATIVOS */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-            <div className="flex items-center space-x-2">
-              <Clock className="w-5 h-5 text-[#002244]" />
-              <h3 className="text-base sm:text-lg font-bold text-slate-900">
-                1. Las 7 Etapas del Proceso y Plazos Informados
-              </h3>
-            </div>
-            <button
-              onClick={() => toggleValidate('etapas')}
-              className={`text-xs font-bold px-3 py-1 rounded-full border transition-all cursor-pointer ${
-                validatedSections['etapas']
-                  ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
-                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-blue-400'
-              }`}
-            >
-              {validatedSections['etapas'] ? 'Validado con Administrativo ✅' : 'Marcar como validado'}
-            </button>
-          </div>
-
-          <div className="space-y-3">
-            {stages.map((stage) => (
-              <div key={stage.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                  <div className="flex items-center space-x-2">
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#002244] text-[10px] font-bold text-white">
-                      {stage.stepNumber}
-                    </span>
-                    <span className="font-bold text-sm text-slate-900">{stage.name}</span>
-                  </div>
-                  <span className="text-xs font-bold text-[#002244] bg-blue-50 px-2.5 py-0.5 rounded-md self-start sm:self-auto border border-blue-100">
-                    Plazo informado: {stage.estimatedTime}
-                  </span>
-                </div>
-
-                <p className="text-xs text-slate-600 leading-relaxed font-normal">
-                  <strong>Definición al cliente:</strong> {stage.definition}
-                </p>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs pt-1">
-                  <div>
-                    <span className="font-semibold text-slate-700 block">Qué sucede:</span>
-                    <ul className="list-disc list-inside text-slate-600 text-[11px] space-y-0.5 pl-1">
-                      {stage.whatHappens.map((wh, idx) => (
-                        <li key={idx}>{wh}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div>
-                    <span className="font-semibold text-slate-700 block">Factores que pueden demorar:</span>
-                    <ul className="list-disc list-inside text-slate-600 text-[11px] space-y-0.5 pl-1">
-                      {stage.timeFactors.map((tf, idx) => (
-                        <li key={idx}>{tf}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* 2. SECCIÓN: DOCUMENTACIÓN REQUERIDA */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-            <div className="flex items-center space-x-2">
-              <FileCheck2 className="w-5 h-5 text-[#002244]" />
-              <h3 className="text-base sm:text-lg font-bold text-slate-900">
-                2. Documentación y Trámites Requeridos
-              </h3>
-            </div>
-            <button
-              onClick={() => toggleValidate('documentacion')}
-              className={`text-xs font-bold px-3 py-1 rounded-full border transition-all cursor-pointer ${
-                validatedSections['documentacion']
-                  ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
-                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-blue-400'
-              }`}
-            >
-              {validatedSections['documentacion'] ? 'Validado con Administrativo ✅' : 'Marcar como validado'}
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-              <div className="flex items-center gap-2">
-                <UserCheck className="w-4 h-4 text-[#002244]" />
-                <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wide">
-                  Personas Físicas (Titulares particulares)
-                </h4>
-              </div>
-              <ul className="text-xs text-slate-700 space-y-1.5 list-disc list-inside">
-                <li><strong>DNI Original Vigente:</strong> Del titular (y cónyuge si aplica régimen ganancial).</li>
-                <li><strong>Constancia CUIT / CUIL:</strong> Emitida por AFIP o ANSES.</li>
-                <li><strong>Formularios 01 y 12:</strong> Certificados por escribano o gestoría de concesionario.</li>
-                <li><strong>Declaración de Fondos UIF:</strong> Solo si el importe total supera los umbrales legales.</li>
-              </ul>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-              <div className="flex items-center gap-2">
-                <Building className="w-4 h-4 text-[#002244]" />
-                <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wide">
-                  Personas Jurídicas (Empresas / Sociedades)
-                </h4>
-              </div>
-              <ul className="text-xs text-slate-700 space-y-1.5 list-disc list-inside">
-                <li><strong>Estatuto Social / Contrato:</strong> Copia certificada inscripta en Registro Público.</li>
-                <li><strong>Acta de Designación de Autoridades:</strong> Vigente y firmada.</li>
-                <li><strong>Poderes de Representación:</strong> Notariales con facultades para registrar vehículos.</li>
-                <li><strong>Constancia de CUIT y Exenciones:</strong> En caso de solicitar exención de sellos provinciales.</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* 3. SECCIÓN: PROTOCOLO DEL DÍA DE LA ENTREGA */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-            <div className="flex items-center space-x-2">
-              <CarFront className="w-5 h-5 text-[#002244]" />
-              <h3 className="text-base sm:text-lg font-bold text-slate-900">
-                3. Protocolo de Entrega del Vehículo
-              </h3>
-            </div>
-            <button
-              onClick={() => toggleValidate('entrega')}
-              className={`text-xs font-bold px-3 py-1 rounded-full border transition-all cursor-pointer ${
-                validatedSections['entrega']
-                  ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
-                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-blue-400'
-              }`}
-            >
-              {validatedSections['entrega'] ? 'Validado con Administrativo ✅' : 'Marcar como validado'}
-            </button>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-              <div className="p-2.5 rounded-xl bg-white border border-slate-200">
-                <span className="font-bold text-slate-900 block">Paso 1: Alistamiento PDI</span>
-                <span className="text-slate-500 text-[11px]">2 a 3 días hábiles en taller oficial</span>
-              </div>
-              <div className="p-2.5 rounded-xl bg-white border border-slate-200">
-                <span className="font-bold text-slate-900 block">Paso 2: Recepción de Placas</span>
-                <span className="text-slate-500 text-[11px]">Chapas metálicas y título digital DNRPA</span>
-              </div>
-              <div className="p-2.5 rounded-xl bg-white border border-slate-200">
-                <span className="font-bold text-slate-900 block">Paso 3: Coordinación de Turno</span>
-                <span className="text-slate-500 text-[11px]">Agendamiento en sala exclusiva de entregas</span>
-              </div>
-              <div className="p-2.5 rounded-xl bg-white border border-slate-200">
-                <span className="font-bold text-slate-900 block">Paso 4: Retiro de Unidad</span>
-                <span className="text-slate-500 text-[11px]">45 min: llaves, manuales y seguro activo</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 4. SECCIÓN: PREGUNTAS FRECUENTES Y RESPUESTAS DEL BOT */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-            <div className="flex items-center space-x-2">
-              <HelpCircle className="w-5 h-5 text-[#002244]" />
-              <h3 className="text-base sm:text-lg font-bold text-slate-900">
-                4. Respuestas Oficiales a Preguntas Frecuentes ({faqs.length} ítems)
-              </h3>
-            </div>
-            <button
-              onClick={() => toggleValidate('faqs')}
-              className={`text-xs font-bold px-3 py-1 rounded-full border transition-all cursor-pointer ${
-                validatedSections['faqs']
-                  ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
-                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-blue-400'
-              }`}
-            >
-              {validatedSections['faqs'] ? 'Validado con Administrativo ✅' : 'Marcar como validado'}
-            </button>
-          </div>
-
-          <div className="space-y-2.5">
-            {faqs.map((faq, i) => (
-              <div key={faq.id} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1">
-                <p className="font-bold text-slate-900">
-                  {i + 1}. {faq.question}
-                </p>
-                <p className="text-slate-600 leading-relaxed font-normal">
-                  {faq.answer}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* 5. SECCIÓN DE FIRMA Y CONFORMIDAD ADMINISTRATIVA */}
-        <section className="border-t-2 border-dashed border-slate-300 pt-6 space-y-4">
-          <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
-            Acta de Conformidad y Validación Operativa
-          </h4>
-          <p className="text-xs text-slate-500">
-            El presente documento certifica que los plazos, requisitos de gestoría, documentación solicitada y
-            respuestas publicadas han sido revisados y autorizados por el área administrativa del concesionario.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6">
-            <div className="border-t border-slate-400 pt-2 text-xs">
-              <span className="font-bold block text-slate-800">Responsable Administrativo</span>
-              <span className="text-slate-400 text-[11px]">Nombre, Apellido y Legajo</span>
-            </div>
-
-            <div className="border-t border-slate-400 pt-2 text-xs">
-              <span className="font-bold block text-slate-800">Área / Sector</span>
-              <span className="text-slate-400 text-[11px]">Gestoría / Calidad / Administración</span>
-            </div>
-
-            <div className="border-t border-slate-400 pt-2 text-xs">
-              <span className="font-bold block text-slate-800">Firma y Sello</span>
-              <span className="text-slate-400 text-[11px]">Fecha de conformidad: ____ / ____ / 2026</span>
-            </div>
-          </div>
-        </section>
+  return <div className="space-y-6 pb-12">
+    <div className="rounded-3xl bg-[#002244] p-6 text-white sm:p-8">
+      <p className="text-xs font-bold uppercase tracking-widest text-white/75">Ficha de reunión · venta convencional 0 km</p>
+      <h1 className="mt-2 text-2xl font-bold sm:text-3xl">Revisar y validar la información</h1>
+      <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/85">Leé cada texto con Administración. Si está bien, marcá «Validado». Si hay que corregirlo, editá el campo y luego validalo. Al terminar, pulsá «Guardar revisión».</p>
+      <div className="mt-5 flex flex-wrap items-center gap-2">
+        <span className="rounded-full bg-white/15 px-3 py-2 text-xs font-bold">{approved} de {ids.length} validados</span>
+        <button onClick={save} disabled={saving} className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-bold text-[#002244] disabled:opacity-50"><Save className="h-4 w-4" />{saving ? 'Guardando…' : 'Guardar revisión'}</button>
+        <button onClick={publish} disabled={saving || connection !== 'connected' || approved !== ids.length} className="inline-flex items-center gap-2 rounded-full bg-[#008cff] px-4 py-2 text-xs font-bold text-[#002244] disabled:opacity-50">Publicar todo validado</button>
+        <button onClick={copy} className="inline-flex items-center gap-2 rounded-full border border-white/40 px-4 py-2 text-xs font-bold"><Copy className="h-4 w-4" />{copied ? 'Copiado' : 'Copiar resumen'}</button>
+        <button onClick={() => window.print()} className="inline-flex items-center gap-2 rounded-full border border-white/40 px-4 py-2 text-xs font-bold"><Printer className="h-4 w-4" />Imprimir</button>
       </div>
     </div>
-  );
+    <div role="status" className={`rounded-xl border p-3 text-sm ${connection === 'connected' ? 'border-emerald-200 bg-emerald-50 text-emerald-900' : 'border-amber-200 bg-amber-50 text-amber-900'}`}>
+      {connection === 'connected' ? 'Backend conectado: Guardar revisión conserva el borrador en el Sheet; Publicar todo validado actualiza la web pública.' : connection === 'checking' ? 'Comprobando conexión…' : 'Backend no disponible aquí. El borrador se guarda solo en este navegador.'}
+      {message && <span className="block font-semibold">{message}</span>}
+    </div>
+    <section className="space-y-3"><h2 className="text-xl font-bold text-[#002244]">1. Etapas y plazos</h2>
+      {draftStages.map((stage) => <details key={stage.id} className="rounded-2xl border border-slate-200 bg-white p-4">
+        <summary className="cursor-pointer text-sm font-bold text-[#002244]">{stage.stepNumber}. {stage.name} · {stage.estimatedTime} {getReview(`stage:${stage.id}`).status === 'validado' ? '✓' : ''}</summary>
+        <div className="mt-4 grid gap-3">
+          <label className="text-xs font-bold">Explicación al cliente<textarea rows={3} value={stage.definition} onChange={(event) => changeStage(stage.id, { definition: event.target.value })} className="mt-1 w-full rounded-lg border border-slate-300 p-3 font-normal" /></label>
+          <label className="text-xs font-bold">Plazo publicado<input value={stage.estimatedTime} onChange={(event) => changeStage(stage.id, { estimatedTime: event.target.value })} className="mt-1 w-full rounded-lg border border-slate-300 p-3 font-normal" /></label>
+          <label className="text-xs font-bold">Qué sucede (una línea por punto)<textarea rows={3} value={stage.whatHappens.join('\n')} onChange={(event) => changeStage(stage.id, { whatHappens: event.target.value.split('\n').map((line) => line.trim()).filter(Boolean) })} className="mt-1 w-full rounded-lg border border-slate-300 p-3 font-normal" /></label>
+        </div>
+        <ReviewControl item={getReview(`stage:${stage.id}`)} onChange={(patch) => changeReview(`stage:${stage.id}`, patch)} />
+      </details>)}
+    </section>
+    <section className="space-y-3"><h2 className="text-xl font-bold text-[#002244]">2. Preguntas y respuestas</h2>
+      {draftFaqs.map((faq) => <details key={faq.id} className="rounded-2xl border border-slate-200 bg-white p-4">
+        <summary className="cursor-pointer text-sm font-bold text-[#002244]">{faq.question} {getReview(`faq:${faq.id}`).status === 'validado' ? '✓' : ''}</summary>
+        <label className="mt-4 block text-xs font-bold">Respuesta al cliente<textarea rows={3} value={faq.answer} onChange={(event) => changeFaq(faq.id, { answer: event.target.value })} className="mt-1 w-full rounded-lg border border-slate-300 p-3 font-normal" /></label>
+        <ReviewControl item={getReview(`faq:${faq.id}`)} onChange={(patch) => changeReview(`faq:${faq.id}`, patch)} />
+      </details>)}
+    </section>
+    <section className="space-y-3"><h2 className="text-xl font-bold text-[#002244]">3. Datos de Autosol a confirmar</h2>
+      {TOPICS.map((topic) => <div key={topic.id} className="rounded-2xl border border-slate-200 bg-white p-4">
+        <h3 className="text-sm font-bold text-[#002244]">{topic.title}</h3><p className="mt-1 text-xs leading-relaxed text-slate-600">{topic.detail}</p>
+        <ReviewControl item={getReview(`topic:${topic.id}`)} onChange={(patch) => changeReview(`topic:${topic.id}`, patch)} />
+      </div>)}
+    </section>
+    <button onClick={save} disabled={saving} className="inline-flex items-center gap-2 rounded-full bg-[#002244] px-6 py-3 text-sm font-bold text-white disabled:opacity-50"><Check className="h-4 w-4" />{saving ? 'Guardando…' : 'Guardar revisión'}</button>
+    {onEdit && <details className="rounded-xl border border-slate-200 bg-white p-4 text-xs text-slate-600"><summary className="cursor-pointer font-bold">Otras ediciones</summary><div className="mt-3 flex flex-wrap gap-3">{([['table', 'Guías y artículos'], ['stages', 'Etapas completas'], ['faqs', 'Preguntas completas'], ['texts', 'Textos generales']] as const).map(([tab, label]) => <button key={tab} onClick={() => onEdit(tab)} className="rounded-full border border-slate-300 px-3 py-2 font-semibold text-[#002244]">{label}</button>)}</div></details>}
+  </div>;
 };

@@ -59,7 +59,7 @@ interface DataContextType {
   incrementArticleViews: (articleId: string) => void;
   
   // Admin & Content Management
-  addArticle: (article: Omit<LibraryArticle, 'id' | 'viewsCount' | 'helpfulCount' | 'unhelpfulCount'>) => void;
+  addArticle: (article: Omit<LibraryArticle, 'id' | 'viewsCount' | 'helpfulCount' | 'unhelpfulCount'> | LibraryArticle) => LibraryArticle;
   updateArticle: (id: string, article: Partial<LibraryArticle>) => void;
   deleteArticle: (id: string) => void;
   toggleArticleStatus: (id: string, status: LibraryArticle['status']) => void;
@@ -100,6 +100,15 @@ const normalizeStages = (items: unknown[]): ProcessStage[] => items
   .filter((stage) => stage.id && stage.name && stage.active !== false)
   .sort((a, b) => a.stepNumber - b.stepNumber);
 
+const mergeArticleOverrides = (overrides: LibraryArticle[]): LibraryArticle[] => {
+  const byId = new Map(INITIAL_ARTICLES.map((article) => [article.id, article]));
+  overrides.forEach((article) => {
+    const base = byId.get(article.id);
+    byId.set(article.id, base ? { ...base, ...article } : article);
+  });
+  return [...byId.values()].filter((article) => String((article as LibraryArticle & { deleted?: boolean | string }).deleted).toLowerCase() !== 'true');
+};
+
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [stages, setStages] = useState<ProcessStage[]>(() => {
     try { const saved = localStorage.getItem(LOCAL_STORAGE_KEY_STAGES); return saved ? normalizeStages(JSON.parse(saved)) : INITIAL_STAGES; }
@@ -122,7 +131,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [faqs, setFaqs] = useState<FAQItem[]>(() => {
     try {
       const saved = localStorage.getItem(LOCAL_STORAGE_KEY_FAQS);
-      return saved ? JSON.parse(saved) : INITIAL_FAQS;
+      if (!saved) return INITIAL_FAQS;
+      const existing = JSON.parse(saved) as FAQItem[];
+      if (!Array.isArray(existing)) return INITIAL_FAQS;
+      const existingIds = new Set(existing.map((item) => item.id));
+      return [...existing, ...INITIAL_FAQS.filter((item) => !existingIds.has(item.id))];
     } catch {
       return INITIAL_FAQS;
     }
@@ -157,7 +170,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return saved
         ? JSON.parse(saved)
         : {
-            sheetUrl: 'https://docs.google.com/spreadsheets/d/1AutosolTransparente_Oficial_Contenidos/edit',
+            sheetUrl: '',
             appsScriptEndpoint: '',
             apiKey: '',
             isConnected: false,
@@ -166,7 +179,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
           };
     } catch {
       return {
-        sheetUrl: 'https://docs.google.com/spreadsheets/d/1AutosolTransparente_Oficial_Contenidos/edit',
+        sheetUrl: '',
         appsScriptEndpoint: '',
         apiKey: '',
         isConnected: false,
@@ -303,18 +316,19 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const addArticle = (
-    newArtData: Omit<LibraryArticle, 'id' | 'viewsCount' | 'helpfulCount' | 'unhelpfulCount'>
+    newArtData: Omit<LibraryArticle, 'id' | 'viewsCount' | 'helpfulCount' | 'unhelpfulCount'> | LibraryArticle
   ) => {
     const id = `art-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
     const newArticle: LibraryArticle = {
       ...newArtData,
-      id,
+      id: 'id' in newArtData ? newArtData.id : id,
       slug: newArtData.slug || newArtData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-      viewsCount: 1,
-      helpfulCount: 0,
-      unhelpfulCount: 0,
+      viewsCount: 'viewsCount' in newArtData ? newArtData.viewsCount : 0,
+      helpfulCount: 'helpfulCount' in newArtData ? newArtData.helpfulCount : 0,
+      unhelpfulCount: 'unhelpfulCount' in newArtData ? newArtData.unhelpfulCount : 0,
     };
     setArticles((prev) => [newArticle, ...prev]);
+    return newArticle;
   };
 
   const updateArticle = (id: string, updated: Partial<LibraryArticle>) => {
@@ -352,55 +366,17 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const result = await response.json();
         const data = result.data || result;
         if (data && (Array.isArray(data.articles) || Array.isArray(data.stages) || Array.isArray(data.texts))) {
-          if (Array.isArray(data.articles) && data.articles.length > 0) setArticles(data.articles);
+          if (Array.isArray(data.articles)) setArticles(mergeArticleOverrides(data.articles));
           if (Array.isArray(data.faqs) && data.faqs.length > 0) setFaqs(data.faqs);
           if (Array.isArray(data.stages) && data.stages.length > 0) setStages(normalizeStages(data.stages));
           if (Array.isArray(data.texts) && data.texts.length > 0) setSiteTexts(data.texts);
           setSheetConfig((prev) => ({ ...prev, isConnected: true, lastSyncTimestamp: new Date().toLocaleString('es-AR') }));
-          return { success: true, message: `Sincronizados ${data.articles.length} artículos desde el backend seguro.` };
+          return { success: true, message: 'Contenido leído desde el backend.' };
         }
       }
-    } catch (err) {
-      console.warn('Vercel API unavailable, trying legacy endpoint:', err);
-    }
-
-    if (sheetConfig.appsScriptEndpoint) {
-      try {
-        const response = await fetch(sheetConfig.appsScriptEndpoint, {
-          method: 'GET',
-          headers: { Accept: 'application/json' },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          if (data && Array.isArray(data.articles) && data.articles.length > 0) {
-            setArticles(data.articles);
-            setSheetConfig((prev) => ({
-              ...prev,
-              isConnected: true,
-              lastSyncTimestamp: new Date().toLocaleString('es-AR'),
-            }));
-            return {
-              success: true,
-              message: `Sincronizados ${data.articles.length} artículos exitosamente desde Google Sheets`,
-            };
-          }
-        }
-      } catch (err) {
-        console.warn('Endpoint fetch failed, falling back to simulated sync:', err);
-      }
-    }
-
-    // Simulated sync for demonstration
-    await new Promise((res) => setTimeout(res, 800));
-    setSheetConfig((prev) => ({
-      ...prev,
-      isConnected: true,
-      lastSyncTimestamp: new Date().toLocaleString('es-AR'),
-    }));
-    return {
-      success: true,
-      message: 'Conexión validada: Datos sincronizados y estructura de Google Sheets lista.',
-    };
+    } catch (err) { console.warn('No se pudo leer el backend:', err); }
+    setSheetConfig((prev) => ({ ...prev, isConnected: false }));
+    return { success: false, message: 'No se pudo leer la planilla. Revisá el despliegue y la configuración del backend.' };
   };
 
   useEffect(() => {
@@ -410,7 +386,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       .then((result) => {
         const data = result?.data || result;
         if (!mounted || (!Array.isArray(data?.articles) && !Array.isArray(data?.stages) && !Array.isArray(data?.texts))) return;
-        if (Array.isArray(data.articles) && data.articles.length > 0) setArticles(data.articles);
+        if (Array.isArray(data.articles)) setArticles(mergeArticleOverrides(data.articles));
         if (Array.isArray(data.faqs) && data.faqs.length > 0) setFaqs(data.faqs);
         if (Array.isArray(data.stages) && data.stages.length > 0) setStages(normalizeStages(data.stages));
         if (Array.isArray(data.texts) && data.texts.length > 0) setSiteTexts(data.texts);

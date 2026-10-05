@@ -13,6 +13,7 @@ import {
   FileSignature,
 } from 'lucide-react';
 import { ProcessStageId } from '../types';
+import { useData } from '../context/DataContext';
 
 interface TimesSectionProps {
   onSelectStage: (stageId: ProcessStageId) => void;
@@ -23,97 +24,20 @@ export const TimesSection: React.FC<TimesSectionProps> = ({
   onSelectStage,
   onNavigateToArticle,
 }) => {
-  const timeStages = [
-    {
-      id: 'cierre' as ProcessStageId,
-      name: 'Cierre de Operación',
-      estimatedTime: '1 a 3 días hábiles',
-      whenStarts: 'Firma de boleto de reserva, seña y validación comercial inicial.',
-      keyFactors: [
-        'Acreditación de seña bancaria',
-        'Aprobaciones crediticias previas',
-        'Validación de datos del titular',
-      ],
-      icon: FileSignature,
-      pastelBadge: 'bg-blue-100 text-blue-800 border-blue-200',
-    },
-    {
-      id: 'facturacion' as ProcessStageId,
-      name: 'Facturación & Chasis',
-      estimatedTime: 'Según validaciones administrativas',
-      whenStarts: 'Tras la asignación de fábrica y acreditación del pago acordado o saldo inicial.',
-      keyFactors: [
-        'Disponibilidad de cupo en terminal',
-        'Acreditación de transferencias',
-        'Certificados de fabricación',
-      ],
-      icon: ReceiptText,
-      pastelBadge: 'bg-sky-100 text-sky-800 border-sky-200',
-    },
-    {
-      id: 'gestoria' as ProcessStageId,
-      name: 'Gestoría Administrativa',
-      estimatedTime: 'Según legajo y jurisdicción',
-      whenStarts: 'Al recibir la factura emitida con chasis y la documentación firmada del titular.',
-      keyFactors: [
-        'Liquidación de sellos en Rentas provinciales',
-        'Certificaciones notariales de firmas',
-        'Control UIF y constancias CUIT',
-      ],
-      icon: FolderCheck,
-      pastelBadge: 'bg-indigo-100 text-indigo-800 border-indigo-200',
-    },
-    {
-      id: 'patentamiento' as ProcessStageId,
-      name: 'Patentamiento DNRPA',
-      estimatedTime: 'Sujeto al Registro Seccional',
-      whenStarts: 'Al ingresar el legajo oficial en el Registro Seccional correspondiente al domicilio o guarda habitual del titular.',
-      keyFactors: [
-        'Turnos del Registro Seccional por CP',
-        'Entrega de chapas patente físicas',
-        'Emisión del título digital y cédula',
-      ],
-      icon: ShieldCheck,
-      pastelBadge: 'bg-emerald-100 text-emerald-800 border-emerald-200',
-    },
-    {
-      id: 'preparacion' as ProcessStageId,
-      name: 'Preparación Técnica (PDI)',
-      estimatedTime: '2 a 5 días hábiles',
-      whenStarts: 'Con la unidad en el concesionario y las placas patentes recibidas.',
-      keyFactors: [
-        'Inspección computarizada de 45 puntos',
-        'Instalación de accesorios solicitados',
-        'Acondicionamiento estético final',
-      ],
-      icon: Wrench,
-      pastelBadge: 'bg-teal-100 text-teal-800 border-teal-200',
-    },
-    {
-      id: 'turno' as ProcessStageId,
-      name: 'Coordinación de entrega',
-      estimatedTime: 'Según disponibilidad y planificación',
-      whenStarts: 'Tras la aprobación completa del control de calidad del taller.',
-      keyFactors: [
-        'Disponibilidad horaria del cliente',
-        'Capacidad de bahía de entrega',
-      ],
-      icon: CalendarCheck,
-      pastelBadge: 'bg-amber-100 text-amber-800 border-amber-200',
-    },
-    {
-      id: 'entrega' as ProcessStageId,
-      name: 'Retiro en Concesionario',
-      estimatedTime: '45 a 60 minutos',
-      whenStarts: 'El día pactado para la entrega en el salón oficial.',
-      keyFactors: [
-        'Explicación técnica de la unidad',
-        'Verificación de documentación y garantía',
-      ],
-      icon: Car,
-      pastelBadge: 'bg-purple-100 text-purple-800 border-purple-200',
-    },
-  ];
+  const { stages } = useData();
+  const iconByStage: Record<string, React.ElementType> = {
+    cierre: FileSignature, facturacion: ReceiptText, gestoria: FolderCheck,
+    patentamiento: ShieldCheck, preparacion: Wrench, turno: CalendarCheck, entrega: Car,
+  };
+  const timeStages = stages.map((stage) => ({
+    id: stage.id,
+    name: stage.name,
+    estimatedTime: stage.estimatedTime,
+    whenStarts: stage.shortDesc,
+    keyFactors: stage.timeFactors,
+    icon: iconByStage[stage.id] || Car,
+    pastelBadge: 'bg-blue-100 text-blue-800 border-blue-200',
+  }));
 
   return (
     <div className="space-y-8 pb-12 animate-in fade-in duration-300">

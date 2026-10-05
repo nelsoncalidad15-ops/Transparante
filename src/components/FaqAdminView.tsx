@@ -59,7 +59,7 @@ export const FaqAdminView: React.FC = () => {
       if (!response.ok) throw new Error();
       setStatus('Preguntas frecuentes guardadas y sincronizadas.');
     } catch {
-      setStatus('Guardado en memoria y navegador. Se actualizará en la web de inmediato.');
+      setStatus('No se guardó para todos. Quedó solo en este navegador; revisá la conexión.');
     } finally {
       setSaving(false);
     }

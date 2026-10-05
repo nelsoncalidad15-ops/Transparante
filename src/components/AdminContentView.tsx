@@ -42,14 +42,15 @@ export const AdminContentView: React.FC = () => {
     resetToDefaults,
   } = useData();
 
-  const [activeSubTab, setActiveSubTab] = useState<'table' | 'stages' | 'faqs' | 'texts' | 'validation' | 'sheets' | 'export'>('table');
+  const [activeSubTab, setActiveSubTab] = useState<'table' | 'stages' | 'faqs' | 'texts' | 'validation' | 'sheets' | 'export'>('validation');
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('Todo');
   const [editingArticle, setEditingArticle] = useState<LibraryArticle | null>(null);
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
   const [syncStatusMsg, setSyncStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
-  const [copiedCode, setCopiedCode] = useState(false);
+  const [articleStatus, setArticleStatus] = useState('');
 
   // Form State
   const [formData, setFormData] = useState({
@@ -123,7 +124,7 @@ export const AdminContentView: React.FC = () => {
     setIsNewModalOpen(true);
   };
 
-  const handleSaveForm = (e: React.FormEvent) => {
+  const handleSaveForm = async (e: React.FormEvent) => {
     e.preventDefault();
     const timeFactors = formData.timeFactorsText
       .split('\n')
@@ -134,8 +135,7 @@ export const AdminContentView: React.FC = () => {
       .map((s) => s.trim())
       .filter(Boolean);
 
-    if (editingArticle) {
-      updateArticle(editingArticle.id, {
+    const changes = {
         title: formData.title,
         slug: formData.slug || formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
         category: formData.category,
@@ -150,28 +150,20 @@ export const AdminContentView: React.FC = () => {
         status: formData.status,
         responsible: formData.responsible,
         version: formData.version,
-      });
-    } else {
-      addArticle({
-        title: formData.title,
-        slug: formData.slug || formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-        category: formData.category,
-        type: formData.type,
-        shortDesc: formData.shortDesc,
-        definition: formData.definition,
-        estimatedTime: formData.estimatedTime,
-        timeFactors,
-        whatNext: formData.whatNext,
-        relatedTopics,
-        readTimeMinutes: Number(formData.readTimeMinutes),
-        status: formData.status,
-        responsible: formData.responsible,
-        version: formData.version,
-        lastReview: new Date().toISOString().split('T')[0],
-      });
-    }
-
+    };
+    const article: LibraryArticle = editingArticle
+      ? { ...editingArticle, ...changes, lastReview: new Date().toISOString().split('T')[0] }
+      : { ...changes, id: `art-${Date.now()}`, lastReview: new Date().toISOString().split('T')[0], viewsCount: 0, helpfulCount: 0, unhelpfulCount: 0, whatHappens: [] };
+    if (editingArticle) updateArticle(editingArticle.id, article);
+    else addArticle(article);
     setIsNewModalOpen(false);
+    try {
+      const response = await fetch('/api/admin/content', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ operation: editingArticle ? 'update' : 'create', article }) });
+      if (!response.ok) throw new Error('No se pudo guardar en la planilla.');
+      setArticleStatus('Artículo guardado en Google Sheets y actualizado en la web.');
+    } catch {
+      setArticleStatus('Artículo guardado en este navegador. Se sincronizará con Google Sheets al conectar el backend.');
+    }
   };
 
   const handleSyncSheets = async () => {
@@ -191,6 +183,18 @@ export const AdminContentView: React.FC = () => {
     }
   };
 
+  const saveArticleChange = async (operation: 'update' | 'delete', article: LibraryArticle) => {
+    if (operation === 'delete') deleteArticle(article.id);
+    else updateArticle(article.id, article);
+    try {
+      const response = await fetch('/api/admin/content', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ operation, article }) });
+      if (!response.ok) throw new Error();
+      setArticleStatus(operation === 'delete' ? 'Artículo eliminado de Google Sheets.' : 'Estado guardado en Google Sheets.');
+    } catch {
+      setArticleStatus(operation === 'delete' ? 'Artículo eliminado localmente (falta sincronizar con backend).' : 'Estado guardado localmente (falta sincronizar con backend).');
+    }
+  };
+
   const filteredArticles = articles.filter((art) => {
     const matchCat = filterCategory === 'Todo' || art.category === filterCategory;
     const matchSearch =
@@ -199,12 +203,6 @@ export const AdminContentView: React.FC = () => {
       art.responsible.toLowerCase().includes(searchQuery.toLowerCase());
     return matchCat && matchSearch;
   });
-
-  const handleCopyAppsScript = () => {
-    navigator.clipboard?.writeText(INITIAL_SHEET_TEMPLATE_INFO.sampleAppsScript);
-    setCopiedCode(true);
-    setTimeout(() => setCopiedCode(false), 2000);
-  };
 
   const handleDownloadJSON = () => {
     const jsonStr = exportDataAsJSON();
@@ -245,6 +243,16 @@ export const AdminContentView: React.FC = () => {
 
       {/* Sub Tabs */}
       <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-3">
+        <button
+          onClick={() => setActiveSubTab('validation')}
+          className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-colors ${activeSubTab === 'validation' ? 'bg-[#002244] text-white' : 'bg-blue-50 text-[#002244]'}`}
+        >
+          Revisar y validar
+        </button>
+        <button onClick={() => setShowAdvanced((value) => !value)} className="rounded-xl border border-slate-300 px-3.5 py-2 text-xs font-semibold text-slate-600">
+          {showAdvanced ? 'Ocultar herramientas' : 'Otras herramientas'}
+        </button>
+        {showAdvanced && <>
         <button
           onClick={() => setActiveSubTab('table')}
           className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-1.5 cursor-pointer ${
@@ -288,18 +296,6 @@ export const AdminContentView: React.FC = () => {
         </button>
 
         <button
-          onClick={() => setActiveSubTab('validation')}
-          className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-1.5 border border-blue-200 cursor-pointer ${
-            activeSubTab === 'validation'
-              ? 'bg-[#002244] text-white shadow-xs'
-              : 'bg-blue-50/80 text-blue-900 hover:bg-blue-100'
-          }`}
-        >
-          <Check className="w-3.5 h-3.5 text-emerald-500" />
-          <span>📋 Ficha de Validación Integral</span>
-        </button>
-
-        <button
           onClick={() => setActiveSubTab('sheets')}
           className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-colors flex items-center space-x-1.5 cursor-pointer ${
             activeSubTab === 'sheets'
@@ -322,16 +318,18 @@ export const AdminContentView: React.FC = () => {
           <Download className="w-3.5 h-3.5" />
           <span>Exportar</span>
         </button>
+        </>}
       </div>
 
       {activeSubTab === 'stages' && <StageAdminView />}
       {activeSubTab === 'texts' && <TextAdminView />}
       {activeSubTab === 'faqs' && <FaqAdminView />}
-      {activeSubTab === 'validation' && <ValidationSummaryView />}
+      {activeSubTab === 'validation' && <ValidationSummaryView onEdit={(tab) => setActiveSubTab(tab)} />}
 
       {/* TAB 1: Content Table */}
       {activeSubTab === 'table' && (
         <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-5">
+          {articleStatus && <p role="status" className="rounded-lg bg-blue-50 p-3 text-xs font-semibold text-blue-900">{articleStatus}</p>}
           {/* Filter Bar */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="relative w-full sm:w-80">
@@ -419,12 +417,7 @@ export const AdminContentView: React.FC = () => {
                           <FileEdit className="w-3.5 h-3.5" />
                         </button>
                         <button
-                          onClick={() =>
-                            toggleArticleStatus(
-                              art.id,
-                              art.status === 'Publicado' ? 'Desactivado' : 'Publicado'
-                            )
-                          }
+                          onClick={() => saveArticleChange('update', { ...art, status: art.status === 'Publicado' ? 'Desactivado' : 'Publicado' })}
                           className={`p-1.5 rounded-lg ${
                             art.status === 'Publicado'
                               ? 'text-amber-600 hover:bg-amber-50'
@@ -437,7 +430,7 @@ export const AdminContentView: React.FC = () => {
                         <button
                           onClick={() => {
                             if (confirm(`¿Eliminar "${art.title}"?`)) {
-                              deleteArticle(art.id);
+                              saveArticleChange('delete', art);
                             }
                           }}
                           className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg"
@@ -484,7 +477,7 @@ export const AdminContentView: React.FC = () => {
                     }`}
                   />
                   <strong className="text-sm text-slate-900">
-                    {sheetConfig.isConnected ? 'Conectado y Validado' : 'Modo Local (Listo para conectar)'}
+                    {sheetConfig.isConnected ? 'Backend conectado' : 'Sin conexión verificada'}
                   </strong>
                 </div>
                 {sheetConfig.lastSyncTimestamp && (
@@ -517,23 +510,7 @@ export const AdminContentView: React.FC = () => {
               </div>
             )}
 
-            {/* Apps Script Endpoint URL input */}
-            <div className="space-y-2 pt-2 border-t border-slate-200/60">
-              <label className="text-xs font-bold text-slate-700 block">
-                URL del Webhook / Aplicación Web de Google Apps Script (Opcional):
-              </label>
-              <input
-                type="url"
-                value={sheetConfig.appsScriptEndpoint}
-                onChange={(e) => updateSheetConfig({ appsScriptEndpoint: e.target.value })}
-                placeholder="https://script.google.com/macros/s/AKfycbx.../exec"
-                className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              />
-              <span className="text-[11px] text-slate-400 block">
-                Si no ingresás una URL, el botón realizará una simulación de sincronización con la
-                estructura oficial.
-              </span>
-            </div>
+            <p className="text-xs text-slate-600">La conexión se configura en Vercel. Este botón comprueba si el backend realmente puede leer la planilla.</p>
           </div>
 
           {/* Guide / How to connect */}
@@ -578,24 +555,7 @@ export const AdminContentView: React.FC = () => {
               </li>
             </ol>
 
-            {/* Code Snippet Box */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-700">
-                  Código de Apps Script para copiar:
-                </span>
-                <button
-                  onClick={handleCopyAppsScript}
-                  className="text-xs font-semibold text-emerald-700 hover:text-emerald-900 flex items-center space-x-1"
-                >
-                  {copiedCode ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copiedCode ? '¡Copiado!' : 'Copiar código'}</span>
-                </button>
-              </div>
-              <pre className="bg-slate-950 text-slate-200 p-4 rounded-2xl text-[11px] font-sans overflow-x-auto max-h-48 border border-slate-800">
-                {INITIAL_SHEET_TEMPLATE_INFO.sampleAppsScript}
-              </pre>
-            </div>
+            <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">Pegá el contenido completo de <code>apps-script/Code.gs</code> en el editor de Apps Script, no en una celda de la planilla. El código de ejemplo anterior no incluía el flujo de revisión.</p>
           </div>
         </div>
       )}

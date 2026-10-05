@@ -21,8 +21,13 @@ function doPost(e) {
 
     if (action === 'getPublicContent') return json_({ ok: true, data: getPublicContent_() });
     if (action === 'getAdminContent') return json_({ ok: true, data: getAdminContent_() });
+    if (action === 'getReview') return json_({ ok: true, data: getReview_() });
+    if (action === 'updateReview') return json_({ ok: true, data: updateReview_(payload) });
+    if (action === 'publishReview') return json_({ ok: true, data: publishReview_(payload) });
     if (action === 'getStages') return json_({ ok: true, data: { stages: readRows_('Etapas') } });
     if (action === 'updateStages') return json_({ ok: true, data: updateStages_(payload) });
+    if (action === 'getFaqs') return json_({ ok: true, data: { faqs: readRows_('Preguntas') } });
+    if (action === 'updateFaqs') return json_({ ok: true, data: updateFaqs_(payload) });
     if (action === 'getSiteTexts') return json_({ ok: true, data: { texts: readRows_('Textos') } });
     if (action === 'updateSiteTexts') return json_({ ok: true, data: updateSiteTexts_(payload) });
     if (action === 'getIndicators') return json_({ ok: true, data: getIndicators_() });
@@ -64,7 +69,7 @@ function readRows_(sheetName) {
 }
 
 function getPublicContent_() {
-  var articles = readRows_('Articulos').filter(function(article) { return article.status === 'Publicado'; });
+  var articles = readRows_('Articulos');
   var stages = readRows_('Etapas').filter(function(stage) { return String(stage.active).toLowerCase() !== 'false'; });
   var texts = readRows_('Textos').filter(function(text) { return String(text.active).toLowerCase() !== 'false'; });
   return { articles: articles, faqs: readRows_('Preguntas'), stages: stages, texts: texts, updatedAt: new Date().toISOString() };
@@ -72,6 +77,64 @@ function getPublicContent_() {
 
 function getAdminContent_() {
   return { articles: readRows_('Articulos'), faqs: readRows_('Preguntas'), stages: readRows_('Etapas'), texts: readRows_('Textos'), updatedAt: new Date().toISOString() };
+}
+
+function getReview_() {
+  var stages = readRows_('RevisionEtapas');
+  var faqs = readRows_('RevisionPreguntas');
+  return { stages: stages.length ? stages : readRows_('Etapas'), faqs: faqs.length ? faqs : readRows_('Preguntas'), validations: readRows_('Revision'), updatedAt: new Date().toISOString() };
+}
+
+function replaceReviewSheet_(name, headers, items) {
+  var ss = getSpreadsheet_();
+  var sheet = ss.getSheetByName(name) || ss.insertSheet(name);
+  var rows = items.map(function(item) {
+    return headers.map(function(header) {
+      var value = item[header] === undefined ? '' : item[header];
+      return Array.isArray(value) ? value.join('|') : value;
+    });
+  });
+  sheet.clearContents();
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+  if (rows.length) sheet.getRange(2, 1, rows.length, headers.length).setValues(rows);
+}
+
+function updateReview_(payload) {
+  if (!payload || !Array.isArray(payload.stages) || !Array.isArray(payload.faqs) || !Array.isArray(payload.validations)) throw new Error('Revisión incompleta.');
+  var lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    replaceReviewSheet_('RevisionEtapas', ['id', 'stepNumber', 'name', 'shortDesc', 'definition', 'whatHappens', 'estimatedTime', 'timeDisclaimer', 'timeFactors', 'nextStep', 'iconName', 'category', 'active'], payload.stages);
+    replaceReviewSheet_('RevisionPreguntas', ['id', 'question', 'answer', 'category', 'stageId', 'relatedArticleSlug', 'order', 'viewsCount'], payload.faqs);
+    replaceReviewSheet_('Revision', ['id', 'status', 'note', 'reviewedAt'], payload.validations);
+    return { saved: true, updatedAt: new Date().toISOString() };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function updateFaqs_(payload) {
+  if (!payload || !Array.isArray(payload.faqs)) throw new Error('Faltan las preguntas.');
+  replaceReviewSheet_('Preguntas', ['id', 'question', 'answer', 'category', 'stageId', 'relatedArticleSlug', 'order', 'viewsCount'], payload.faqs);
+  return { faqs: payload.faqs };
+}
+
+function publishReview_(payload) {
+  if (!payload || !Array.isArray(payload.stages) || !Array.isArray(payload.faqs) || !Array.isArray(payload.validations)) throw new Error('Revisión incompleta.');
+  var required = payload.stages.map(function(item) { return 'stage:' + item.id; }).concat(payload.faqs.map(function(item) { return 'faq:' + item.id; }), ['topic:documentacion', 'topic:pagos', 'topic:plazo-total', 'topic:pdi', 'topic:entrega']);
+  var approved = {};
+  payload.validations.forEach(function(item) { if (item.status === 'validado') approved[item.id] = true; });
+  if (required.some(function(id) { return !approved[id]; })) throw new Error('Todavía hay temas pendientes de validación.');
+  var lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    replaceReviewSheet_('RevisionEtapas', ['id', 'stepNumber', 'name', 'shortDesc', 'definition', 'whatHappens', 'estimatedTime', 'timeDisclaimer', 'timeFactors', 'nextStep', 'iconName', 'category', 'active'], payload.stages);
+    replaceReviewSheet_('RevisionPreguntas', ['id', 'question', 'answer', 'category', 'stageId', 'relatedArticleSlug', 'order', 'viewsCount'], payload.faqs);
+    replaceReviewSheet_('Revision', ['id', 'status', 'note', 'reviewedAt'], payload.validations);
+    replaceReviewSheet_('Etapas', ['id', 'stepNumber', 'name', 'shortDesc', 'definition', 'whatHappens', 'estimatedTime', 'timeDisclaimer', 'timeFactors', 'nextStep', 'iconName', 'category', 'active'], payload.stages);
+    replaceReviewSheet_('Preguntas', ['id', 'question', 'answer', 'category', 'stageId', 'relatedArticleSlug', 'order', 'viewsCount'], payload.faqs);
+    return { published: true, updatedAt: new Date().toISOString() };
+  } finally { lock.releaseLock(); }
 }
 
 function updateSiteTexts_(payload) {
@@ -181,7 +244,7 @@ function updateContent_(payload) {
   if (!payload || !payload.operation || !payload.article) throw new Error('Faltan datos de contenido.');
   var ss = getSpreadsheet_();
   var sheet = ss.getSheetByName('Articulos');
-  var defaultHeaders = ['id', 'slug', 'title', 'category', 'type', 'shortDesc', 'definition', 'whatHappens', 'estimatedTime', 'timeFactors', 'whatNext', 'relatedTopics', 'readTimeMinutes', 'status', 'lastReview', 'responsible', 'version', 'viewsCount', 'helpfulCount', 'unhelpfulCount'];
+  var defaultHeaders = ['id', 'slug', 'title', 'category', 'type', 'shortDesc', 'definition', 'whatHappens', 'estimatedTime', 'timeFactors', 'whatNext', 'relatedTopics', 'readTimeMinutes', 'status', 'lastReview', 'responsible', 'version', 'viewsCount', 'helpfulCount', 'unhelpfulCount', 'deleted'];
   if (!sheet) {
     sheet = ss.insertSheet('Articulos');
     sheet.getRange(1, 1, 1, defaultHeaders.length).setValues([defaultHeaders]);
@@ -190,10 +253,9 @@ function updateContent_(payload) {
   var headers = lastCol > 0 ? sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String) : defaultHeaders;
   var article = payload.article;
   if (payload.operation === 'delete') {
-    var rows = sheet.getDataRange().getValues();
-    for (var rowIndex = 1; rowIndex < rows.length; rowIndex++) if (String(rows[rowIndex][0]) === String(article.id)) { sheet.deleteRow(rowIndex + 1); return { deleted: true }; }
-    throw new Error('Contenido no encontrado.');
+    article = Object.assign({}, article, { deleted: true, status: 'Desactivado' });
   }
+  if (headers.indexOf('deleted') < 0) { sheet.getRange(1, headers.length + 1).setValue('deleted'); headers.push('deleted'); }
   var row = headers.map(function(header) {
     var value = article[header] === undefined ? '' : article[header];
     return Array.isArray(value) ? value.join('|') : value;

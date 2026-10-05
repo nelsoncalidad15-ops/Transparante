@@ -38,8 +38,8 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
       icon: FileText,
     },
     {
-      title: 'Formularios 01 y 12',
-      desc: 'Inscripción y verificación impresos y certificados en el concesionario.',
+      title: 'Formularios e Inscripción',
+      desc: 'Gestoría prepara la presentación inicial y verificación física según corresponda a tu caso.',
       status: 'Gestoría Autosol',
       statusColor: 'bg-emerald-100 text-emerald-800 border border-emerald-200',
       icon: FileSignature,
@@ -174,10 +174,10 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
           </div>
           <div>
             <div className="text-sm font-semibold text-[#002244]">
-              ¿Quién confecciona los formularios oficiales?
+              ¿Quién confecciona la documentación oficial?
             </div>
             <div className="text-xs text-slate-600 mt-0.5 max-w-xl leading-relaxed">
-              Nuestro equipo matriculado prepara los formularios 01, 12 y 13. Solo requerimos tu firma presencial o certificada ante escribano.
+              Nuestro equipo de Gestoría prepara la presentación registral y los trámites aplicables a tu caso. Solo te solicitamos la firma o certificación que corresponda a la operación.
             </div>
           </div>
         </div>

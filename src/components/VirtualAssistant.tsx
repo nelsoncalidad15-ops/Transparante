@@ -67,7 +67,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
   isFloatingModal = false,
   onCloseModal,
 }) => {
-  const { articles, stages, searchAll, recordSearchQuery } = useData();
+  const { faqs, stages, searchAll, recordSearchQuery } = useData();
   const [inputMessage, setInputMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([DEFAULT_WELCOME_MESSAGE]);
   const [isTyping, setIsTyping] = useState(false);
@@ -122,107 +122,30 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
 
       // Natural response delay (350ms)
       setTimeout(() => {
-        const q = text.toLowerCase();
-        let botResponse: Partial<Message> = {};
-
-        // 1. Gestoría
-        if (q.includes('gestor') || q.includes('tramite previo')) {
-          const art = articles.find((a) => a.slug.includes('gestoria'));
-          botResponse = {
-            text: 'La gestoría es la etapa donde nuestros profesionales matriculados gestionan los sellados provinciales, bajas/altas y trámites ante el Registro Automotor para inscribir la unidad a tu nombre.',
-            articleSlug: art?.slug || 'que-es-gestoria',
-            stageId: 'gestoria',
-            suggestions: ['¿Cuánto tarda el patentamiento?', 'Documentación requerida', 'Tiempos orientativos'],
-          };
-        }
-        // 2. Patentamiento / Registro
-        else if (q.includes('patent') || q.includes('chapa') || q.includes('dominio') || q.includes('registro')) {
-          const art = articles.find((a) => a.slug.includes('patentamiento'));
-          botResponse = {
-            text: 'El patentamiento es la inscripción formal de tu vehículo en la Dirección Nacional de los Registros del Automotor (DNRPA). El plazo orientativo habitual en Jujuy suele rondar entre 15 y 30 días hábiles una vez ingresado el legajo.',
-            articleSlug: art?.slug || 'que-es-patentamiento',
-            stageId: 'patentamiento',
-            suggestions: ['¿Qué factores modifican el plazo?', '¿Qué sigue después de patentar?', 'Preparación PDI'],
-          };
-        }
-        // 3. Tiempos / Entrega / Fechas
-        else if (q.includes('tiempo') || q.includes('cuando') || q.includes('fecha') || q.includes('plazo') || q.includes('demor') || q.includes('camion')) {
-          const art = articles.find((a) => a.slug.includes('cuando-empieza-a-correr'));
-          botResponse = {
-            text: 'El plazo orientativo de entrega comienza a computarse una vez que la unidad se encuentra 100% facturada con chasis asignado y saldos administrativos cancelados. El tiempo promedio suele rondar entre 25 y 45 días hábiles.',
-            articleSlug: art?.slug || 'cuando-empieza-a-correr-tiempo-entrega',
-            suggestions: ['¿Por qué puede variar el plazo?', 'Ver Tiempos Orientativos', 'Día de la entrega'],
-          };
-        }
-        // 4. Facturación / Chasis
-        else if (q.includes('factura') || q.includes('chasis') || q.includes('motor')) {
-          const art = articles.find((a) => a.slug.includes('facturar'));
-          botResponse = {
-            text: 'Cuando tu unidad está facturada significa que Volkswagen Argentina emitió el comprobante fiscal definitivo a tu nombre con número de chasis y motor asignados. Con esto se da curso inmediato al patentamiento.',
-            articleSlug: art?.slug || 'que-pasa-despues-de-facturar-unidad',
-            stageId: 'facturacion',
-            suggestions: ['¿Qué es gestoría?', 'Documentación necesaria', 'Plazos orientativos'],
-          };
-        }
-        // 5. Documentación / DNI / Requisitos
-        else if (q.includes('document') || q.includes('dni') || q.includes('papel') || q.includes('requisito')) {
-          const art = articles.find((a) => a.slug.includes('documentacion'));
-          botResponse = {
-            text: 'Para personas físicas se solicita DNI vigente, constancia de CUIL/CUIT y justificación de fondos si el monto supera los límites de UIF. Para personas jurídicas se requiere estatuto social, actas de designación y poderes.',
-            articleSlug: art?.slug || 'que-documentacion-puede-solicitarse',
-            suggestions: ['¿Qué es gestoría?', 'Financiación prendaria', 'Día de la entrega'],
-          };
-        }
-        // 6. Financiación / Prenda
-        else if (q.includes('prenda') || q.includes('financi') || q.includes('credito') || q.includes('banco') || q.includes('pago')) {
-          const art = articles.find((a) => a.slug.includes('financiacion') || a.slug.includes('prenda'));
-          botResponse = {
-            text: 'En operaciones con crédito prendario, la prenda se inscribe junto con el patentamiento en el Registro Automotor. Solo se autoriza la entrega del vehículo una vez que el banco o entidad financiera liquida y confirma la operación.',
-            articleSlug: art?.slug || 'financiacion-y-pagos',
-            suggestions: ['Documentación para crédito', '¿Cuánto tarda el patentamiento?', 'Tiempos orientativos'],
-          };
-        }
-        // 6b. Consulta sobre Autoahorro / Planes (Redirección al canal de Autoahorro)
-        else if (q.includes('autoahorro') || q.includes('plan de ahorro') || q.includes('licita') || q.includes('adjudic')) {
-          botResponse = {
-            text: 'Este portal de información está enfocado exclusivamente en las operaciones de Venta Tradicional / Convencional 0km (Contado y Crédito Prendario). Si tenés consultas sobre un Plan de Autoahorro Volkswagen (adjudicaciones, licitaciones o cuotas mensuales), por favor contactá al sector exclusivo de Autoahorro Autosol o a tu asesor de plan.',
-            suggestions: ['Financiación prendaria', '¿Cuánto tarda el patentamiento?', 'Tiempos orientativos'],
-          };
-        }
-        // 7. Preparación / PDI
-        else if (q.includes('prepara') || q.includes('pdi') || q.includes('taller') || q.includes('accesorio') || q.includes('lavado')) {
-          const art = articles.find((a) => a.slug.includes('pdi'));
-          botResponse = {
-            text: 'En la Inspección Pre-Entrega (PDI), nuestros técnicos oficiales revisan más de 40 puntos mecánicos y de software, instalan accesorios contratados, colocan las chapas patentes y realizan el lavado de salón.',
-            articleSlug: art?.slug || 'que-es-la-inspeccion-pre-entrega-pdi',
-            stageId: 'preparacion',
-            suggestions: ['Coordinación de turno de entrega', 'Día del retiro', 'Garantía oficial'],
-          };
-        }
-        // 8. Fallback con buscador contextual
-        else {
+        const normalize = (value: string) => value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const words = (value: string) => normalize(value).match(/[a-z0-9]+/g)?.filter((word) => word.length > 3 && !['para', 'sobre', 'cuando', 'como', 'cual', 'puedo', 'tengo', 'quiero'].includes(word)) || [];
+        const queryWords = words(text);
+        const score = (value: string) => words(value).reduce((count, word) => count + (queryWords.some((query) => query === word || query.startsWith(word.slice(0, 5)) || word.startsWith(query.slice(0, 5))) ? 1 : 0), 0);
+        const matchedFaq = [...faqs].map((faq) => ({ faq, score: score(faq.question) * 2 + score(faq.category) })).sort((a, b) => b.score - a.score)[0];
+        const matchedStage = [...stages].map((stage) => ({ stage, score: score(stage.name) * 2 + score(stage.shortDesc) })).sort((a, b) => b.score - a.score)[0];
+        let botResponse: Partial<Message>;
+        if (matchedFaq && matchedFaq.score >= 2 && matchedFaq.score >= (matchedStage?.score || 0)) {
+          botResponse = { text: matchedFaq.faq.answer, articleSlug: matchedFaq.faq.relatedArticleSlug, stageId: matchedFaq.faq.stageId, suggestions: faqs.filter((item) => item.id !== matchedFaq.faq.id).slice(0, 3).map((item) => item.question) };
+        } else if (matchedStage && matchedStage.score >= 2) {
+          botResponse = { text: `${matchedStage.stage.definition} Plazo informado: ${matchedStage.stage.estimatedTime}.`, stageId: matchedStage.stage.id, suggestions: faqs.slice(0, 3).map((item) => item.question) };
+        } else {
           const searchResults = searchAll(text);
           recordSearchQuery(text, searchResults.length);
-
-          if (searchResults.length > 0) {
-            const top = searchResults[0];
-            botResponse = {
-              text: `Encontré información oficial relacionada con tu consulta sobre "${text}". Podés revisar el detalle completo a continuación:`,
-              articleSlug: top.urlOrSlug.startsWith('article:') ? top.urlOrSlug.replace('article:', '') : undefined,
-              stageId: top.urlOrSlug.startsWith('stage:') ? top.urlOrSlug.replace('stage:', '') : undefined,
-              suggestions: ['¿Cuánto tarda el patentamiento?', '¿Qué es gestoría?', 'Tiempos de entrega'],
-            };
-          } else {
-            botResponse = {
-              text: 'No encontré una respuesta directa para ese término exacto. Podés consultar sobre estos temas principales o contactarte con tu asesor de Autosol:',
-              suggestions: [
-                '¿Cuánto tarda el patentamiento?',
-                '¿Qué es gestoría?',
-                'Tiempos orientativos',
-                'Documentación requerida',
-              ],
-            };
-          }
+          const top = searchResults[0];
+          botResponse = top ? {
+            text: 'Encontré un tema relacionado. Podés ver la información completa y vigente a continuación:',
+            articleSlug: top.urlOrSlug.startsWith('article:') ? top.urlOrSlug.replace('article:', '') : undefined,
+            stageId: top.urlOrSlug.startsWith('stage:') ? top.urlOrSlug.replace('stage:', '') : undefined,
+            suggestions: faqs.slice(0, 3).map((item) => item.question),
+          } : {
+            text: 'No encontré una respuesta directa para esa consulta. Podés consultar estas preguntas o hablar con tu asesor de Autosol:',
+            suggestions: faqs.slice(0, 4).map((item) => item.question),
+          };
         }
 
         const botMsg: Message = {
@@ -239,7 +162,7 @@ export const VirtualAssistant: React.FC<VirtualAssistantProps> = ({
         setIsTyping(false);
       }, 350);
     },
-    [articles, searchAll, recordSearchQuery]
+    [faqs, stages, searchAll, recordSearchQuery]
   );
 
   useEffect(() => {
