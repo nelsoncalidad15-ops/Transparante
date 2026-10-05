@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Check, Copy, Printer, Save } from 'lucide-react';
+import { ArrowLeft, Check, Copy, Printer, Save } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import type { FAQItem, ProcessStage } from '../types';
 
@@ -11,7 +11,7 @@ const TOPICS = [
   { id: 'pagos', title: 'Precio, gastos y medios de pago', detail: 'Confirmar qué incluye la cotización, quién paga patentamiento, sellos, gestoría, seguro y accesorios.' },
   { id: 'plazo-total', title: 'Plazo total e inicio del cómputo', detail: 'Confirmar si existe un plazo general de entrega, desde qué hito se cuenta y qué se informa por escrito.' },
   { id: 'pdi', title: 'Preparación de la unidad', detail: 'Confirmar el procedimiento real de PDI, cantidad de controles si se publica y tiempo operativo en Jujuy.' },
-  { id: 'entrega', title: 'Seguro, turno y retiro', detail: 'Confirmar seguro, retiro por terceros, documentación entregada y responsable del turno.' },
+  { id: 'entrega', title: 'Seguro, retiro por terceros y documentación', detail: 'Confirmar seguro, retiro por terceros, documentación entregada y responsable del turno.' },
 ];
 
 const readDraft = (): ReviewDraft | null => {
@@ -27,7 +27,7 @@ const ReviewControl = ({ item, onChange }: { item: ReviewEntry; onChange: (patch
   <input aria-label="Nota o corrección del administrativo" value={item.note} onChange={(event) => onChange({ note: event.target.value })} placeholder="Nota o dato pendiente" className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs" />
 </div>;
 
-export const ValidationSummaryView: React.FC<{ onEdit?: (tab: 'table' | 'stages' | 'faqs' | 'texts') => void }> = ({ onEdit }) => {
+export const ValidationSummaryView: React.FC<{ onExit?: () => void }> = ({ onExit }) => {
   const { stages, faqs, updateStages, updateFaqs } = useData();
   const [draftStages, setDraftStages] = useState(stages);
   const [draftFaqs, setDraftFaqs] = useState(faqs);
@@ -110,20 +110,39 @@ export const ValidationSummaryView: React.FC<{ onEdit?: (tab: 'table' | 'stages'
 
   return <div className="space-y-6 pb-12">
     <div className="rounded-3xl bg-[#002244] p-6 text-white sm:p-8">
+      {onExit && (
+        <button
+          type="button"
+          onClick={onExit}
+          className="inline-flex items-center gap-1.5 rounded-full bg-white/10 hover:bg-white/20 px-3.5 py-1.5 text-xs font-semibold text-white transition-colors mb-4 cursor-pointer"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          <span>Volver a la web pública</span>
+        </button>
+      )}
       <p className="text-xs font-bold uppercase tracking-widest text-white/75">Ficha de reunión · venta convencional 0 km</p>
       <h1 className="mt-2 text-2xl font-bold sm:text-3xl">Revisar y validar la información</h1>
       <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/85">Leé cada texto con Administración. Si está bien, marcá «Validado». Si hay que corregirlo, editá el campo y luego validalo. Al terminar, pulsá «Guardar revisión».</p>
       <div className="mt-5 flex flex-wrap items-center gap-2">
         <span className="rounded-full bg-white/15 px-3 py-2 text-xs font-bold">{approved} de {ids.length} validados</span>
-        <button onClick={save} disabled={saving} className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-bold text-[#002244] disabled:opacity-50"><Save className="h-4 w-4" />{saving ? 'Guardando…' : 'Guardar revisión'}</button>
-        <button onClick={publish} disabled={saving || connection !== 'connected' || approved !== ids.length} className="inline-flex items-center gap-2 rounded-full bg-[#008cff] px-4 py-2 text-xs font-bold text-[#002244] disabled:opacity-50">Publicar todo validado</button>
-        <button onClick={copy} className="inline-flex items-center gap-2 rounded-full border border-white/40 px-4 py-2 text-xs font-bold"><Copy className="h-4 w-4" />{copied ? 'Copiado' : 'Copiar resumen'}</button>
-        <button onClick={() => window.print()} className="inline-flex items-center gap-2 rounded-full border border-white/40 px-4 py-2 text-xs font-bold"><Printer className="h-4 w-4" />Imprimir</button>
+        <button onClick={save} disabled={saving} className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-bold text-[#002244] disabled:opacity-50 cursor-pointer"><Save className="h-4 w-4" />{saving ? 'Guardando…' : 'Guardar revisión'}</button>
+        {connection === 'connected' && (
+          <button onClick={publish} disabled={saving || approved !== ids.length} className="inline-flex items-center gap-2 rounded-full bg-[#008cff] px-4 py-2 text-xs font-bold text-[#002244] disabled:opacity-50 cursor-pointer">Publicar todo validado</button>
+        )}
+        <button onClick={copy} className="inline-flex items-center gap-2 rounded-full border border-white/40 px-4 py-2 text-xs font-bold cursor-pointer"><Copy className="h-4 w-4" />{copied ? 'Copiado' : 'Copiar resumen'}</button>
+        <button onClick={() => window.print()} className="inline-flex items-center gap-2 rounded-full border border-white/40 px-4 py-2 text-xs font-bold cursor-pointer"><Printer className="h-4 w-4" />Imprimir</button>
       </div>
     </div>
-    <div role="status" className={`rounded-xl border p-3 text-sm ${connection === 'connected' ? 'border-emerald-200 bg-emerald-50 text-emerald-900' : 'border-amber-200 bg-amber-50 text-amber-900'}`}>
-      {connection === 'connected' ? 'Backend conectado: Guardar revisión conserva el borrador en el Sheet; Publicar todo validado actualiza la web pública.' : connection === 'checking' ? 'Comprobando conexión…' : 'Backend no disponible aquí. El borrador se guarda solo en este navegador.'}
-      {message && <span className="block font-semibold">{message}</span>}
+    <div role="status" className={`rounded-2xl border p-4 text-xs sm:text-sm ${connection === 'connected' ? 'border-emerald-200 bg-emerald-50 text-emerald-900' : 'border-blue-200 bg-blue-50 text-blue-900'}`}>
+      <div className="flex items-center gap-2 font-bold">
+        <span>{connection === 'connected' ? '✓ Backend conectado con Google Sheets' : connection === 'checking' ? 'Comprobando conexión…' : 'ℹ️ Modo Local de Validación Activo'}</span>
+      </div>
+      <p className="mt-1 text-slate-700">
+        {connection === 'connected'
+          ? 'Guardar revisión conserva el borrador en Google Sheets. Publicar todo validado actualiza la web pública.'
+          : 'El borrador se guarda automáticamente en este navegador. Podés revisar cada etapa, modificar plazos o notas, y usar «Guardar revisión», «Copiar resumen» o «Imprimir».'}
+      </p>
+      {message && <span className="block font-semibold mt-2 text-[#002244]">{message}</span>}
     </div>
     <section className="space-y-3"><h2 className="text-xl font-bold text-[#002244]">1. Etapas y plazos</h2>
       {draftStages.map((stage) => <details key={stage.id} className="rounded-2xl border border-slate-200 bg-white p-4">
@@ -149,7 +168,8 @@ export const ValidationSummaryView: React.FC<{ onEdit?: (tab: 'table' | 'stages'
         <ReviewControl item={getReview(`topic:${topic.id}`)} onChange={(patch) => changeReview(`topic:${topic.id}`, patch)} />
       </div>)}
     </section>
-    <button onClick={save} disabled={saving} className="inline-flex items-center gap-2 rounded-full bg-[#002244] px-6 py-3 text-sm font-bold text-white disabled:opacity-50"><Check className="h-4 w-4" />{saving ? 'Guardando…' : 'Guardar revisión'}</button>
-    {onEdit && <details className="rounded-xl border border-slate-200 bg-white p-4 text-xs text-slate-600"><summary className="cursor-pointer font-bold">Otras ediciones</summary><div className="mt-3 flex flex-wrap gap-3">{([['table', 'Guías y artículos'], ['stages', 'Etapas completas'], ['faqs', 'Preguntas completas'], ['texts', 'Textos generales']] as const).map(([tab, label]) => <button key={tab} onClick={() => onEdit(tab)} className="rounded-full border border-slate-300 px-3 py-2 font-semibold text-[#002244]">{label}</button>)}</div></details>}
+    <div className="pt-2">
+      <button onClick={save} disabled={saving} className="inline-flex items-center gap-2 rounded-full bg-[#002244] px-6 py-3 text-sm font-bold text-white disabled:opacity-50 cursor-pointer shadow-md hover:brightness-110"><Check className="h-4 w-4" />{saving ? 'Guardando…' : 'Guardar revisión'}</button>
+    </div>
   </div>;
 };

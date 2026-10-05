@@ -228,7 +228,7 @@ function AppContent() {
         )}
 
         {/* VIEW 15: ADMIN CONTENT PANEL (Internal / Sheets) */}
-        {activeTab === 'admin-panel' && <AdminContentView />}
+        {activeTab === 'admin-panel' && <AdminContentView onExit={() => setActiveTab('home')} />}
 
         {activeTab === 'client-alerts' && <ClientAlertDashboard onExit={() => setActiveTab('home')} />}
       </main>
