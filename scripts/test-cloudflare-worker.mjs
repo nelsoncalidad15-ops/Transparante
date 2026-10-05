@@ -25,8 +25,14 @@ try {
   assert.equal((await call('/api/admin/review')).status, 401);
   const login = await call('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'https://autosol.test' }, body: JSON.stringify({ username: 'admin', password }) });
   assert.equal(login.status, 200);
-  const noPasswordConfig = { ...env, ADMIN_PASSWORD_SHA256: undefined, ADMIN_PASSWORD: password };
-  const rejected = await worker.fetch(new Request('https://autosol.test/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: 'admin', password }) }), noPasswordConfig);
+  const plainPasswordConfig = { ...env, ADMIN_PASSWORD_SHA256: undefined, ADMIN_PASSWORD: password, SESSION_SECRET: undefined };
+  const plainLogin = await worker.fetch(new Request('https://autosol.test/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: 'admin', password }) }), plainPasswordConfig);
+  assert.equal(plainLogin.status, 200);
+  const plainCookie = plainLogin.headers.get('set-cookie').split(';')[0];
+  const plainSession = await worker.fetch(new Request('https://autosol.test/api/auth/session', { headers: { Cookie: plainCookie } }), plainPasswordConfig);
+  assert.equal((await plainSession.json()).authenticated, true);
+  const shortPasswordConfig = { ...plainPasswordConfig, ADMIN_PASSWORD: 'clave-corta' };
+  const rejected = await worker.fetch(new Request('https://autosol.test/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: 'admin', password: 'clave-corta' }) }), shortPasswordConfig);
   assert.equal(rejected.status, 401);
   const noScriptSecret = await worker.fetch(new Request('https://autosol.test/api/content'), { ...env, APPS_SCRIPT_SHARED_SECRET: undefined });
   assert.equal(noScriptSecret.status, 503);

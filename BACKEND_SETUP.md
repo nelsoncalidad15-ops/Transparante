@@ -6,11 +6,11 @@ El repositorio también incluye `public/_worker.js`, que permite alojar la web y
 
 1. En Cloudflare Pages, conectá el repositorio de GitHub. Configurá **Build command** `npm run build` y **Build output directory** `dist`. La integración con Git debe incluir `public/_worker.js` en la compilación.
 2. En **Settings → Variables and Secrets**, cargá `APPS_SCRIPT_URL` con la URL `/exec` y `APPS_SCRIPT_SHARED_SECRET` con el mismo valor que `BACKEND_SHARED_SECRET` de Apps Script. Ambos deben estar disponibles para Production; usá secretos para las claves.
-3. Ejecutá localmente `node scripts/create-cloudflare-password.mjs`. Guardá la contraseña que muestra y cargá el hash como `ADMIN_PASSWORD_SHA256`. Cargá `ADMIN_USERNAME` como `admin`.
-4. Ejecutá de nuevo `node scripts/create-cloudflare-password.mjs` y usá la nueva contraseña generada como `SESSION_SECRET`. Guardala solo en Cloudflare. Opcionalmente, repetí el paso 3 para `COLLABORATOR_PASSWORD_SHA256` y configurá `COLLABORATOR_USERNAME`.
+3. En **Variables and Secrets**, creá un secreto llamado `ADMIN_PASSWORD` con la contraseña que quieras usar (mínimo 12 caracteres). El usuario es `admin` por defecto. No pongas la contraseña en el código ni en GitHub.
+4. `SESSION_SECRET` es opcional: si no se configura, el servidor firma la sesión a partir de `ADMIN_PASSWORD`. Para un colaborador, podés agregar `COLLABORATOR_PASSWORD` con otra contraseña de 12 caracteres o más; su usuario predeterminado es `administrativo`.
 5. Volvé a desplegar. Abrí el dominio de Cloudflare Pages, comprobá que `/api/content` devuelve JSON y que **Acceso interno** permite iniciar sesión. Probá **Guardar revisión**, recargá en otro navegador y confirmá que el borrador persiste antes de publicar.
 
-La contraseña de Cloudflare debe ser la aleatoria generada por el script: el hash SHA-256 aquí se usa únicamente con una clave de alta entropía. Las variables `ADMIN_PASSWORD_HASH` de la opción Vercel usan otro formato y no son intercambiables. La implementación de Apps Script debe admitir el acceso **Cualquier usuario** para que Cloudflare pueda invocarla; la planilla permanece privada y el script exige el secreto en cada solicitud de datos.
+La implementación de Apps Script debe admitir el acceso **Cualquier usuario** para que Cloudflare pueda invocarla; la planilla permanece privada y el script exige el secreto en cada solicitud de datos. `APPS_SCRIPT_SHARED_SECRET` sigue siendo necesario para conectar la planilla y debe coincidir con `BACKEND_SHARED_SECRET` de Apps Script.
 
 Hasta que pruebes el dominio final, la URL de GitHub Pages seguirá mostrando el sitio estático pero no podrá guardar cambios compartidos.
 

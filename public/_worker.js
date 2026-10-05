@@ -22,9 +22,10 @@ const readBody = async (request) => {
   return request.json();
 };
 const cookieValue = (request) => (request.headers.get('cookie') || '').split(';').map((part) => part.trim()).find((part) => part.startsWith(`${COOKIE}=`))?.slice(COOKIE.length + 1);
+const sessionSecret = (env) => env.SESSION_SECRET || (typeof env.ADMIN_PASSWORD === 'string' && env.ADMIN_PASSWORD.length >= 12 ? `autosol-session:${env.ADMIN_PASSWORD}` : '');
 
 const getSession = async (request, env) => {
-  const secret = env.SESSION_SECRET;
+  const secret = sessionSecret(env);
   if (!secret) return null;
   const token = cookieValue(request);
   if (!token) return null;
@@ -34,8 +35,8 @@ const getSession = async (request, env) => {
   return equal(expected, signature) ? { role } : null;
 };
 const sessionCookie = async (role, env) => {
-  const secret = env.SESSION_SECRET;
-  if (!secret) throw new Error('Falta SESSION_SECRET.');
+  const secret = sessionSecret(env);
+  if (!secret) throw new Error('Falta una contraseña de administrador de al menos 12 caracteres.');
   const expires = Math.floor(Date.now() / 1000) + SESSION_SECONDS;
   const nonce = hex(crypto.getRandomValues(new Uint8Array(16)));
   const value = `${expires}.${role}.${nonce}`;
@@ -81,8 +82,8 @@ const handleApi = async (request, env, path) => {
     const digest = typeof password === 'string' && password ? await sha256(password) : '';
     const adminExpected = env.ADMIN_PASSWORD_SHA256;
     const collabExpected = env.COLLABORATOR_PASSWORD_SHA256;
-    const adminMatch = adminExpected && equal(digest, adminExpected);
-    const collabMatch = collabExpected && equal(digest, collabExpected);
+    const adminMatch = (typeof env.ADMIN_PASSWORD === 'string' && env.ADMIN_PASSWORD.length >= 12 && equal(password, env.ADMIN_PASSWORD)) || (adminExpected && equal(digest, adminExpected));
+    const collabMatch = (typeof env.COLLABORATOR_PASSWORD === 'string' && env.COLLABORATOR_PASSWORD.length >= 12 && equal(password, env.COLLABORATOR_PASSWORD)) || (collabExpected && equal(digest, collabExpected));
     const admin = user === String(env.ADMIN_USERNAME || 'admin').trim().toLowerCase() && adminMatch;
     const collaborator = user === String(env.COLLABORATOR_USERNAME || 'administrativo').trim().toLowerCase() && collabMatch;
     const role = admin ? 'admin' : collaborator ? 'collaborator' : null;
