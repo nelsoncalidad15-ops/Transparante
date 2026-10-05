@@ -6,6 +6,9 @@ import type { FAQItem, ProcessStage } from '../types';
 type ReviewEntry = { id: string; status: 'pendiente' | 'validado'; note: string; reviewedAt: string };
 type ReviewDraft = { stages: ProcessStage[]; faqs: FAQItem[]; validations: ReviewEntry[] };
 const DRAFT_KEY = 'autosol_revision_operativa_borrador_v1';
+const escapeHtml = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, (character) => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+})[character]!);
 const TOPICS = [
   { id: 'documentacion', title: 'Documentación según el titular', detail: 'Confirmar DNI, CUIT/CUIL, sociedades, condominio y cuándo corresponde cada formulario o trámite digital.' },
   { id: 'pagos', title: 'Precio, gastos y medios de pago', detail: 'Confirmar qué incluye la cotización, quién paga patentamiento, sellos, gestoría, seguro y accesorios.' },
@@ -109,6 +112,37 @@ export const ValidationSummaryView: React.FC<{ onExit?: () => void }> = ({ onExi
     await navigator.clipboard.writeText(lines.join('\n\n')); setCopied(true); setTimeout(() => setCopied(false), 2000);
   };
 
+  const generatePdf = () => {
+    if (approved !== ids.length) return;
+    const reportWindow = window.open('', '_blank');
+    if (!reportWindow) {
+      setMessage('El navegador bloqueó la ventana del PDF. Permití ventanas emergentes e intentá nuevamente.');
+      return;
+    }
+
+    const line = (label: string, value: unknown) => `<p><strong>${escapeHtml(label)}:</strong> ${escapeHtml(value)}</p>`;
+    const items = (label: string, values: string[]) => `<div><strong>${escapeHtml(label)}:</strong><ul>${values.map((value) => `<li>${escapeHtml(value)}</li>`).join('')}</ul></div>`;
+    const validation = (id: string) => {
+      const item = getReview(id);
+      return `<p class="review"><strong>Estado:</strong> ${item.status === 'validado' ? 'Validado' : 'Pendiente'} · <strong>Fecha:</strong> ${item.reviewedAt ? escapeHtml(new Date(item.reviewedAt).toLocaleString('es-AR')) : 'Sin fecha'}<br><strong>Nota o corrección:</strong> ${escapeHtml(item.note || 'Sin notas')}</p>`;
+    };
+    const stageCards = draftStages.map((stage) => `<article><h3>${stage.stepNumber}. ${escapeHtml(stage.name)}</h3>${line('Resumen', stage.shortDesc)}${line('Explicación al cliente', stage.definition)}${items('Qué sucede', stage.whatHappens)}${line('Plazo publicado', stage.estimatedTime)}${line('Aclaración del plazo', stage.timeDisclaimer)}${items('Factores', stage.timeFactors)}${line('Qué sigue', stage.nextStep)}${validation(`stage:${stage.id}`)}</article>`).join('');
+    const faqCards = draftFaqs.map((faq) => `<article><h3>${escapeHtml(faq.question)}</h3>${line('Respuesta al cliente', faq.answer)}${line('Categoría', faq.category)}${validation(`faq:${faq.id}`)}</article>`).join('');
+    const topicCards = TOPICS.map((topic) => `<article><h3>${escapeHtml(topic.title)}</h3><p>${escapeHtml(topic.detail)}</p>${validation(`topic:${topic.id}`)}</article>`).join('');
+    const generatedAt = new Date().toLocaleString('es-AR');
+
+    reportWindow.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Validación de contenidos — Autosol Confianza</title><style>
+      @page { size: A4; margin: 18mm; }
+      body { font-family: Arial, sans-serif; color: #172236; line-height: 1.45; max-width: 850px; margin: 24px auto; }
+      h1, h2, h3 { color: #002244; } h1 { font-size: 25px; } h2 { border-bottom: 2px solid #002244; padding-bottom: 6px; margin-top: 28px; break-after: avoid; } h3 { font-size: 16px; margin: 0 0 8px; }
+      article { border: 1px solid #ccd3dc; border-radius: 8px; padding: 12px 15px; margin: 13px 0; break-inside: avoid; } p { margin: 6px 0; font-size: 13px; white-space: pre-wrap; } ul { margin: 5px 0 8px 20px; padding: 0; font-size: 13px; } li { margin: 3px 0; }
+      .review { border-top: 1px solid #d9dfe5; padding-top: 9px; margin-top: 12px; } .notice { background: #eef3f8; padding: 12px; font-size: 13px; } button { background: #002244; color: white; border: 0; border-radius: 8px; padding: 10px 15px; cursor: pointer; }
+      @media print { body { margin: 0; max-width: none; } button { display: none; } }
+    </style></head><body><h1>Autosol Confianza · Validación de contenidos</h1><p>Generado: ${escapeHtml(generatedAt)} · ${approved} de ${ids.length} puntos validados</p><p class="notice">Este PDF registra el texto y las notas de esta sesión. Generarlo no guarda ni publica cambios en la web.</p><button onclick="window.print()">Imprimir / Guardar como PDF</button><h2>Etapas y plazos</h2>${stageCards}<h2>Preguntas y respuestas</h2>${faqCards}<h2>Datos de Autosol a confirmar</h2>${topicCards}<script>window.addEventListener('load', () => setTimeout(() => window.print(), 300));<\/script></body></html>`);
+    reportWindow.document.close();
+    setMessage('En la ventana de impresión, elegí «Guardar como PDF».');
+  };
+
   return <div className="space-y-6 pb-12">
     <div className="rounded-3xl bg-[#002244] p-6 text-white sm:p-8">
       {onExit && (
@@ -131,7 +165,7 @@ export const ValidationSummaryView: React.FC<{ onExit?: () => void }> = ({ onExi
           <button onClick={publish} disabled={saving || approved !== ids.length} className="inline-flex items-center gap-2 rounded-full bg-[#008cff] px-4 py-2 text-xs font-bold text-[#002244] disabled:opacity-50 cursor-pointer">Publicar todo validado</button>
         )}
         <button onClick={copy} className="inline-flex items-center gap-2 rounded-full border border-white/40 px-4 py-2 text-xs font-bold cursor-pointer"><Copy className="h-4 w-4" />{copied ? 'Copiado' : 'Copiar resumen'}</button>
-        <button onClick={() => window.print()} className="inline-flex items-center gap-2 rounded-full border border-white/40 px-4 py-2 text-xs font-bold cursor-pointer"><Printer className="h-4 w-4" />Imprimir</button>
+        <button onClick={generatePdf} disabled={approved !== ids.length} title={approved !== ids.length ? 'Validá todos los puntos para generar el PDF' : 'Se abrirá la opción de guardar como PDF'} className="inline-flex items-center gap-2 rounded-full border border-white/40 px-4 py-2 text-xs font-bold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"><Printer className="h-4 w-4" />Generar PDF</button>
         <button type="button" onClick={() => setIsQrModalOpen(true)} className="inline-flex items-center gap-2 rounded-full border border-white/40 px-4 py-2 text-xs font-bold cursor-pointer hover:bg-white/10"><QrCode className="h-4 w-4" />Código QR</button>
       </div>
     </div>
@@ -142,7 +176,7 @@ export const ValidationSummaryView: React.FC<{ onExit?: () => void }> = ({ onExi
       <p className="mt-1 text-slate-700">
         {connection === 'connected'
           ? 'Guardar revisión conserva el borrador en Google Sheets. Publicar todo validado actualiza la web pública.'
-          : 'El borrador se guarda automáticamente en este navegador. Podés revisar cada etapa, modificar plazos o notas, y usar «Guardar revisión», «Copiar resumen» o «Imprimir».'}
+          : 'El borrador se guarda automáticamente en este navegador. Podés revisar cada etapa, modificar plazos o notas y, al validar todos los puntos, generar un PDF.'}
       </p>
       {message && <span className="block font-semibold mt-2 text-[#002244]">{message}</span>}
     </div>
