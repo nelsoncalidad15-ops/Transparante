@@ -25,6 +25,11 @@ try {
   assert.equal((await call('/api/admin/review')).status, 401);
   const login = await call('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'https://autosol.test' }, body: JSON.stringify({ username: 'admin', password }) });
   assert.equal(login.status, 200);
+  const noPasswordConfig = { ...env, ADMIN_PASSWORD_SHA256: undefined, ADMIN_PASSWORD: password };
+  const rejected = await worker.fetch(new Request('https://autosol.test/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: 'admin', password }) }), noPasswordConfig);
+  assert.equal(rejected.status, 401);
+  const noScriptSecret = await worker.fetch(new Request('https://autosol.test/api/content'), { ...env, APPS_SCRIPT_SHARED_SECRET: undefined });
+  assert.equal(noScriptSecret.status, 503);
   const cookie = login.headers.get('set-cookie').split(';')[0];
   assert.equal((await call('/api/auth/session', { headers: { Cookie: cookie } })).status, 200);
   assert.equal((await call('/api/admin/review', { headers: { Cookie: cookie } })).status, 200);

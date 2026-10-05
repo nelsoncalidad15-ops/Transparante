@@ -1,4 +1,4 @@
-// Cloudflare Pages: static site plus the small authenticated Apps Script proxy.
+﻿// Cloudflare Pages: static site plus the small authenticated Apps Script proxy.
 const COOKIE = 'autosol_admin_session';
 const SESSION_SECONDS = 8 * 60 * 60;
 
@@ -22,12 +22,10 @@ const readBody = async (request) => {
   return request.json();
 };
 const cookieValue = (request) => (request.headers.get('cookie') || '').split(';').map((part) => part.trim()).find((part) => part.startsWith(`${COOKIE}=`))?.slice(COOKIE.length + 1);
-const DEFAULT_SESSION_SECRET = 'autosol_secure_session_secret_2026_VW_jujuy_key';
-const DEFAULT_SHARED_SECRET = '3a12d686acfeb2cdba16326a4565a632f1f4cae2564d5740';
-const DEFAULT_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3cAWV0C4Qw3JZHNLkd3EFkFCItuj1c9Xchvq3ZQMCrHUq1iVxgU-b0QgBjbU2wYq4/exec';
 
 const getSession = async (request, env) => {
-  const secret = env.SESSION_SECRET || DEFAULT_SESSION_SECRET;
+  const secret = env.SESSION_SECRET;
+  if (!secret) return null;
   const token = cookieValue(request);
   if (!token) return null;
   const [expires, role, nonce, signature, extra] = token.split('.');
@@ -36,16 +34,17 @@ const getSession = async (request, env) => {
   return equal(expected, signature) ? { role } : null;
 };
 const sessionCookie = async (role, env) => {
-  const secret = env.SESSION_SECRET || DEFAULT_SESSION_SECRET;
+  const secret = env.SESSION_SECRET;
+  if (!secret) throw new Error('Falta SESSION_SECRET.');
   const expires = Math.floor(Date.now() / 1000) + SESSION_SECONDS;
   const nonce = hex(crypto.getRandomValues(new Uint8Array(16)));
   const value = `${expires}.${role}.${nonce}`;
   return `${COOKIE}=${value}.${await sign(value, secret)}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${SESSION_SECONDS}`;
 };
 const callScript = async (action, payload, env) => {
-  const url = env.APPS_SCRIPT_URL || DEFAULT_APPS_SCRIPT_URL;
-  const secret = env.APPS_SCRIPT_SHARED_SECRET || env.APPS_SCRIPT_SHARED_SE || env.BACKEND_SHARED_SECRET || DEFAULT_SHARED_SECRET;
-  if (!url) throw new Error('Falta configurar la variable APPS_SCRIPT_URL en Cloudflare.');
+  const url = env.APPS_SCRIPT_URL;
+  const secret = env.APPS_SCRIPT_SHARED_SECRET;
+  if (!url || !secret) throw new Error('Faltan APPS_SCRIPT_URL o APPS_SCRIPT_SHARED_SECRET en Cloudflare.');
   const response = await fetch(url, {
     method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({ action, payload, secret }),
@@ -80,10 +79,10 @@ const handleApi = async (request, env, path) => {
     const { username, password } = await readBody(request);
     const user = String(username || '').trim().toLowerCase();
     const digest = typeof password === 'string' && password ? await sha256(password) : '';
-    const adminExpected = env.ADMIN_PASSWORD_SHA256 || env.ADMIN_PASSWORD_SHA2 || env.ADMIN_PASSWORD || 'admin2026';
-    const collabExpected = env.COLLABORATOR_PASSWORD_SHA256 || env.COLLABORATOR_PASSWORD_SHA2 || env.COLLABORATOR_PASSWORD;
-    const adminMatch = (password === 'admin2026') || (adminExpected && (equal(digest, adminExpected) || equal(password, adminExpected)));
-    const collabMatch = collabExpected && (equal(digest, collabExpected) || equal(password, collabExpected));
+    const adminExpected = env.ADMIN_PASSWORD_SHA256;
+    const collabExpected = env.COLLABORATOR_PASSWORD_SHA256;
+    const adminMatch = adminExpected && equal(digest, adminExpected);
+    const collabMatch = collabExpected && equal(digest, collabExpected);
     const admin = user === String(env.ADMIN_USERNAME || 'admin').trim().toLowerCase() && adminMatch;
     const collaborator = user === String(env.COLLABORATOR_USERNAME || 'administrativo').trim().toLowerCase() && collabMatch;
     const role = admin ? 'admin' : collaborator ? 'collaborator' : null;
