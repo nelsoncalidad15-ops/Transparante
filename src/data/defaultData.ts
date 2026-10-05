@@ -10,18 +10,18 @@ import {
 } from '../types';
 
 export const INITIAL_SITE_TEXTS: SiteText[] = [
-  { key: 'hero_eyebrow', section: 'Inicio', label: 'Antetítulo principal', value: 'Autosol Confianza', description: 'Texto pequeño sobre el título principal.', active: true },
-  { key: 'hero_title', section: 'Inicio', label: 'Título principal', value: 'Centro Digital de Información y Consulta', description: 'Título grande de portada.', active: true },
-  { key: 'hero_description', section: 'Inicio', label: 'Descripción principal', value: 'Información clara, validada y disponible para acompañarte durante todo el período previo a la entrega de tu próximo 0km en Autosol Jujuy.', description: 'Bajada de portada.', active: true },
-  { key: 'hero_scroll', section: 'Inicio', label: 'Acceso a información', value: 'Conocé las etapas', description: 'Texto para bajar a las opciones.', active: true },
-  { key: 'information_eyebrow', section: 'Inicio', label: 'Antetítulo información', value: 'Autosol Confianza', description: 'Antetítulo del bloque con buscador.', active: true },
-  { key: 'information_title', section: 'Inicio', label: 'Título información', value: 'Entender tu proceso fortalece la confianza.', description: 'Título del bloque con buscador.', active: true },
-  { key: 'information_description', section: 'Inicio', label: 'Descripción información', value: 'Acompañamos cada etapa de tu compra convencional con información simple, validada y accesible en todo momento.', description: 'Bajada del bloque con buscador.', active: true },
-  { key: 'search_placeholder', section: 'Inicio', label: 'Placeholder buscador', value: 'Buscá una duda, un término o una etapa (ej: patentamiento, gestoría, tiempos)...', description: 'Texto dentro del buscador.', active: true },
-  { key: 'process_eyebrow', section: 'Proceso', label: 'Antetítulo proceso', value: 'Seguimiento y previsibilidad', description: 'Antetítulo de la línea de etapas.', active: true },
-  { key: 'process_title', section: 'Proceso', label: 'Título proceso', value: '¿En qué etapa está tu 0km?', description: 'Título de la línea de etapas.', active: true },
-  { key: 'process_description', section: 'Proceso', label: 'Descripción proceso', value: 'Elegí una etapa para conocer qué sucede, los tiempos orientativos y qué viene después.', description: 'Bajada de la línea de etapas.', active: true },
-  { key: 'whatsapp_message', section: 'Contacto', label: 'Mensaje inicial de WhatsApp', value: 'Hola Autosol Jujuy, tengo una consulta sobre mi operación 0km.', description: 'Mensaje que recibe el administrativo desde el botón público.', active: true },
+  { key: 'hero_eyebrow', section: 'Inicio', label: 'Antetítulo principal', value: 'Autosol Jujuy', description: 'Texto pequeño sobre el título principal.', active: true },
+  { key: 'hero_title', section: 'Inicio', label: 'Título principal', value: 'Tu próximo camino empieza acá.', description: 'Título grande de portada.', active: true },
+  { key: 'hero_description', section: 'Inicio', label: 'Descripción principal', value: 'Información clara sobre definiciones, trámites y cada etapa para acompañarte durante la compra de tu próximo 0km.', description: 'Bajada de portada.', active: true },
+  { key: 'hero_scroll', section: 'Inicio', label: 'Acceso a información', value: 'Descubrí más', description: 'Texto para bajar a las opciones.', active: true },
+  { key: 'information_eyebrow', section: 'Inicio', label: 'Antetítulo información', value: 'Información clara, en un solo lugar', description: 'Antetítulo del bloque con buscador.', active: true },
+  { key: 'information_title', section: 'Inicio', label: 'Título información', value: 'Entender tu proceso también genera confianza.', description: 'Título del bloque con buscador.', active: true },
+  { key: 'information_description', section: 'Inicio', label: 'Descripción información', value: 'Acompañamos cada etapa de tu compra con información simple, clara y actualizada.', description: 'Bajada del bloque con buscador.', active: true },
+  { key: 'search_placeholder', section: 'Inicio', label: 'Placeholder buscador', value: 'Buscá una duda, un término o una etapa...', description: 'Texto dentro del buscador.', active: true },
+  { key: 'process_eyebrow', section: 'Proceso', label: 'Antetítulo proceso', value: 'Seguimiento transparente', description: 'Antetítulo de la línea de etapas.', active: true },
+  { key: 'process_title', section: 'Proceso', label: 'Título proceso', value: '¿En qué etapa estás?', description: 'Título de la línea de etapas.', active: true },
+  { key: 'process_description', section: 'Proceso', label: 'Descripción proceso', value: 'Elegí una etapa para conocer qué sucede y qué viene después.', description: 'Bajada de la línea de etapas.', active: true },
+  { key: 'whatsapp_message', section: 'Contacto', label: 'Mensaje inicial de WhatsApp', value: 'Hola Autosol, tengo una consulta sobre mi operación.', description: 'Mensaje que recibe el administrativo desde el botón público.', active: true },
 ];
 
 export const INITIAL_STAGES: ProcessStage[] = [
