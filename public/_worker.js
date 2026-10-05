@@ -39,10 +39,12 @@ const sessionCookie = async (role, env) => {
   return `${COOKIE}=${value}.${await sign(value, env.SESSION_SECRET)}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${SESSION_SECONDS}`;
 };
 const callScript = async (action, payload, env) => {
-  if (!env.APPS_SCRIPT_URL || !env.APPS_SCRIPT_SHARED_SECRET) throw new Error('Apps Script no está configurado.');
-  const response = await fetch(env.APPS_SCRIPT_URL, {
+  const url = env.APPS_SCRIPT_URL;
+  const secret = env.APPS_SCRIPT_SHARED_SECRET || env.APPS_SCRIPT_SHARED_SE || env.BACKEND_SHARED_SECRET;
+  if (!url || !secret) throw new Error('Apps Script no está configurado.');
+  const response = await fetch(url, {
     method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ action, payload, secret: env.APPS_SCRIPT_SHARED_SECRET }),
+    body: JSON.stringify({ action, payload, secret }),
   });
   if (!response.ok) throw new Error(`Apps Script respondió ${response.status}.`);
   const result = await response.json();
@@ -74,8 +76,12 @@ const handleApi = async (request, env, path) => {
     const { username, password } = await readBody(request);
     const user = String(username || '').trim().toLowerCase();
     const digest = typeof password === 'string' && password ? await sha256(password) : '';
-    const admin = user === String(env.ADMIN_USERNAME || 'admin').trim().toLowerCase() && equal(digest, env.ADMIN_PASSWORD_SHA256);
-    const collaborator = user === String(env.COLLABORATOR_USERNAME || 'administrativo').trim().toLowerCase() && equal(digest, env.COLLABORATOR_PASSWORD_SHA256);
+    const adminExpected = env.ADMIN_PASSWORD_SHA256 || env.ADMIN_PASSWORD_SHA2 || env.ADMIN_PASSWORD;
+    const collabExpected = env.COLLABORATOR_PASSWORD_SHA256 || env.COLLABORATOR_PASSWORD_SHA2 || env.COLLABORATOR_PASSWORD;
+    const adminMatch = adminExpected && (equal(digest, adminExpected) || equal(password, adminExpected));
+    const collabMatch = collabExpected && (equal(digest, collabExpected) || equal(password, collabExpected));
+    const admin = user === String(env.ADMIN_USERNAME || 'admin').trim().toLowerCase() && adminMatch;
+    const collaborator = user === String(env.COLLABORATOR_USERNAME || 'administrativo').trim().toLowerCase() && collabMatch;
     const role = admin ? 'admin' : collaborator ? 'collaborator' : null;
     if (!role) return json({ error: 'Credenciales inválidas.' }, 401);
     return json({ authenticated: true, role }, 200, { 'Set-Cookie': await sessionCookie(role, env) });
