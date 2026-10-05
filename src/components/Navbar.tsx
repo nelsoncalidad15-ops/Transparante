@@ -26,14 +26,12 @@ export type ActiveTab =
   | 'search'
   | 'article-detail'
   | 'quality-dashboard'
-  | 'admin-panel'
-  | 'client-alerts';
+  | 'admin-panel';
 
 interface NavbarProps {
   activeTab: ActiveTab;
   setActiveTab: (tab: ActiveTab) => void;
   onOpenTrackerModal?: () => void;
-  onOpenCaseDashboard: () => void;
 }
 
 const navigation: { id: ActiveTab; label: string }[] = [
@@ -50,7 +48,6 @@ const navigation: { id: ActiveTab; label: string }[] = [
 export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   setActiveTab,
-  onOpenCaseDashboard,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -105,10 +102,8 @@ export const Navbar: React.FC<NavbarProps> = ({
       setSessionRole(result.role === 'admin' ? 'admin' : 'collaborator');
       setAdminUsername('');
       setAdminPassword('');
-      if (result.role === 'collaborator') {
-        setMenuOpen(false);
-        onOpenCaseDashboard();
-      }
+      setMenuOpen(false);
+      navigate('admin-panel');
     } catch (error) {
       setAdminError(error instanceof Error ? error.message : 'No se pudo iniciar sesión.');
     } finally {
@@ -330,34 +325,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <button
                       onClick={() => {
                         setMenuOpen(false);
-                        onOpenCaseDashboard();
+                        navigate('admin-panel');
                       }}
-                      className="flex w-full items-center justify-between rounded-lg bg-[#002244] px-3 py-2 text-xs font-bold text-white hover:bg-[#002244] hover:brightness-125"
+                      className="flex w-full items-center justify-between rounded-lg bg-[#002244] px-3.5 py-2.5 text-xs font-bold text-white hover:brightness-125 transition-colors cursor-pointer"
                     >
-                      <span className="flex items-center gap-1.5">
-                        <UserCheck className="h-3.5 w-3.5" /> Casos a contactar
+                      <span className="flex items-center gap-2">
+                        <FilePenLine className="h-4 w-4 text-sky-400" />
+                        <span>Ficha de revisión y validación</span>
                       </span>
-                      {sessionRole === 'collaborator' && (
-                        <span className="text-[10px] text-blue-200">Colaborador</span>
-                      )}
                     </button>
-
-                    {sessionRole === 'admin' && (
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => navigate('quality-dashboard')}
-                          className="flex-1 rounded-lg border border-slate-300 bg-white py-1.5 px-2 text-[11px] font-semibold text-slate-700 hover:border-[#002244] flex items-center justify-center gap-1"
-                        >
-                          <BarChart3 className="h-3 w-3 text-[#002244]" /> Indicadores
-                        </button>
-                        <button
-                          onClick={() => navigate('admin-panel')}
-                          className="flex-1 rounded-lg border border-slate-300 bg-white py-1.5 px-2 text-[11px] font-semibold text-slate-700 hover:border-[#002244] flex items-center justify-center gap-1"
-                        >
-                          <FilePenLine className="h-3 w-3 text-[#002244]" /> Editar datos
-                        </button>
-                      </div>
-                    )}
                   </div>
                 )}
               </div>

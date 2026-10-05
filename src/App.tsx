@@ -16,7 +16,6 @@ import { FAQSection } from './components/FAQSection';
 import { QualityDashboardView } from './components/QualityDashboardView';
 
 import { AdminContentView } from './components/AdminContentView';
-import { ClientAlertDashboard } from './components/ClientAlertDashboard';
 import { AutosolLogo } from './components/AutosolLogo';
 import { ProcessStageId, ContentCategory } from './types';
 import {
@@ -101,18 +100,17 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-[#ece5db] flex flex-col text-slate-800 selection:bg-[#002244] selection:text-white">
       {/* Main Top Navigation with official VW | Autosol Branding */}
-      {activeTab !== 'client-alerts' && <Navbar
+      <Navbar
         activeTab={activeTab}
         setActiveTab={(tab) => {
           setActiveTab(tab);
           if (tab === 'library') setLibraryInitialCategory(undefined);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
-        onOpenCaseDashboard={() => setActiveTab('client-alerts')}
-      />}
+      />
 
       {/* Main Container */}
-      <main className={activeTab === 'client-alerts' ? 'flex-1 w-full pt-16' : activeTab === 'home' ? 'flex-1 w-full' : activeTab === 'assistant' ? 'flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 pb-6' : 'flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-12'}>
+      <main className={activeTab === 'home' ? 'flex-1 w-full' : activeTab === 'assistant' ? 'flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 pb-6' : 'flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-12'}>
         {/* VIEW 1: HOME (Centro Digital del Cliente) */}
         {activeTab === 'home' && (
           <HeroSection
@@ -229,15 +227,13 @@ function AppContent() {
 
         {/* VIEW 15: ADMIN CONTENT PANEL (Internal / Sheets) */}
         {activeTab === 'admin-panel' && <AdminContentView onExit={() => setActiveTab('home')} />}
-
-        {activeTab === 'client-alerts' && <ClientAlertDashboard onExit={() => setActiveTab('home')} />}
       </main>
 
       {/* 
         OPCIÓN 1: BOTÓN FLOTANTE ÚNICO DESPLEGABLE (SPEED DIAL)
         Solo 1 botón visible en pantalla. Al tocarlo se despliega un panel prolijo con Bot, WhatsApp, Teléfono y Ubicación.
       */}
-      {activeTab !== 'assistant' && activeTab !== 'client-alerts' && (
+      {activeTab !== 'assistant' && (
         <div id="fab-contact-container" className="fixed bottom-5 right-5 z-50">
           {isFloatingAssistantOpen ? (
             <div className="animate-in slide-in-from-bottom-5 fade-in duration-200">
