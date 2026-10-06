@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, Check, Copy, Download, Printer, QrCode, Save, X } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import type { FAQItem, ProcessStage } from '../types';
+import { faqReviewContext, stageReviewContext, topicReviewContext } from './reviewContext';
 
 type ReviewEntry = { id: string; status: 'pendiente' | 'validado'; note: string; reviewedAt: string };
 type ReviewDraft = { stages: ProcessStage[]; faqs: FAQItem[]; validations: ReviewEntry[] };
@@ -10,12 +11,14 @@ const escapeHtml = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, (
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
 })[character]!);
 const TOPICS = [
-  { id: 'documentacion', title: 'Qué documentación se pide en cada caso', detail: 'Para conversar con Administración: ¿qué debe traer una persona, una empresa, un cotitular o alguien que retira por otra persona? Confirmar DNI, CUIT/CUIL, formularios y si algún trámite se realiza de forma digital. La web sólo debe informar requisitos que Autosol efectivamente solicita.' },
-  { id: 'pagos', title: 'Qué incluye el precio y qué gastos se cobran aparte', detail: 'Para conversar con Administración: ¿qué incluye la cotización y cuáles son los costos adicionales? Confirmar patentamiento, sellos, gestoría, seguro, accesorios y medios de pago admitidos. Así evitamos publicar importes o condiciones que luego puedan variar.' },
-  { id: 'plazo-total', title: 'Cuánto demora la operación y desde qué momento se cuenta', detail: 'Para conversar con Administración: ¿hay un plazo estimado de entrega y desde qué hito empieza a correr: reserva, pago, facturación, asignación o presentación de papeles? Definir también qué demoras deben explicarse al cliente y cómo se le informa una fecha estimada.' },
-  { id: 'pdi', title: 'Cómo se prepara la unidad antes de entregarla', detail: 'Para conversar con Administración: ¿qué controles realiza realmente el taller antes de la entrega (PDI), cuánto tiempo suelen demandar y qué accesorios o tareas dependen de cada unidad? No se debe prometer una cantidad fija de controles si no es un procedimiento confirmado.' },
-  { id: 'entrega', title: 'Qué se necesita y qué se entrega el día del retiro', detail: 'Para conversar con Administración: ¿cuándo debe estar vigente el seguro?, ¿puede retirar un tercero?, ¿qué autorización necesita?, ¿quién asigna el turno y qué documentos, llaves o elementos se entregan? Confirmar el procedimiento habitual y las excepciones.' },
+  { id: 'documentacion', title: 'Qué documentación se pide en cada caso', detail: topicReviewContext.documentacion },
+  { id: 'pagos', title: 'Qué incluye el precio y qué gastos se cobran aparte', detail: topicReviewContext.pagos },
+  { id: 'plazo-total', title: 'Cuánto demora la operación y desde qué momento se cuenta', detail: topicReviewContext['plazo-total'] },
+  { id: 'pdi', title: 'Cómo se prepara la unidad antes de entregarla', detail: topicReviewContext.pdi },
+  { id: 'entrega', title: 'Qué se necesita y qué se entrega el día del retiro', detail: topicReviewContext.entrega },
 ];
+const contextForStage = (stage: ProcessStage) => stageReviewContext[stage.id] || 'Confirmar qué inicia y termina esta etapa, quién la gestiona y si el plazo y las tareas descritas reflejan el procedimiento actual.';
+const contextForFaq = (faq: FAQItem) => faqReviewContext[faq.id] || 'Confirmar que esta respuesta sea clara, vigente y aplicable a los casos que se indican; anotar las excepciones necesarias.';
 
 const readDraft = (): ReviewDraft | null => {
   try {
@@ -108,7 +111,7 @@ export const ValidationSummaryView: React.FC<{ onExit?: () => void }> = ({ onExi
     finally { setSaving(false); }
   };
   const copy = async () => {
-    const lines = ['REVISIÓN OPERATIVA · AUTOSOL JUJUY', `Validados: ${approved} de ${ids.length}`, 'ETAPAS', ...draftStages.map((item) => `${item.stepNumber}. ${item.name} [${getReview(`stage:${item.id}`).status}]\n${item.definition}\nPlazo: ${item.estimatedTime}\nNota: ${getReview(`stage:${item.id}`).note}`), 'PREGUNTAS', ...draftFaqs.map((item) => `${item.question} [${getReview(`faq:${item.id}`).status}]\n${item.answer}\nNota: ${getReview(`faq:${item.id}`).note}`), 'TEMAS A CONFIRMAR', ...TOPICS.map((item) => `${item.title} [${getReview(`topic:${item.id}`).status}]\n${item.detail}\nNota: ${getReview(`topic:${item.id}`).note}`)];
+    const lines = ['REVISIÓN OPERATIVA · AUTOSOL JUJUY', `Validados: ${approved} de ${ids.length}`, 'ETAPAS', ...draftStages.map((item) => `${item.stepNumber}. ${item.name} [${getReview(`stage:${item.id}`).status}]\nQué validar: ${contextForStage(item)}\n${item.definition}\nPlazo: ${item.estimatedTime}\nNota: ${getReview(`stage:${item.id}`).note}`), 'PREGUNTAS', ...draftFaqs.map((item) => `${item.question} [${getReview(`faq:${item.id}`).status}]\nQué validar: ${contextForFaq(item)}\n${item.answer}\nNota: ${getReview(`faq:${item.id}`).note}`), 'TEMAS A CONFIRMAR', ...TOPICS.map((item) => `${item.title} [${getReview(`topic:${item.id}`).status}]\n${item.detail}\nNota: ${getReview(`topic:${item.id}`).note}`)];
     await navigator.clipboard.writeText(lines.join('\n\n')); setCopied(true); setTimeout(() => setCopied(false), 2000);
   };
 
@@ -126,8 +129,8 @@ export const ValidationSummaryView: React.FC<{ onExit?: () => void }> = ({ onExi
       const item = getReview(id);
       return `<p class="review"><strong>Estado:</strong> ${item.status === 'validado' ? 'Validado' : 'Pendiente'} · <strong>Fecha:</strong> ${item.reviewedAt ? escapeHtml(new Date(item.reviewedAt).toLocaleString('es-AR')) : 'Sin fecha'}<br><strong>Nota o corrección:</strong> ${escapeHtml(item.note || 'Sin notas')}</p>`;
     };
-    const stageCards = draftStages.map((stage) => `<article><h3>${stage.stepNumber}. ${escapeHtml(stage.name)}</h3>${line('Resumen', stage.shortDesc)}${line('Explicación al cliente', stage.definition)}${items('Qué sucede', stage.whatHappens)}${line('Plazo publicado', stage.estimatedTime)}${line('Aclaración del plazo', stage.timeDisclaimer)}${items('Factores', stage.timeFactors)}${line('Qué sigue', stage.nextStep)}${validation(`stage:${stage.id}`)}</article>`).join('');
-    const faqCards = draftFaqs.map((faq) => `<article><h3>${escapeHtml(faq.question)}</h3>${line('Respuesta al cliente', faq.answer)}${line('Categoría', faq.category)}${validation(`faq:${faq.id}`)}</article>`).join('');
+    const stageCards = draftStages.map((stage) => `<article><h3>${stage.stepNumber}. ${escapeHtml(stage.name)}</h3>${line('Qué validar', contextForStage(stage))}${line('Resumen', stage.shortDesc)}${line('Explicación al cliente', stage.definition)}${items('Qué sucede', stage.whatHappens)}${line('Plazo publicado', stage.estimatedTime)}${line('Aclaración del plazo', stage.timeDisclaimer)}${items('Factores', stage.timeFactors)}${line('Qué sigue', stage.nextStep)}${validation(`stage:${stage.id}`)}</article>`).join('');
+    const faqCards = draftFaqs.map((faq) => `<article><h3>${escapeHtml(faq.question)}</h3>${line('Qué validar', contextForFaq(faq))}${line('Respuesta al cliente', faq.answer)}${line('Categoría', faq.category)}${validation(`faq:${faq.id}`)}</article>`).join('');
     const topicCards = TOPICS.map((topic) => `<article><h3>${escapeHtml(topic.title)}</h3><p>${escapeHtml(topic.detail)}</p>${validation(`topic:${topic.id}`)}</article>`).join('');
     const generatedAt = new Date().toLocaleString('es-AR');
 
@@ -183,6 +186,7 @@ export const ValidationSummaryView: React.FC<{ onExit?: () => void }> = ({ onExi
     <section className="space-y-3"><h2 className="text-xl font-bold text-[#002244]">1. Etapas y plazos</h2>
       {draftStages.map((stage) => <details key={stage.id} className="rounded-2xl border border-slate-200 bg-white p-4">
         <summary className="cursor-pointer text-sm font-bold text-[#002244]">{stage.stepNumber}. {stage.name} · {stage.estimatedTime} {getReview(`stage:${stage.id}`).status === 'validado' ? '✓' : ''}</summary>
+        <p className="mt-3 rounded-lg bg-blue-50 p-3 text-xs leading-relaxed text-slate-700"><strong className="text-[#002244]">Qué validar:</strong> {contextForStage(stage)}</p>
         <div className="mt-4 grid gap-3">
           <label className="text-xs font-bold">Explicación al cliente<textarea rows={3} value={stage.definition} onChange={(event) => changeStage(stage.id, { definition: event.target.value })} className="mt-1 w-full rounded-lg border border-slate-300 p-3 font-normal" /></label>
           <label className="text-xs font-bold">Plazo publicado<input value={stage.estimatedTime} onChange={(event) => changeStage(stage.id, { estimatedTime: event.target.value })} className="mt-1 w-full rounded-lg border border-slate-300 p-3 font-normal" /></label>
@@ -194,6 +198,7 @@ export const ValidationSummaryView: React.FC<{ onExit?: () => void }> = ({ onExi
     <section className="space-y-3"><h2 className="text-xl font-bold text-[#002244]">2. Preguntas y respuestas</h2>
       {draftFaqs.map((faq) => <details key={faq.id} className="rounded-2xl border border-slate-200 bg-white p-4">
         <summary className="cursor-pointer text-sm font-bold text-[#002244]">{faq.question} {getReview(`faq:${faq.id}`).status === 'validado' ? '✓' : ''}</summary>
+        <p className="mt-3 rounded-lg bg-blue-50 p-3 text-xs leading-relaxed text-slate-700"><strong className="text-[#002244]">Qué validar:</strong> {contextForFaq(faq)}</p>
         <label className="mt-4 block text-xs font-bold">Respuesta al cliente<textarea rows={3} value={faq.answer} onChange={(event) => changeFaq(faq.id, { answer: event.target.value })} className="mt-1 w-full rounded-lg border border-slate-300 p-3 font-normal" /></label>
         <ReviewControl item={getReview(`faq:${faq.id}`)} onChange={(patch) => changeReview(`faq:${faq.id}`, patch)} />
       </details>)}
