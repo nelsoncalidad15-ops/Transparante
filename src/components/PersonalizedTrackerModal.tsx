@@ -23,14 +23,12 @@ interface PersonalizedTrackerModalProps {
   isOpen: boolean;
   onClose: () => void;
   onNavigateToStage: (stageId: ProcessStageId) => void;
-  onOpenAssistant: (query: string) => void;
 }
 
 export const PersonalizedTrackerModal: React.FC<PersonalizedTrackerModalProps> = ({
   isOpen,
   onClose,
   onNavigateToStage,
-  onOpenAssistant,
 }) => {
   const { operations, stages, getStageById } = useData();
   const [searchInput, setSearchInput] = useState(import.meta.env.DEV ? 'AS-84920' : '');

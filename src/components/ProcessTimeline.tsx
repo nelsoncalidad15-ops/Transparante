@@ -24,15 +24,23 @@ interface ProcessTimelineProps {
   onSelectStage?: (id: ProcessStageId) => void;
   onNavigateToArticle?: (slug: string) => void;
   onSelectArticle?: (slug: string) => void;
-  onOpenAssistant?: (initialQuery?: string) => void;
 }
+
+const customerActions: Record<string, string> = {
+  cierre: 'Revisá las condiciones informadas para tu operación y verificá que tus datos personales y de contacto sean correctos. Si queda documentación o información pendiente, el equipo de Autosol te indicará cómo completarla.',
+  facturacion: 'En general no necesitás realizar una gestión adicional, salvo que Administración solicite completar documentación, firmas, datos o condiciones pendientes de la operación.',
+  gestoria: 'Mantenete disponible por si Gestoría necesita confirmar datos, solicitar documentación adicional o gestionar alguna firma correspondiente a tu operación.',
+  patentamiento: 'Normalmente no necesitás realizar una gestión directa ante el Registro. Si surge algún requisito adicional relacionado con tu operación, el equipo de Autosol se comunicará con vos.',
+  preparacion: 'No necesitás realizar ninguna gestión sobre el vehículo. Autosol realiza la preparación previa a la entrega según el procedimiento correspondiente.',
+  turno: 'Confirmá el día y horario acordados y verificá con el equipo de Autosol qué documentación o requisitos corresponden para retirar tu vehículo.',
+  entrega: 'Presentate en el horario acordado y verificá junto al equipo de entrega la unidad, documentación, llaves y demás elementos correspondientes a tu operación.',
+};
 
 export const ProcessTimeline: React.FC<ProcessTimelineProps> = ({
   selectedStageId,
   onSelectStage,
   onNavigateToArticle,
   onSelectArticle,
-  onOpenAssistant,
 }) => {
 
   const { stages } = useData();
@@ -279,6 +287,12 @@ export const ProcessTimeline: React.FC<ProcessTimelineProps> = ({
           </div>
 
           {/* Bloques de Información Clave */}
+          {customerActions[currentStage.id] && (
+            <div className="rounded-2xl border border-slate-200/80 p-4 sm:p-5 bg-white shadow-2xs space-y-2">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-[#002244]">¿Qué tenés que hacer en esta etapa?</h3>
+              <p className="text-xs leading-relaxed text-slate-600">{customerActions[currentStage.id]}</p>
+            </div>
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Bloque 1: Qué sucede */}
             <div className="rounded-2xl border border-slate-200/80 p-4 sm:p-5 bg-white shadow-2xs space-y-3">

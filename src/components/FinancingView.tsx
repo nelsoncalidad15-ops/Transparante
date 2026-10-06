@@ -12,12 +12,10 @@ import {
 
 interface FinancingViewProps {
   onNavigateToArticle: (slug: string) => void;
-  onOpenAssistant: (query?: string) => void;
 }
 
 export const FinancingView: React.FC<FinancingViewProps> = ({
   onNavigateToArticle,
-  onOpenAssistant,
 }) => {
   // Modo actual: 100% Venta Convencional / Tradicional
   const [selectedMethod, setSelectedMethod] = useState<'prendario' | 'contado'>('prendario');

@@ -8,7 +8,6 @@ import {
 
 interface DictionaryViewProps {
   onNavigateToArticle: (slug: string) => void;
-  onOpenAssistant: (query?: string) => void;
 }
 
 interface TermItem {
@@ -129,7 +128,6 @@ const termsData: TermItem[] = [
 
 export const DictionaryView: React.FC<DictionaryViewProps> = ({
   onNavigateToArticle,
-  onOpenAssistant,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
@@ -221,15 +219,6 @@ export const DictionaryView: React.FC<DictionaryViewProps> = ({
               </div>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-              <button
-                onClick={() => onOpenAssistant(`¿Qué significa ${item.term}?`)}
-                className="text-xs font-semibold text-[#002244] hover:underline flex items-center gap-1 cursor-pointer"
-              >
-                <span>Consultar con el asistente</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
           </div>
         ))}
       </div>

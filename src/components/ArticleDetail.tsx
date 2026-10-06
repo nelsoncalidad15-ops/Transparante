@@ -24,14 +24,12 @@ interface ArticleDetailProps {
   slug: string;
   onBack: () => void;
   onSelectRelated: (topicOrSlug: string) => void;
-  onOpenAssistant: (topic: string) => void;
 }
 
 export const ArticleDetail: React.FC<ArticleDetailProps> = ({
   slug,
   onBack,
   onSelectRelated,
-  onOpenAssistant,
 }) => {
   const { getArticleBySlug, submitArticleFeedback, incrementArticleViews } = useData();
   const article = getArticleBySlug(slug);

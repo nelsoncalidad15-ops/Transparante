@@ -379,12 +379,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <span>Ver preguntas frecuentes</span>
                   <ArrowRight className="h-4 w-4" />
                 </button>
-                <button
-                  onClick={() => onNavigate('assistant')}
-                  className="text-xs font-bold text-black hover:text-[#002244] hover:underline"
-                >
-                  O consultá con nuestro bot de consulta →
-                </button>
               </div>
             </div>
 

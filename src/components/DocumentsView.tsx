@@ -13,12 +13,10 @@ import {
 
 interface DocumentsViewProps {
   onNavigateToArticle: (slug: string) => void;
-  onOpenAssistant: (query?: string) => void;
 }
 
 export const DocumentsView: React.FC<DocumentsViewProps> = ({
   onNavigateToArticle,
-  onOpenAssistant,
 }) => {
   const [profileType, setProfileType] = useState<'fisica' | 'juridica'>('fisica');
 
@@ -131,6 +129,11 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
       </div>
 
       {/* Requisitos en Grilla Minimalista */}
+      <div className="rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-5 shadow-2xs flex items-start gap-3 text-xs sm:text-sm text-slate-600">
+        <FileText className="w-5 h-5 text-[#002244] shrink-0" />
+        <p className="leading-relaxed">La documentación mostrada en esta guía es orientativa. Los requisitos pueden variar según el titular, modalidad de compra, financiación, jurisdicción y características particulares de la operación. El equipo de Autosol confirmará qué documentación corresponde en cada caso.</p>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {currentDocs.map((doc, idx) => {
           const Icon = doc.icon;
@@ -182,12 +185,6 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
           </div>
         </div>
 
-        <button
-          onClick={() => onOpenAssistant('¿Qué papeles necesito para patentar?')}
-          className="inline-flex items-center gap-2 rounded-full bg-[#002244] px-5 py-3 text-xs font-bold text-white transition-all hover:bg-[#002244] hover:brightness-125 hover:scale-[1.02] cursor-pointer shrink-0"
-        >
-          Consultar al Asistente
-        </button>
       </div>
     </div>
   );

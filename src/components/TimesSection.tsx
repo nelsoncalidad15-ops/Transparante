@@ -65,6 +65,15 @@ export const TimesSection: React.FC<TimesSectionProps> = ({
       </div>
 
       {/* Grilla de Tiempos */}
+      <div className="rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-5 shadow-2xs flex items-start gap-3 text-xs sm:text-sm text-slate-600">
+        <Info className="w-5 h-5 text-[#002244] shrink-0" />
+        <div className="space-y-2 leading-relaxed">
+          <h2 className="font-semibold text-[#002244]">Fecha estimada y fecha confirmada no son lo mismo</h2>
+          <p>Los tiempos publicados en este Centro Digital son orientativos. Pueden variar según las características de cada operación, la documentación requerida y los organismos intervinientes.</p>
+          <p>Una fecha estimada sirve como referencia. La fecha de entrega queda confirmada cuando Autosol coordina formalmente el día y horario con el cliente.</p>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {timeStages.map((stage, idx) => {
           const Icon = stage.icon;
