@@ -30,10 +30,10 @@ Las reglas registrales nacionales son una base común, pero **no todas las opera
 ## Contradicciones que conviene resolver
 
 1. **Preparación:** 2 a 5 días en «Tiempos», 3 a 5 en etapas y artículos, y 2 a 3 en la ficha de validación. Los controles se describen como 40 o 45 puntos según la pantalla.
-2. **Inicio de plazo:** artículo, FAQ y bot dicen que el plazo total empieza siempre al facturar. Eso debe contrastarse con la documentación comercial real.
+2. **Inicio de plazo:** artículo y FAQ dicen que el plazo total empieza siempre al facturar. Eso debe contrastarse con la documentación comercial real.
 3. **Formularios:** varias pantallas muestran 01, 12, 13D y 59 como obligatorios o siempre impresos; los trámites digitales y las condiciones pueden cambiar.
 4. **Responsables y métricas:** artículos muestran fechas de revisión, áreas responsables y miles de lecturas precargadas. Confirmar cuáles son datos reales; no presentarlos como mediciones si son ejemplos.
-5. **Edición:** etapas, artículos, FAQ y algunos textos son editables en el código/panel. «Tiempos», «Documentación», «Financiación», «Diccionario», bot y partes de la ficha de validación conservan texto fijo, por lo que una edición en una sola sección no actualiza el resto.
+5. **Edición:** etapas, artículos, FAQ y algunos textos son editables en el código/panel. «Tiempos», «Documentación», «Financiación», «Diccionario» y partes de la ficha de validación conservan texto fijo, por lo que una edición en una sola sección no actualiza el resto.
 
 ## Nuevas preguntas generales propuestas
 

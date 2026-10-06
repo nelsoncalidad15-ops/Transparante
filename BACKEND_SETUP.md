@@ -8,7 +8,7 @@ El repositorio también incluye `public/_worker.js`, que permite alojar la web y
 2. En **Settings → Variables and Secrets**, cargá `APPS_SCRIPT_URL` con la URL `/exec` y `APPS_SCRIPT_SHARED_SECRET` con el mismo valor que `BACKEND_SHARED_SECRET` de Apps Script. Ambos deben estar disponibles para Production; usá secretos para las claves.
 3. En **Variables and Secrets**, creá un secreto llamado `ADMIN_PASSWORD` con la contraseña que quieras usar (mínimo 12 caracteres). El usuario es `admin` por defecto. No pongas la contraseña en el código ni en GitHub.
 4. `SESSION_SECRET` es opcional: si no se configura, el servidor firma la sesión a partir de `ADMIN_PASSWORD`. Para un colaborador, podés agregar `COLLABORATOR_PASSWORD` con otra contraseña de 12 caracteres o más; su usuario predeterminado es `administrativo`.
-5. Volvé a desplegar. Abrí el dominio de Cloudflare Pages, comprobá que `/api/content` devuelve JSON y que **Acceso interno** permite iniciar sesión. Probá **Guardar revisión**, recargá en otro navegador y confirmá que el borrador persiste antes de publicar.
+5. Volvé a desplegar. Abrí el dominio de Cloudflare Pages, comprobá que `/api/content` devuelve JSON y que `https://TU-DOMINIO/#acceso-interno` permite iniciar sesión. Probá **Guardar revisión**, recargá en otro navegador y confirmá que el borrador persiste antes de publicar.
 
 La implementación de Apps Script debe admitir el acceso **Cualquier usuario** para que Cloudflare pueda invocarla; la planilla permanece privada y el script exige el secreto en cada solicitud de datos. `APPS_SCRIPT_SHARED_SECRET` sigue siendo necesario para conectar la planilla y debe coincidir con `BACKEND_SHARED_SECRET` de Apps Script.
 
@@ -16,7 +16,7 @@ Hasta que pruebes el dominio final, la URL de GitHub Pages seguirá mostrando el
 
 ## Reunión con Administración: una sola pantalla
 
-En la versión alojada en Vercel, entrá en **Acceso interno**, iniciá sesión como administrador, pulsá **Editar datos** y abrí **Revisar y validar**. Esa es la pantalla inicial del editor. Abrí cada etapa o pregunta, leé el texto, corregilo allí mismo si hace falta y marcá **Validado**. En **Datos de Autosol a confirmar**, anotá las respuestas del administrativo en el campo de notas. Podés usar **Copiar resumen** o **Imprimir** para la reunión.
+En la versión alojada en Vercel, entrá en `https://TU-DOMINIO/#acceso-interno`, iniciá sesión como administrador y pulsá **Editar datos**. Abrí cada etapa o pregunta, leé el texto, corregilo allí mismo si hace falta y marcá **Validado**. En **Datos de Autosol a confirmar**, anotá las respuestas del administrativo en el campo de notas. Podés usar **Copiar resumen** o **Imprimir** para la reunión.
 
 **Guardar revisión** conserva un borrador en las pestañas `RevisionEtapas`, `RevisionPreguntas` y `Revision` del Sheet, sin cambiar lo que ve el público. **Publicar todo validado** se habilita cuando cada punto está marcado y copia las etapas y preguntas a las pestañas públicas `Etapas` y `Preguntas`. El código de la web contiene la información inicial y se muestra de inmediato; al cargar, la web consulta los cambios publicados en el Sheet. Los artículos modificados en la planilla se aplican sobre los artículos del código. Los datos de los cinco temas a confirmar quedan como notas internas de revisión; si implican cambios en otros textos de la web, hay que editarlos en **Otras herramientas** antes de darlos por publicados.
 

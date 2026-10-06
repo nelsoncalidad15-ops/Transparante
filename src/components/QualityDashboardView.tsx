@@ -130,13 +130,6 @@ export const QualityDashboardView: React.FC<QualityDashboardViewProps> = ({
       barColor: 'bg-indigo-600',
     },
     {
-      destination: 'Bot de Consulta Rápida (Asistente)',
-      views: 570,
-      pct: 9,
-      intent: 'Hacer una pregunta directa sobre su caso',
-      barColor: 'bg-emerald-600',
-    },
-    {
       destination: 'Financiación, Pagos y Cuentas Oficiales',
       views: 310,
       pct: 5,

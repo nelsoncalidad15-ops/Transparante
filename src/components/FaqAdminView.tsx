@@ -72,11 +72,11 @@ export const FaqAdminView: React.FC = () => {
           <div className="flex items-center gap-2">
             <HelpCircle className="h-5 w-5 text-[#002244]" />
             <h2 className="text-lg font-black text-slate-900">
-              Preguntas Frecuentes y Respuestas del Bot ({draft.length})
+              Preguntas frecuentes ({draft.length})
             </h2>
           </div>
           <p className="mt-1 text-xs text-slate-500">
-            Editá las respuestas oficiales que alimentan tanto la sección de FAQ como el Bot de consulta.
+            Editá las respuestas oficiales de la sección de preguntas frecuentes.
           </p>
         </div>
 

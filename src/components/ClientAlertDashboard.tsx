@@ -12,14 +12,6 @@ const defaultTimings: StageTiming[] = [
   { key: 'turno', label: 'Turno → Entrega', description: 'Desde Fecha Gestión Turno', warningDays: 2, limitDays: 3, message: 'Hola {cliente}, queremos confirmar el avance de la entrega de tu {modelo}. Estamos revisando el turno y te informaremos la próxima novedad a la brevedad.' },
 ];
 
-const demoCases = (): DeliveryCase[] => {
-  const dateAgo = (days: number) => { const date = new Date(); date.setDate(date.getDate() - days); return date.toISOString().slice(0, 10); };
-  return [
-    { id: 'demo-1', clientName: 'Olga Quiroga', phone: 'M:0387-154570503', vehicleModel: 'Tera 1.6 MSI Trendline MY 26', currentStatus: 'Facturado', invoiceDate: dateAgo(22), appointmentDate: '', lastModifiedDate: dateAgo(22), operationNumber: '66760', advisor: 'Equipo Autosol' },
-    { id: 'demo-2', clientName: 'Celina Casimiro', phone: 'M:0387-155498975', vehicleModel: 'Nivus Sense 170 TSI MT MY 27', currentStatus: 'Patentado', invoiceDate: dateAgo(12), appointmentDate: '', lastModifiedDate: dateAgo(5), operationNumber: '66774', advisor: 'Equipo Autosol' },
-    { id: 'demo-3', clientName: 'José Reinhold', phone: 'M:03888-15630122', vehicleModel: 'Tera 1.0 TSI AT Comfortline MY 26', currentStatus: 'Preturno', invoiceDate: dateAgo(10), appointmentDate: '', lastModifiedDate: dateAgo(1), operationNumber: '66776', advisor: 'Equipo Autosol' },
-  ];
-};
 
 const parseDate = (value: string) => {
   const match = String(value || '').trim().match(/^(\d{1,4})[/-](\d{1,2})[/-](\d{1,4})/);
@@ -60,7 +52,7 @@ export const ClientAlertDashboard: React.FC<Props> = ({ onExit }) => {
       const casesResult = await casesRes.json(); const timingResult = timingRes.ok ? await timingRes.json() : null;
       setRole(session.role); setCases((casesResult.data || casesResult).cases || []); const loaded = (timingResult?.data || timingResult)?.timings;
       if (Array.isArray(loaded) && loaded.length) setTimings(loaded);
-    } catch (err) { if (import.meta.env.DEV) { setRole('admin'); setCases(demoCases()); setTimings(defaultTimings); return; } setError(err instanceof Error ? err.message : 'No se pudo cargar el tablero.'); }
+    } catch (err) { if (import.meta.env.DEV) { setRole('admin'); setCases([]); setTimings(defaultTimings); return; } setError(err instanceof Error ? err.message : 'No se pudo cargar el tablero.'); }
     finally { setLoading(false); }
   };
   useEffect(() => { load(); }, []);
