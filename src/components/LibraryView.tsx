@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { ContentCategory, LibraryArticle } from '../types';
+import { matchesSearch } from '../utils/search';
 
 interface LibraryViewProps {
   initialCategory?: string;
@@ -43,12 +44,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
       if (art.status !== 'Publicado') return false;
       const matchCategory =
         selectedCategory === 'Todo' || art.category === selectedCategory;
-      const matchQuery =
-        !searchQuery.trim() ||
-        art.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        art.shortDesc.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        art.definition.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        art.relatedTopics.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
+      const matchQuery = matchesSearch(searchQuery, [art.title, art.shortDesc, art.definition, ...art.relatedTopics]);
 
       return matchCategory && matchQuery;
     });

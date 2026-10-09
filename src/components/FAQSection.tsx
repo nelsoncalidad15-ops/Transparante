@@ -11,6 +11,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { useData } from '../context/DataContext';
+import { matchesSearch } from '../utils/search';
 
 interface FAQSectionProps {
   onNavigateToArticle: (slug: string) => void;
@@ -38,11 +39,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
     return faqs.filter((faq) => {
       const matchCategory =
         selectedCategory === 'Todo' || faq.category === selectedCategory;
-      const matchQuery =
-        !searchQuery.trim() ||
-        faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        faq.answer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        faq.category.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchQuery = matchesSearch(searchQuery, [faq.question, faq.answer, faq.category]);
 
       return matchCategory && matchQuery;
     });

@@ -21,6 +21,7 @@ import {
   INITIAL_KPIS,
   INITIAL_SITE_TEXTS,
 } from '../data/defaultData';
+import { matchesSearch, normalizeSearchText } from '../utils/search';
 
 interface SearchResultItem {
   id: string;
@@ -454,21 +455,23 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     filterType?: string,
     filterCategory?: string
   ): SearchResultItem[] => {
-    const q = query.trim().toLowerCase();
+    const q = normalizeSearchText(query);
+    if (!q && query.trim()) return [];
     if (!q && !filterCategory && !filterType) return [];
 
     const results: SearchResultItem[] = [];
+    const matchesType = (type: SearchResultItem['type'], category: string) =>
+      !filterType || filterType === 'Todo' || filterType === type ||
+      (filterType === 'Artículos' && type === 'Artículo') ||
+      (filterType === 'Preguntas frecuentes' && type === 'Pregunta frecuente') ||
+      (filterType === 'Documentación' && category === 'Documentación') ||
+      (filterType === 'Tiempos' && category === 'Tiempos y plazos');
 
     // Search Stages
     stages.forEach((st) => {
-      const matchName = st.name.toLowerCase().includes(q);
-      const matchDef = st.definition.toLowerCase().includes(q);
-      const matchHappens = st.whatHappens.some((w) => w.toLowerCase().includes(q));
-      const matchFactors = st.timeFactors.some((f) => f.toLowerCase().includes(q));
-
-      if (matchName || matchDef || matchHappens || matchFactors || !q) {
+      if (matchesSearch(q, [st.name, st.shortDesc, st.definition, st.category, ...st.whatHappens, ...st.timeFactors])) {
         if (!filterCategory || filterCategory === 'Todo' || filterCategory === st.category) {
-          if (!filterType || filterType === 'Todo' || filterType === 'Etapas del proceso') {
+          if (matchesType('Etapa del proceso', st.category)) {
             results.push({
               id: st.id,
               type: 'Etapa del proceso',
@@ -488,15 +491,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     articles
       .filter((a) => a.status === 'Publicado')
       .forEach((art) => {
-        const matchTitle = art.title.toLowerCase().includes(q);
-        const matchDesc = art.shortDesc.toLowerCase().includes(q);
-        const matchDef = art.definition.toLowerCase().includes(q);
-        const matchTopics = art.relatedTopics.some((t) => t.toLowerCase().includes(q));
-        const matchCategory = art.category.toLowerCase().includes(q);
-
-        if (matchTitle || matchDesc || matchDef || matchTopics || matchCategory || !q) {
+        if (matchesSearch(q, [art.title, art.shortDesc, art.definition, art.category, ...art.relatedTopics])) {
           if (!filterCategory || filterCategory === 'Todo' || filterCategory === art.category) {
-            if (!filterType || filterType === 'Todo' || filterType === art.type || (filterType === 'Tiempos' && art.category === 'Tiempos y plazos')) {
+            if (matchesType(art.type, art.category)) {
               results.push({
                 id: art.id,
                 type: art.type,
@@ -514,12 +511,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Search FAQs
     faqs.forEach((faq) => {
-      const matchQ = faq.question.toLowerCase().includes(q);
-      const matchA = faq.answer.toLowerCase().includes(q);
-
-      if (matchQ || matchA || !q) {
+      if (matchesSearch(q, [faq.question, faq.answer, faq.category])) {
         if (!filterCategory || filterCategory === 'Todo' || filterCategory === faq.category) {
-          if (!filterType || filterType === 'Todo' || filterType === 'Preguntas frecuentes') {
+          if (matchesType('Pregunta frecuente', faq.category)) {
             results.push({
               id: faq.id,
               type: 'Pregunta frecuente',

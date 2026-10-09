@@ -5,6 +5,7 @@ import {
   Sparkles,
   ChevronRight,
 } from 'lucide-react';
+import { matchesSearch } from '../utils/search';
 
 interface DictionaryViewProps {
   onNavigateToArticle: (slug: string) => void;
@@ -135,11 +136,9 @@ export const DictionaryView: React.FC<DictionaryViewProps> = ({
   const categories = ['Todos', 'General', 'Gestoría', 'Patentamiento', 'Finanzas', 'Taller / PDI'];
 
   const filteredTerms = termsData.filter((item) => {
-    const matchesSearch =
-      item.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.simpleDefinition.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesTerm = matchesSearch(searchTerm, [item.term, item.simpleDefinition, item.example]);
     const matchesCat = selectedCategory === 'Todos' || item.category === selectedCategory;
-    return matchesSearch && matchesCat;
+    return matchesTerm && matchesCat;
   });
 
   return (

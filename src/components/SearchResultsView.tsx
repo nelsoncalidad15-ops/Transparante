@@ -13,6 +13,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { useData } from '../context/DataContext';
+import { matchesSearch, normalizeSearchText } from '../utils/search';
 
 interface SearchResultsViewProps {
   initialQuery: string;
@@ -55,13 +56,8 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
   }, [query, results.length, recordSearchQuery]);
 
   const relatedFaqs = useMemo(() => {
-    const q = query.toLowerCase();
-    return faqs.filter(
-      (f) =>
-        f.question.toLowerCase().includes(q) ||
-        f.answer.toLowerCase().includes(q) ||
-        f.category.toLowerCase().includes(q)
-    );
+    if (!normalizeSearchText(query)) return [];
+    return faqs.filter((f) => matchesSearch(query, [f.question, f.answer, f.category]));
   }, [faqs, query]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -135,7 +131,7 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
           </div>
           <div className="space-y-1">
             <h3 className="text-base font-semibold text-[#002244]">
-              No encontramos resultados exactos para “{query}”
+              No encontramos resultados para “{query}”
             </h3>
             <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
               Te sugerimos probar con términos como: <strong>patentamiento</strong>,{' '}
