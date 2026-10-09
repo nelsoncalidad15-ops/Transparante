@@ -35,7 +35,7 @@ export const DeliveryView: React.FC<DeliveryViewProps> = ({
       step: 2,
       title: 'Recepción de Placas',
       time: 'Según registro seccional',
-      desc: 'El Registro Seccional asigna el dominio, emite las chapas patente físicas y el título digital del automotor.',
+      desc: 'El Registro Seccional asigna el dominio y emite la documentación registral correspondiente, incluido el Título Digital.',
       pastelBadge: 'bg-sky-100 text-sky-800 border-sky-200',
     },
     {
@@ -49,7 +49,7 @@ export const DeliveryView: React.FC<DeliveryViewProps> = ({
       step: 4,
       title: 'Retiro y Llave en Mano',
       time: 'Acto de entrega',
-      desc: 'Explicación del equipamiento, entrega de llaves, manuales oficiales y firma de conformidad.',
+      desc: 'Explicación del equipamiento, revisión de la unidad y entrega de los elementos y documentos que correspondan a la operación.',
       pastelBadge: 'bg-emerald-100 text-emerald-800 border-emerald-200',
     },
   ];

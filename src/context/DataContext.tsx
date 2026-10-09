@@ -78,12 +78,12 @@ interface DataContextType {
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
-const LOCAL_STORAGE_KEY_ARTICLES = 'autosol_articles_v3';
-const LOCAL_STORAGE_KEY_FAQS = 'autosol_faqs_v3';
+const LOCAL_STORAGE_KEY_ARTICLES = 'autosol_articles_v4';
+const LOCAL_STORAGE_KEY_FAQS = 'autosol_faqs_v4';
 const LOCAL_STORAGE_KEY_KPIS = 'autosol_kpis_v1';
 const LOCAL_STORAGE_KEY_UNCERTAINTY = 'autosol_uncertainty_v1';
 const LOCAL_STORAGE_KEY_SHEET = 'autosol_sheet_config_v1';
-const LOCAL_STORAGE_KEY_STAGES = 'autosol_stages_v3';
+const LOCAL_STORAGE_KEY_STAGES = 'autosol_stages_v4';
 const LOCAL_STORAGE_KEY_TEXTS = 'autosol_site_texts_v2';
 
 const normalizeStages = (items: unknown[]): ProcessStage[] => items

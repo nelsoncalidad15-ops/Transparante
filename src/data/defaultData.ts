@@ -133,12 +133,11 @@ export const INITIAL_STAGES: ProcessStage[] = [
     name: 'Preparación de la unidad',
     shortDesc: 'Inspección técnica de pre-entrega (PDI), accesorios y alistamiento.',
     definition:
-      'Es la etapa técnica en la que el vehículo ingresa a nuestro taller de alistamiento para realizar el checklist de pre-entrega (PDI), instalación de accesorios solicitados y limpieza profunda de entrega.',
+      'Es la etapa de control técnico y estético de pre-entrega (PDI) según el procedimiento aplicable a la unidad. También pueden instalarse los accesorios contratados.',
     whatHappens: [
-      'Inspección pre-entrega técnica (fluidos, batería, presiones, software y escaneo electrónico).',
-      'Instalación de accesorios opcionales contratados (polarizado, cubrecarter, tuercas de seguridad, alfombras).',
-      'Colocación formal de las chapas patentes y verificación de número de chasis físico.',
-      'Lavado de salón, descontaminado de pintura y sellado estético de entrega.',
+      'Inspección técnica y estética previa a la entrega según el procedimiento aplicable a la unidad.',
+      'Instalación de accesorios opcionales contratados, cuando corresponda.',
+      'Preparación de la unidad y colocación de las placas patentes que correspondan.',
     ],
     estimatedTime: 'Según programación operativa y preparación de la unidad',
     timeDisclaimer:
@@ -183,16 +182,16 @@ export const INITIAL_STAGES: ProcessStage[] = [
     name: 'Entrega del vehículo',
     shortDesc: 'Recepción del 0km, explicación de comandos, documentación y llaves.',
     definition:
-      'Es la culminación de la operación. En el salón de entregas, un asesor especializado te explica el funcionamiento de cada sistema, te entrega los manuales, duplicado de llaves y documentación legal.',
+      'Es la culminación de la operación. Durante la entrega se explica el funcionamiento de la unidad y se proporciona la documentación y los elementos que correspondan a esa operación.',
     whatHappens: [
       'Presentación de la unidad en la bahía de entrega protegida.',
       'Explicación guiada de comandos, conectividad multimedia y consejos de rodaje inicial.',
-      'Firma de conformidad de recepción y entrega de manuales y garantía oficial.',
+      'Revisión de la unidad y firma de la documentación de recepción que corresponda.',
       'Entrega de la documentación aplicable, que puede incluir factura, Cédula de Identificación del Automotor, copia impresa del Título Digital, manuales y juego duplicado de llaves.',
     ],
     estimatedTime: '45 a 60 minutos (acto de entrega)',
     timeDisclaimer:
-      'Dedicamos el tiempo que sea necesario para que salgas del concesionario con absoluta tranquilidad y claridad sobre tu nuevo vehículo.',
+      'La duración del acto de entrega puede variar según la unidad y las consultas del cliente.',
     timeFactors: [
       'Tiempo dedicado por el cliente para evacuar consultas sobre tecnología y conectividad.',
       'Revisión minuciosa de cada elemento del vehículo.',
@@ -290,9 +289,9 @@ export const INITIAL_ARTICLES: LibraryArticle[] = [
     ],
     estimatedTime: 'Aproximadamente 25 días hábiles desde el patentamiento',
     timeFactors: [
-      'Plazos específicos del Registro Seccional donde radica el vehículo.',
-      'Tiempos de logística y traslado de fábrica o depósito central al concesionario.',
-      'Colocación de equipamiento especial no estándar.',
+      'Preparación técnica y estética de la unidad.',
+      'Disponibilidad de agenda para coordinar la entrega.',
+      'Instalación de accesorios contratados y otras gestiones intervinientes, según corresponda.',
     ],
     whatNext:
       'Podés consultar las etapas orientativas del proceso y comunicarte con Autosol para conocer información particular de tu operación. La fecha de entrega queda confirmada cuando Autosol coordina formalmente el día y horario con vos.',
@@ -313,7 +312,7 @@ export const INITIAL_ARTICLES: LibraryArticle[] = [
     category: 'Facturación',
     type: 'Artículo',
     shortDesc:
-      'Conocé los pasos administrativos, asignación de chasis y pase al sector de gestoría.',
+      'Conocé las gestiones documentales y registrales que siguen a la facturación.',
     definition:
       'Una vez emitida la factura oficial de compra, continúan las gestiones documentales y registrales que correspondan a la operación.',
     whatHappens: [
@@ -380,12 +379,11 @@ export const INITIAL_ARTICLES: LibraryArticle[] = [
     shortDesc:
       'Control técnico y estético de pre-entrega (PDI) según el procedimiento aplicable a la unidad.',
     definition:
-      'La PDI (Pre-Delivery Inspection) es un procedimiento de control exhaustivo donde técnicos certificados revisan mecánica, electrónica, niveles de fluidos, presiones, alineación de luces y cosmética antes de la entrega.',
+      'La PDI es el control técnico y estético de pre-entrega que se realiza según el procedimiento aplicable a la unidad.',
     whatHappens: [
-      'Escaneo electrónico de computadoras y actualización de software.',
-      'Desprotección y lavado minucioso de carrocería e interiores.',
-      'Prueba de luces, cinturones, aire acondicionado y cierre centralizado.',
-      'Colocación de alfombras, tuercas de seguridad y patentes reglamentarias.',
+      'Revisión técnica y estética previa a la entrega.',
+      'Preparación de la unidad según sus características.',
+      'Instalación de accesorios contratados, si corresponde.',
     ],
     estimatedTime: 'Según programación operativa y preparación de la unidad',
     timeFactors: [
@@ -710,7 +708,7 @@ export const INITIAL_FAQS: FAQItem[] = [
   {
     id: 'faq-20',
     question: '¿Qué se debe controlar y verificar formalmente el día de la entrega?',
-    answer: 'Durante el acto formal de entrega se verifica la coincidencia del número de chasis y motor con la factura y la cédula del automotor, la ausencia de detalles estéticos o de pintura, el funcionamiento de luces y equipamiento, la entrega del juego duplicado de llaves, manual de usuario, rueda de auxilio con herramientas y kit reglamentario de seguridad antes de firmar el remito de conformidad.',
+    answer: 'Durante la entrega podés revisar junto con el equipo de Autosol el estado general de la unidad, su equipamiento y la documentación que corresponda a tu operación. Se proporciona la documentación aplicable, que puede incluir factura, Cédula de Identificación del Automotor, copia impresa del Título Digital, manuales y juego duplicado de llaves, según el caso.',
     category: 'Entrega',
     stageId: 'entrega',
     order: 20,
@@ -723,14 +721,6 @@ export const INITIAL_FAQS: FAQItem[] = [
     category: 'Documentación',
     stageId: 'gestoria',
     order: 21,
-    viewsCount: 0,
-  },
-  {
-    id: 'faq-22',
-    question: '¿Por qué pueden existir conceptos adicionales al valor del vehículo?',
-    answer: 'Según las condiciones de cada operación pueden intervenir conceptos vinculados con inscripción registral, tributos, gestoría, financiación, seguro, transporte o accesorios contratados. Los conceptos e importes aplicables deben informarse específicamente para cada operación.',
-    category: 'Proceso de compra',
-    order: 22,
     viewsCount: 0,
   },
   {

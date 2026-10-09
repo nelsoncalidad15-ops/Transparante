@@ -8,8 +8,6 @@ import {
   FileText,
   Tag,
   CheckCircle,
-  Eye,
-  ThumbsUp,
   Sparkles,
 } from 'lucide-react';
 import { useData } from '../context/DataContext';
@@ -185,16 +183,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
                 </div>
 
                 <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between">
-                  <div className="flex items-center gap-3 text-[11px] text-slate-400">
-                    <span className="flex items-center gap-1">
-                      <ThumbsUp className="w-3.5 h-3.5 text-[#002244]" />
-                      <span>{article.helpfulCount}</span>
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Eye className="w-3.5 h-3.5 text-slate-400" />
-                      <span>{article.viewsCount}</span>
-                    </span>
-                  </div>
+                  <span className="text-[11px] text-slate-400">Ficha informativa</span>
 
                   <button className="inline-flex items-center gap-1 text-xs font-semibold text-[#002244] group-hover:underline">
                     <span>Ver información</span>
