@@ -41,7 +41,7 @@ const termsData: TermItem[] = [
     term: 'Patentamiento',
     category: 'Patentamiento',
     simpleDefinition: 'Inscripción del vehículo 0km en el Registro Seccional (DNRPA) para obtener placas y cédula.',
-    example: 'El registro emite el título digital del automotor y las placas metálicas.',
+    example: 'El Registro emite el Título Digital y la documentación registral que corresponda.',
     pastelBadge: 'bg-emerald-100 text-emerald-800 border-emerald-200',
   },
   {
@@ -64,7 +64,7 @@ const termsData: TermItem[] = [
     id: 'prenda',
     term: 'Crédito Prendario / Prenda',
     category: 'Finanzas',
-    simpleDefinition: 'Garantía legal asentada en el legajo que respalda el saldo financiado hasta completar las cuotas.',
+    simpleDefinition: 'Garantía que afecta al vehículo hasta la cancelación del crédito, según las condiciones de la entidad financiera.',
     example: 'Al finalizar el pago del crédito se expide la cancelación de prenda formal.',
     pastelBadge: 'bg-amber-100 text-amber-800 border-amber-200',
   },
@@ -121,7 +121,7 @@ const termsData: TermItem[] = [
     term: 'Fecha estimada de entrega',
     category: 'General',
     simpleDefinition: 'Previsión sujeta al estado real de la unidad, la documentación, el registro y la coordinación de entrega.',
-    example: 'La fecha se confirma para cada operación; una estimación no equivale a un turno de entrega.',
+    example: 'Una fecha estimada es una referencia y puede variar. La entrega queda confirmada cuando Autosol coordina formalmente el día y horario con el cliente.',
     pastelBadge: 'bg-sky-100 text-sky-800 border-sky-200',
   },
 ];

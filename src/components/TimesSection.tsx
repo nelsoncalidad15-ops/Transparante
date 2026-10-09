@@ -69,7 +69,7 @@ export const TimesSection: React.FC<TimesSectionProps> = ({
         <Info className="w-5 h-5 text-[#002244] shrink-0" />
         <div className="space-y-2 leading-relaxed">
           <h2 className="font-semibold text-[#002244]">Fecha estimada y fecha confirmada no son lo mismo</h2>
-          <p>Los tiempos publicados en este Centro Digital son orientativos. Pueden variar según las características de cada operación, la documentación requerida y los organismos intervinientes.</p>
+          <p>Plazo estimado: aproximadamente 25 días hábiles desde el patentamiento. Los tiempos son orientativos y pueden variar según las características de cada operación, la preparación de la unidad, la disponibilidad de turnos y otras gestiones intervinientes.</p>
           <p>Una fecha estimada sirve como referencia. La fecha de entrega queda confirmada cuando Autosol coordina formalmente el día y horario con el cliente.</p>
         </div>
       </div>
@@ -132,7 +132,7 @@ export const TimesSection: React.FC<TimesSectionProps> = ({
       <div className="rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-5 shadow-2xs flex items-center gap-3 text-xs sm:text-sm text-slate-600">
         <Info className="w-5 h-5 text-[#002244] shrink-0" />
         <span className="leading-relaxed">
-          <strong className="text-[#002244]">Acompañamiento formal Autosol:</strong> Cada cliente cuenta con un gestor y asesor asignado que le comunica el avance de cada hito en tiempo y forma.
+          <strong className="text-[#002244]">Información sobre tu operación:</strong> Podés consultar las etapas orientativas del proceso y comunicarte con Autosol para conocer información particular de tu operación.
         </span>
       </div>
     </div>

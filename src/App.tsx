@@ -374,7 +374,7 @@ function AppContent() {
           </div>
 
           <div className="mt-8 flex flex-col gap-3 border-t border-white/15 pt-6 text-[11px] text-blue-200 sm:flex-row sm:items-center sm:justify-between">
-            <p>© {new Date().getFullYear()} Autosol S.A. Todos los derechos reservados.</p>
+            <p>© {new Date().getFullYear()} Autosol S.R.L. Todos los derechos reservados.</p>
             <div className="flex flex-wrap gap-x-5 gap-y-2">
               <a href="https://autosol.com.ar/legales/cookies" target="_blank" rel="noreferrer" className="hover:text-white">Política de cookies</a>
               <a href="https://www.volkswagen.com.ar/es/informaciones-legales/terminos-y-condiciones.html" target="_blank" rel="noreferrer" className="hover:text-white">Términos y condiciones</a>

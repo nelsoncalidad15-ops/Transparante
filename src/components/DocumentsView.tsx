@@ -23,15 +23,15 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
   const docsFisica = [
     {
       title: 'DNI Original Vigente',
-      desc: 'Del titular y cónyuge si está casado/a bajo régimen ganancial.',
+      desc: 'Del titular. Según la operación, puede solicitarse documentación adicional de cónyuge, cotitular o apoderado.',
       status: 'Obligatorio',
       statusColor: 'bg-sky-100 text-sky-800 border border-sky-200',
       icon: UserCheck,
     },
     {
       title: 'Constancia CUIT / CUIL',
-      desc: 'Emitida oficialmente por AFIP o ANSES con fecha reciente.',
-      status: 'Obligatorio',
+      desc: 'Constancia emitida por ARCA o ANSES, según corresponda.',
+      status: 'Según corresponda',
       statusColor: 'bg-sky-100 text-sky-800 border border-sky-200',
       icon: FileText,
     },
@@ -43,9 +43,9 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
       icon: FileSignature,
     },
     {
-      title: 'Declaración de Fondos UIF',
-      desc: 'Solo requerido cuando la operación supera los umbrales legales fijados.',
-      status: 'Según Monto',
+      title: 'Origen de fondos / UIF',
+      desc: 'Determinadas operaciones pueden requerir declaraciones juradas y documentación respaldatoria. Administración informará qué corresponde en tu caso.',
+      status: 'Según corresponda',
       statusColor: 'bg-amber-100 text-amber-800 border border-amber-200',
       icon: ShieldCheck,
     },
@@ -55,28 +55,28 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
     {
       title: 'Estatuto o Contrato Social',
       desc: 'Copia certificada con constancia registral en Personas Jurídicas.',
-      status: 'Obligatorio',
+      status: 'Según corresponda',
       statusColor: 'bg-indigo-100 text-indigo-800 border border-indigo-200',
       icon: Building,
     },
     {
       title: 'Poder o Acta de Designación',
       desc: 'Acredita la representación legal y facultades de firma.',
-      status: 'Obligatorio',
+      status: 'Según corresponda',
       statusColor: 'bg-indigo-100 text-indigo-800 border border-indigo-200',
       icon: FileCheck,
     },
     {
       title: 'DNI del Representante Legal',
       desc: 'Documento original vigente del firmante apoderado.',
-      status: 'Obligatorio',
+      status: 'Según corresponda',
       statusColor: 'bg-indigo-100 text-indigo-800 border border-indigo-200',
       icon: UserCheck,
     },
     {
-      title: 'Formulario 01 Empresa + CUIT',
-      desc: 'Constancia impositiva y firma certificada por escribano público.',
-      status: 'Obligatorio',
+      title: 'Documentación societaria y registral',
+      desc: 'Según la operación pueden solicitarse contrato o estatuto social, constancia de CUIT, documentación de autoridades, poderes y formularios registrales que correspondan.',
+      status: 'Según corresponda',
       statusColor: 'bg-emerald-100 text-emerald-800 border border-emerald-200',
       icon: FileSignature,
     },
@@ -98,7 +98,7 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
               Documentación y Trámites
             </h1>
             <p className="mt-3 text-sm sm:text-base text-slate-700 leading-relaxed max-w-xl">
-              Conocé los papeles necesarios para patentar y retirar tu 0km sin demoras ni trámites confusos.
+              Conocé la documentación que puede corresponder para patentar y retirar tu 0km.
             </p>
           </div>
 
@@ -162,7 +162,7 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
 
               <div className="mt-5 pt-3 border-t border-slate-100 flex items-center text-[11px] font-semibold text-[#002244]">
                 <CheckCircle2 className="w-3.5 h-3.5 mr-1.5 text-[#002244]" />
-                <span>Gestoría Autosol incluida</span>
+                <span>Gestión coordinada por Autosol</span>
               </div>
             </div>
           );
@@ -180,7 +180,7 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
               ¿Quién confecciona la documentación oficial?
             </div>
             <div className="text-xs text-slate-600 mt-0.5 max-w-xl leading-relaxed">
-              Nuestro equipo de Gestoría prepara la presentación registral y los trámites aplicables a tu caso. Solo te solicitamos la firma o certificación que corresponda a la operación.
+              Nuestro equipo de Gestoría prepara la presentación registral y los trámites aplicables a tu caso. Informá un correo electrónico vigente y de uso frecuente: allí pueden recibirse comunicaciones y documentación digital vinculada al patentamiento, incluido el Título Digital cuando corresponda.
             </div>
           </div>
         </div>

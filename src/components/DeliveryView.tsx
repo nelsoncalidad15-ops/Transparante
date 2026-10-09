@@ -55,10 +55,10 @@ export const DeliveryView: React.FC<DeliveryViewProps> = ({
   ];
 
   const clientChecklist = [
-    { id: 'dni', text: 'DNI original vigente del titular (y cónyuge si aplica)' },
-    { id: 'seguro', text: 'Certificado de póliza de seguro automotor emitido' },
-    { id: 'pago', text: 'Comprobante de saldo o gastos administrativos cancelados' },
-    { id: 'app', text: 'App "Mi Argentina" descargada para visualizar cédula digital' },
+    { id: 'dni', text: 'DNI vigente del titular' },
+    { id: 'seguro', text: 'Cobertura de seguro vigente para la unidad' },
+    { id: 'pago', text: 'Condiciones administrativas y de pago cumplidas según la operación' },
+    { id: 'usado', text: 'Si entregás un usado, condiciones y documentación correspondientes cumplidas' },
   ];
 
   return (
@@ -125,7 +125,7 @@ export const DeliveryView: React.FC<DeliveryViewProps> = ({
               <h3 className="text-base sm:text-lg font-semibold tracking-[-0.03em] text-[#002244]">
                 Checklist interactivo: ¿Qué traer el día de la entrega?
               </h3>
-              <p className="text-xs text-slate-500">Marcá cada elemento para verificar que tu legajo esté completo</p>
+              <p className="text-xs text-slate-500">Revisá las condiciones que correspondan a tu operación antes del retiro</p>
             </div>
           </div>
           <span className="text-xs font-semibold bg-[#e6e6e6] text-[#002244] px-3 py-1 rounded-full self-start sm:self-auto">

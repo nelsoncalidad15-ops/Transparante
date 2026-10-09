@@ -18,8 +18,8 @@ export const INITIAL_SITE_TEXTS: SiteText[] = [
   { key: 'information_title', section: 'Inicio', label: 'Título información', value: 'Entender tu proceso también genera confianza.', description: 'Título del bloque con buscador.', active: true },
   { key: 'information_description', section: 'Inicio', label: 'Descripción información', value: 'Acompañamos cada etapa de tu compra con información simple, clara y actualizada.', description: 'Bajada del bloque con buscador.', active: true },
   { key: 'search_placeholder', section: 'Inicio', label: 'Placeholder buscador', value: 'Buscá una duda, un término o una etapa...', description: 'Texto dentro del buscador.', active: true },
-  { key: 'process_eyebrow', section: 'Proceso', label: 'Antetítulo proceso', value: 'Seguimiento transparente', description: 'Antetítulo de la línea de etapas.', active: true },
-  { key: 'process_title', section: 'Proceso', label: 'Título proceso', value: '¿En qué etapa estás?', description: 'Título de la línea de etapas.', active: true },
+  { key: 'process_eyebrow', section: 'Proceso', label: 'Antetítulo proceso', value: 'Información clara sobre cada etapa del proceso', description: 'Antetítulo de la línea de etapas.', active: true },
+  { key: 'process_title', section: 'Proceso', label: 'Título proceso', value: 'Conocé las etapas de tu compra', description: 'Título de la línea de etapas.', active: true },
   { key: 'process_description', section: 'Proceso', label: 'Descripción proceso', value: 'Elegí una etapa para conocer qué sucede y qué viene después.', description: 'Bajada de la línea de etapas.', active: true },
   { key: 'whatsapp_message', section: 'Contacto', label: 'Mensaje inicial de WhatsApp', value: 'Hola Autosol, tengo una consulta sobre mi operación.', description: 'Mensaje que recibe el administrativo desde el botón público.', active: true },
 ];
@@ -35,8 +35,8 @@ export const INITIAL_STAGES: ProcessStage[] = [
     whatHappens: [
       'Firma de solicitud de reserva / boleto de compra.',
       'Definición de modalidad de pago convencional (contado, financiación prendaria bancaria o entrega de usado).',
-      'Asignación inicial del pedido en el sistema comercial del concesionario.',
-      'Apertura del legajo digital y recopilación de datos de contacto.',
+      'Recopilación y validación de los datos de contacto y documentación inicial de la operación.',
+      'En operaciones con financiación puede generarse documentación o un legajo adicional requerido por la entidad financiera.',
     ],
     estimatedTime: 'Según validaciones comerciales y documentación',
     timeDisclaimer:
@@ -65,7 +65,7 @@ export const INITIAL_STAGES: ProcessStage[] = [
     ],
     estimatedTime: '3 a 7 días hábiles',
     timeDisclaimer:
-      'El plazo cuenta desde la integración total del saldo acordado y la liberación de la unidad por la terminal automotriz.',
+      'La facturación se realiza una vez cumplidas la documentación requerida, las firmas, las condiciones de pago y demás validaciones que correspondan. Desde entonces, la emisión puede demandar aproximadamente entre 3 y 7 días hábiles.',
     timeFactors: [
       'Tiempos de procesamiento administrativo y facturación de la fábrica o terminal.',
       'Completitud del pago del saldo y gastos de entrega convenidos.',
@@ -84,8 +84,8 @@ export const INITIAL_STAGES: ProcessStage[] = [
       'Es la etapa en la que nuestro equipo de gestoría realiza los trámites administrativos y verificaciones documentales necesarios ante los organismos correspondientes para habilitar el patentamiento.',
     whatHappens: [
       'Verificación y control de documentación del titular (DNI, constancia CUIT/CUIL, estado civil, poderes).',
-      'Confección y certificación de formularios oficiales (Formulario 01, 12 de verificación, 13D de multas y patentes).',
-      'Gestión y pago de tasas arancelarias, sellados provinciales y aranceles registrales.',
+      'Preparación y control de los formularios y documentación registral que correspondan según las características de la operación.',
+      'Gestión administrativa de los aranceles, tasas y sellados que correspondan a la operación. Los conceptos aplicables dependen de cada operación y jurisdicción y deben estar informados en las condiciones comerciales.',
       'Seguimiento administrativo y asignación del turno registral.',
     ],
     estimatedTime: 'Plazo orientativo según legajo y jurisdicción',
@@ -112,11 +112,11 @@ export const INITIAL_STAGES: ProcessStage[] = [
       'Ingreso del trámite en el Registro Seccional competente.',
       'Calificación del trámite por parte del Encargado de Registro.',
       'Asignación del número de dominio (chapa patente alfanumérica).',
-      'Emisión de Título Digital (CAT) y Cédula de Identificación del Automotor (Cédula Verde).',
+      'Emisión del Título Digital y de la Cédula de Identificación del Automotor, según corresponda.',
     ],
     estimatedTime: 'Sujeto al Registro Seccional y a la documentación',
     timeDisclaimer:
-      'El plazo puede variar según la presentación completa del legajo, el Registro Seccional correspondiente al domicilio o guarda habitual del titular y eventuales observaciones.',
+      'Los tiempos pueden variar según el Registro Seccional correspondiente. Cuando la radicación debe gestionarse fuera de la plaza habitual, el trámite puede requerir tiempos adicionales.',
     timeFactors: [
       'Tiempos de procesamiento o eventuales observaciones del Registro Seccional.',
       'Observaciones administrativas o solicitudes de subsanación documental.',
@@ -140,7 +140,7 @@ export const INITIAL_STAGES: ProcessStage[] = [
       'Colocación formal de las chapas patentes y verificación de número de chasis físico.',
       'Lavado de salón, descontaminado de pintura y sellado estético de entrega.',
     ],
-    estimatedTime: '3 a 5 días hábiles',
+    estimatedTime: 'Según programación operativa y preparación de la unidad',
     timeDisclaimer:
       'El alistamiento se programa según la disponibilidad de la unidad, la documentación y la planificación operativa del concesionario.',
     timeFactors: [
@@ -165,7 +165,7 @@ export const INITIAL_STAGES: ProcessStage[] = [
       'Confirmación de personas que asistirán y documentación a presentar en el acto.',
       'Envío del instructivo previo de entrega con recomendaciones.',
     ],
-    estimatedTime: '1 a 3 días hábiles',
+    estimatedTime: 'Según disponibilidad de agenda y condiciones de la operación',
     timeDisclaimer:
       'La fecha final depende de la disponibilidad del cliente y los cupos de agendamiento del salón de entregas.',
     timeFactors: [
@@ -188,7 +188,7 @@ export const INITIAL_STAGES: ProcessStage[] = [
       'Presentación de la unidad en la bahía de entrega protegida.',
       'Explicación guiada de comandos, conectividad multimedia y consejos de rodaje inicial.',
       'Firma de conformidad de recepción y entrega de manuales y garantía oficial.',
-      'Entrega de cédula del automotor, copia de título digital y juego duplicado de llaves.',
+      'Entrega de la documentación aplicable, que puede incluir factura, Cédula de Identificación del Automotor, copia impresa del Título Digital, manuales y juego duplicado de llaves.',
     ],
     estimatedTime: '45 a 60 minutos (acto de entrega)',
     timeDisclaimer:
@@ -215,17 +215,17 @@ export const INITIAL_ARTICLES: LibraryArticle[] = [
     definition:
       'El patentamiento es el trámite oficial mediante el cual el vehículo se inscribe formalmente a tu nombre en la Dirección Nacional de los Registros Nacionales de la Propiedad del Automotor y Créditos Prendarios (DNRPA), otorgándole un dominio único (chapa patente) para circular en el territorio nacional.',
     whatHappens: [
-      'Ingreso de formularios 01 y certificados de origen al Registro Seccional asignado según tu domicilio.',
+      'Presentación de los formularios y certificados de origen que correspondan ante el Registro Seccional competente.',
       'Evaluación jurídica por parte del Encargado de Registro.',
       'Generación del Título Digital de Propiedad del Automotor (CAT).',
-      'Emisión de la Cédula Verde y asignación de las placas patentes metálicas.',
+      'Emisión de la Cédula de Identificación del Automotor y asignación de las placas patentes, según corresponda.',
     ],
     estimatedTime: 'Plazo sujeto al Registro Seccional y a la documentación completa',
     timeFactors: [
       'Tiempos, requisitos y eventuales observaciones del Registro Seccional que corresponda al titular.',
       'Observaciones o solicitudes de rectificación de firmas o constancias de domicilio.',
       'Plazos de fabricación y distribución de placas físicas emitidas por Casa de Moneda / DNRPA.',
-      'Feriados, asuetos administrativos o demoras en los sistemas registrales centrales.',
+      'La radicación fuera de la plaza habitual puede requerir tiempos adicionales.',
     ],
     whatNext:
       'Luego del patentamiento se avanza hacia la preparación técnica de la unidad, alistamiento en taller y coordinación de la fecha de entrega.',
@@ -248,11 +248,11 @@ export const INITIAL_ARTICLES: LibraryArticle[] = [
     shortDesc:
       'La gestoría es la etapa donde se revisa y valida toda la documentación antes de presentarla en el registro.',
     definition:
-      'Es la etapa administrativa en la que nuestros gestores matriculados compilan, controlan y certifican todos los formularios, impuestos y antecedentes necesarios para que el trámite registral ingrese sin observaciones.',
+      'Es la etapa administrativa en la que se prepara y controla la documentación registral que corresponda a la operación. Los conceptos aplicables dependen de cada operación y jurisdicción y deben estar informados en las condiciones comerciales.',
     whatHappens: [
       'Control de identidad y poderes especiales (si compra empresa o apoderado).',
-      'Liquidación y pago del impuesto a los sellos provinciales (Rentas).',
-      'Confección de formularios obligatorios (01, 12, 13D, 59 si aplica).',
+      'Gestión administrativa de los aranceles, tasas y sellados que correspondan a la operación.',
+      'Preparación y control de los formularios y documentación registral que correspondan según las características de la operación.',
       'Solicitud de turno oficial en el Registro Seccional de radicación.',
     ],
     estimatedTime: 'Plazo orientativo según documentación y jurisdicción',
@@ -282,20 +282,20 @@ export const INITIAL_ARTICLES: LibraryArticle[] = [
     shortDesc:
       'Aclaración clave sobre el hito exacto que inicia el cómputo de plazos orientativos de entrega.',
     definition:
-      'El plazo estimado de entrega no comienza el día de la seña ni de la primera consulta comercial, sino a partir del momento en que la unidad está 100% facturada, con chasis asignado y los saldos administrativos cancelados.',
+      'Plazo estimado: aproximadamente 25 días hábiles desde el patentamiento. Los tiempos son orientativos y pueden variar según las características de cada operación, la preparación de la unidad, la disponibilidad de turnos y otras gestiones intervinientes.',
     whatHappens: [
-      'Validación de acreditación bancaria total del saldo o aprobación firme del crédito.',
-      'Asignación física de chasis y emisión de factura oficial.',
-      'Inicio formal del cómputo de días hábiles administrativos.',
+      'Patentamiento de la unidad.',
+      'Preparación técnica y estética de pre-entrega.',
+      'Coordinación formal del día y horario con el cliente.',
     ],
-    estimatedTime: 'Plazo global orientativo: 25 a 45 días hábiles desde facturación',
+    estimatedTime: 'Aproximadamente 25 días hábiles desde el patentamiento',
     timeFactors: [
       'Plazos específicos del Registro Seccional donde radica el vehículo.',
       'Tiempos de logística y traslado de fábrica o depósito central al concesionario.',
       'Colocación de equipamiento especial no estándar.',
     ],
     whatNext:
-      'Podes seguir cada avance desde tu panel o consultar los hitos en la sección Mi Proceso.',
+      'Podés consultar las etapas orientativas del proceso y comunicarte con Autosol para conocer información particular de tu operación. La fecha de entrega queda confirmada cuando Autosol coordina formalmente el día y horario con vos.',
     relatedTopics: ['Facturación', 'Gestoría', 'Patentamiento', 'Tiempos orientativos'],
     readTimeMinutes: 3,
     status: 'Publicado',
@@ -315,20 +315,20 @@ export const INITIAL_ARTICLES: LibraryArticle[] = [
     shortDesc:
       'Conocé los pasos administrativos, asignación de chasis y pase al sector de gestoría.',
     definition:
-      'Una vez emitida la factura, tu vehículo ya tiene nombre y apellido (número de VIN y motor asignados). En ese momento, se generan los certificados de fabricación y la carpeta pasa de inmediato a Gestoría.',
+      'Una vez emitida la factura oficial de compra, continúan las gestiones documentales y registrales que correspondan a la operación.',
     whatHappens: [
       'Generación de comprobante fiscal con detalle de la unidad.',
       'Emisión de certificados de fabricación o importación por parte de la terminal.',
-      'Apertura formal del legajo de patentamiento.',
-      'Notificación de inicio de trámites de gestoría.',
+      'Preparación de la documentación necesaria para el patentamiento.',
+      'Continuación de las gestiones registrales correspondientes.',
     ],
-    estimatedTime: '3 a 7 días hábiles',
+    estimatedTime: 'Según documentación y condiciones de la operación',
     timeFactors: [
       'Emisión de certificados de fábrica.',
       'Firma de documentación complementaria si hubo crédito prendario.',
     ],
     whatNext:
-      'Gestoría te solicitará completar cualquier firma pendiente para ingresar al Registro Automotor.',
+      'Autosol te informará si corresponde completar firmas o documentación para continuar con el patentamiento.',
     relatedTopics: ['Facturación', 'Gestoría', 'Documentación', 'Financiación'],
     readTimeMinutes: 2,
     status: 'Publicado',
@@ -350,8 +350,8 @@ export const INITIAL_ARTICLES: LibraryArticle[] = [
     definition:
       'Para inscribir legalmente un vehículo 0km en Argentina se requiere documentación según el caso, exigida por DNRPA, ARCA, organismos provinciales y el concesionario.',
     whatHappens: [
-      'Personas físicas: DNI vigente (frente y dorso), constancia de CUIL/CUIT, justificación de fondos (si supera montos UIF).',
-      'Personas jurídicas: Estatuto social, acta de designación de autoridades con mandato vigente, poder legal certificado, CUIT empresa.',
+      'Personas humanas: DNI vigente del titular. Según la operación, puede solicitarse documentación adicional de cónyuge, cotitular o apoderado.',
+      'Personas jurídicas: documentación societaria y registral, según corresponda; puede incluir contrato o estatuto, constancia de CUIT, autoridades y poderes.',
       'Condóminos: Documentación de cada titular con porcentaje de titularidad.',
     ],
     estimatedTime: 'Reunir antes del ingreso a gestoría',
@@ -360,7 +360,7 @@ export const INITIAL_ARTICLES: LibraryArticle[] = [
       'Vigencia de DNI (debe ser el último ejemplar emitido por Renaper).',
     ],
     whatNext:
-      'Al enviar toda la documentación correcta y legible, el trámite avanza sin demoras.',
+      'Informá un correo electrónico vigente y de uso frecuente. Allí pueden recibirse comunicaciones y documentación digital vinculada al patentamiento, incluido el Título Digital cuando corresponda.',
     relatedTopics: ['Gestoría', 'Patentamiento', 'Cierre de operación'],
     readTimeMinutes: 4,
     status: 'Publicado',
@@ -378,7 +378,7 @@ export const INITIAL_ARTICLES: LibraryArticle[] = [
     category: 'Entrega',
     type: 'Artículo',
     shortDesc:
-      'El chequeo técnico de más de 40 puntos para garantizar que tu auto esté en perfectas condiciones.',
+      'Control técnico y estético de pre-entrega (PDI) según el procedimiento aplicable a la unidad.',
     definition:
       'La PDI (Pre-Delivery Inspection) es un procedimiento de control exhaustivo donde técnicos certificados revisan mecánica, electrónica, niveles de fluidos, presiones, alineación de luces y cosmética antes de la entrega.',
     whatHappens: [
@@ -387,13 +387,13 @@ export const INITIAL_ARTICLES: LibraryArticle[] = [
       'Prueba de luces, cinturones, aire acondicionado y cierre centralizado.',
       'Colocación de alfombras, tuercas de seguridad y patentes reglamentarias.',
     ],
-    estimatedTime: '3 a 5 días hábiles',
+    estimatedTime: 'Según programación operativa y preparación de la unidad',
     timeFactors: [
       'Complejidad del paquete de accesorios contratados.',
       'Llegada de la unidad a depósito de taller.',
     ],
     whatNext:
-      'Aprobado el checklist de calidad, el equipo te contacta para fijar el turno de entrega.',
+      'Una vez preparada la unidad y cumplidas las condiciones de la operación, Autosol coordina formalmente el día y horario de entrega.',
     relatedTopics: ['Preparación', 'Turno', 'Entrega'],
     readTimeMinutes: 3,
     status: 'Publicado',
@@ -413,14 +413,14 @@ export const INITIAL_ARTICLES: LibraryArticle[] = [
     shortDesc:
       'Explicación del crédito prendario, firma de contrato y prenda bancaria.',
     definition:
-      'Un crédito prendario es un préstamo donde el vehículo adquirido queda como garantía hasta la cancelación del saldo. La prenda se inscribe simultáneamente con el patentamiento en el Registro Automotor.',
+      'La financiación prendaria está sujeta a aprobación y a las condiciones de la entidad financiera interviniente. El vehículo queda afectado a una prenda hasta la cancelación del crédito.',
     whatHappens: [
       'Aprobación crediticia por parte de la entidad financiera o banco.',
-      'Firma de los contratos de mutuo y pagaré prendario.',
-      'Inscripción de la prenda en el Formulario 03 conjunto en DNRPA.',
+      'Firma de la documentación crediticia y registral que corresponda.',
+      'Inscripción de la prenda según las condiciones de la operación.',
       'Liquidación de fondos de la entidad crediticia al concesionario.',
     ],
-    estimatedTime: '5 a 10 días hábiles en etapa de aprobación y firma',
+    estimatedTime: 'Según propuesta crediticia vigente',
     timeFactors: [
       'Scoring crediticio y validación de ingresos.',
       'Tiempos de liquidación del banco o financiera interviniente.',
@@ -451,12 +451,12 @@ export const INITIAL_ARTICLES: LibraryArticle[] = [
       'Presentación oficial del vehículo en la bahía de entregas.',
       'Verificación guiada del estado exterior, interior y accesorios.',
       'Configuración de Bluetooth / Apple CarPlay / Android Auto con el asesor.',
-      'Firma de remito y acta de entrega, entrega del seguro y duplicado de llaves.',
+      'Firma de la documentación de entrega y recepción de los elementos que correspondan a la operación.',
     ],
     estimatedTime: '45 a 60 minutos en sucursal',
     timeFactors: ['Puntualidad del turno coordinado.'],
     whatNext:
-      'Salís rodando con tu vehículo 100% asegurado, con patentes colocadas y cédula oficial.',
+      'La unidad no puede ser retirada sin cobertura de seguro vigente. Si entregás un usado como parte de pago, también deben estar cumplidas sus condiciones y documentación antes del retiro del 0 km.',
     relatedTopics: ['Turno', 'Entrega', 'Documentación'],
     readTimeMinutes: 2,
     status: 'Publicado',
@@ -474,14 +474,14 @@ export const INITIAL_ARTICLES: LibraryArticle[] = [
     category: 'Documentación',
     type: 'Artículo',
     shortDesc:
-      'Requisitos para personas humanas, matrimonios en condominio, empresas (SRL/SA) y justificación de fondos UIF.',
+      'Documentación orientativa para personas humanas y jurídicas y posible justificación del origen de fondos.',
     definition:
-      'La normativa registral de la DNRPA y las resoluciones de la UIF exigen presentar documentación específica según la condición fiscal y jurídica del adquirente para poder inscribir la titularidad del automotor.',
+      'La documentación necesaria depende de las características de cada operación. Autosol informará los requisitos registrales y, cuando corresponda, los relativos al origen de los fondos.',
     whatHappens: [
-      'Personas Humanas: DNI vigente y constancia de CUIT/CUIL emitida por ARCA (AFIP). Si es casado/a, datos de cónyuge.',
+      'Personas humanas: DNI vigente del titular. Según la operación, puede solicitarse documentación adicional de cónyuge, cotitular o apoderado.',
       'Condominio: si compran dos titulares, fijación expresa de porcentajes de condominio (ej. 50% y 50%) con DNI y CUIL de ambos.',
-      'Personas Jurídicas: estatuto o contrato social inscripto, acta de designación de autoridades vigente, poder con facultades expresas y CUIT societario.',
-      'Cumplimiento UIF: si el monto supera los umbrales legales, declaración jurada de origen lícito de fondos y documentación respaldatoria (recibo de sueldo, certificación contable legalizada o venta de bien previo).',
+      'Personas jurídicas: según la operación pueden solicitarse contrato o estatuto social, constancia de CUIT, documentación de autoridades, poderes y formularios registrales que correspondan.',
+      'Origen de fondos / UIF: según la normativa vigente, determinadas operaciones pueden requerir declaraciones juradas y documentación respaldatoria. Administración informará qué corresponde en cada caso.',
     ],
     estimatedTime: 'Documentación a presentar en etapa de reserva y facturación',
     timeFactors: [
@@ -489,7 +489,7 @@ export const INITIAL_ARTICLES: LibraryArticle[] = [
       'Legalización de certificados contables ante el Consejo Profesional de Ciencias Económicas (CPCE).',
     ],
     whatNext:
-      'Con el legajo completo, el equipo de gestoría confecciona los formularios oficiales para el patentamiento.',
+      'Con la documentación correspondiente, se preparan los formularios registrales aplicables al patentamiento.',
     relatedTopics: ['Cierre de operación', 'Facturación', 'Gestoría', 'Documentación requerida'],
     readTimeMinutes: 4,
     status: 'Publicado',
@@ -503,26 +503,24 @@ export const INITIAL_ARTICLES: LibraryArticle[] = [
   {
     id: 'art-10',
     slug: 'gastos-entrega-formularios-sellados-jujuy',
-    title: '¿Qué conceptos componen los gastos de retiro, flete y patentamiento en Jujuy?',
+    title: '¿Qué conceptos pueden intervenir además del valor del vehículo?',
     category: 'Proceso de compra',
     type: 'Artículo',
     shortDesc:
-      'Desglose legal de flete desde planta, formularios DNRPA (01 y 12) e Impuesto a los Sellos de Rentas Jujuy.',
+      'Conceptos posibles según la operación y la jurisdicción de radicación.',
     definition:
-      'En la venta convencional de un 0km, además del valor del vehículo intervienen conceptos operativos y tributarios obligatorios para que la unidad pueda circular legalmente.',
+      'Según las características de cada operación y la jurisdicción de radicación pueden intervenir conceptos vinculados con transporte, inscripción registral, tributos, gestoría, financiación, seguro o accesorios contratados. Los conceptos e importes aplicables deben estar informados específicamente en la propuesta de cada operación.',
     whatHappens: [
-      'Flete y seguro de transporte oficial: traslado seguro de la unidad desde la planta automotriz hasta el concesionario oficial en Jujuy.',
-      'Formularios oficiales DNRPA: Formulario 01 Digital (Inscripción Inicial), Formulario 12 Digital (Verificación policial/fabril) y Formulario 13D de Rentas.',
-      'Impuesto de Sellos (DGR Jujuy): tributo provincial obligatorio de la Dirección General de Rentas de Jujuy sobre la factura del automotor.',
-      'Aranceles registrales: tasas del Registro Seccional de la DNRPA por asignación de dominio, título digital y cédulas.',
+      'Transporte, inscripción registral y tributos, según correspondan.',
+      'Gestoría, financiación, seguro o accesorios contratados, si aplican a la operación.',
     ],
-    estimatedTime: 'Plazos y montos liquidados durante la etapa de gestoría',
+    estimatedTime: 'Según condiciones de cada operación',
     timeFactors: [
       'Liquidación de sellados provinciales por parte de Rentas Jujuy.',
       'Aranceles actualizados periódicamente por el Ministerio de Justicia / DNRPA.',
     ],
     whatNext:
-      'Cancelados estos conceptos, el legajo ingresa al Registro Seccional competente para emitir las chapas patentes.',
+      'Consultá la propuesta de tu operación para conocer los conceptos e importes aplicables.',
     relatedTopics: ['Facturación', 'Gestoría', 'Patentamiento', 'Tiempos orientativos'],
     readTimeMinutes: 3,
     status: 'Publicado',
@@ -540,7 +538,7 @@ export const INITIAL_FAQS: FAQItem[] = [
     id: 'faq-1',
     question: '¿Cuándo comienza a correr el tiempo para la entrega de mi unidad?',
     answer:
-      'El tiempo estimado comienza a contar una vez que la unidad se encuentra totalmente facturada (con número de chasis y motor asignados) y con los pagos administrativos cancelados. La seña o reserva previa es el inicio comercial, pero el cómputo de trámites inicia formalmente con la facturación.',
+      'Plazo estimado: aproximadamente 25 días hábiles desde el patentamiento. Los tiempos son orientativos y pueden variar según las características de cada operación, la preparación de la unidad, la disponibilidad de turnos y otras gestiones intervinientes. La fecha se confirma cuando Autosol coordina formalmente el día y horario con el cliente.',
     category: 'Tiempos y plazos',
     stageId: 'facturacion',
     relatedArticleSlug: 'cuando-empieza-a-correr-tiempo-entrega',
@@ -551,7 +549,7 @@ export const INITIAL_FAQS: FAQItem[] = [
     id: 'faq-2',
     question: '¿Qué significa que mi unidad está facturada?',
     answer:
-      'Significa que la fábrica o el concesionario emitió la factura oficial de compra a tu nombre. Desde ese instante, tu vehículo tiene número de chasis (VIN) y número de motor asignados de forma definitiva, y el legajo pasa de inmediato al equipo de gestoría.',
+      'Significa que se emitió la factura oficial de compra de la unidad. La facturación se realiza una vez cumplidas la documentación requerida, las firmas, las condiciones de pago y demás validaciones que correspondan. Desde entonces, la emisión puede demandar aproximadamente entre 3 y 7 días hábiles. Después continúan las gestiones registrales y de entrega.',
     category: 'Facturación',
     stageId: 'facturacion',
     relatedArticleSlug: 'que-pasa-despues-de-facturar-unidad',
@@ -562,7 +560,7 @@ export const INITIAL_FAQS: FAQItem[] = [
     id: 'faq-3',
     question: '¿Qué es gestoría y por qué es necesaria?',
     answer:
-      'La gestoría es la etapa donde nuestros profesionales matriculados recopilan, validan y certifican los formularios y sellados impositivos exigidos por ley antes de presentar el trámite en el Registro Seccional. Esto evita que el trámite sea rechazado o demorado.',
+      'La gestoría prepara y controla los formularios y la documentación registral que correspondan según las características de la operación. También gestiona los aranceles, tasas y sellados aplicables, que deben estar informados en las condiciones comerciales.',
     category: 'Gestoría',
     stageId: 'gestoria',
     relatedArticleSlug: 'que-es-gestoria',
@@ -573,7 +571,7 @@ export const INITIAL_FAQS: FAQItem[] = [
     id: 'faq-4',
     question: '¿Qué es el patentamiento y cuánto puede tardar?',
     answer:
-      'El patentamiento es la inscripción del vehículo en el Registro de la Propiedad Automotor (DNRPA) para obtener el dominio y la documentación correspondiente. El plazo depende de que el legajo esté completo, del Registro Seccional que corresponda al domicilio o guarda habitual del titular y de eventuales observaciones. Te informaremos el avance de tu operación.',
+      'El patentamiento es la inscripción del vehículo en el Registro de la Propiedad Automotor (DNRPA) para obtener el dominio y la documentación correspondiente. Los tiempos pueden variar según el Registro Seccional. Cuando la radicación debe gestionarse fuera de la plaza habitual, el trámite puede requerir tiempos adicionales. Consultá a Autosol por tu operación.',
     category: 'Patentamiento',
     stageId: 'patentamiento',
     relatedArticleSlug: 'que-es-patentamiento',
@@ -594,7 +592,7 @@ export const INITIAL_FAQS: FAQItem[] = [
     id: 'faq-6',
     question: '¿Qué sucede antes de la entrega del vehículo?',
     answer:
-      'Una vez que recibimos las patentes del Registro, el auto ingresa a nuestro taller para el control de calidad pre-entrega (PDI): revisión de 40 puntos mecánicos y electrónicos, colocación de accesorios contratados, lavado de salón y colocación de patentes. Luego te contactamos para coordinar día y hora de entrega.',
+      'La unidad pasa por un control técnico y estético de pre-entrega (PDI) según el procedimiento aplicable. Luego se coordina la entrega según la preparación de la unidad, la disponibilidad de agenda y las condiciones de la operación.',
     category: 'Entrega',
     stageId: 'preparacion',
     relatedArticleSlug: 'que-es-la-inspeccion-pre-entrega-pdi',
@@ -605,7 +603,7 @@ export const INITIAL_FAQS: FAQItem[] = [
     id: 'faq-7',
     question: '¿Qué documentación necesito llevar el día que retiro mi auto?',
     answer:
-      'Solo necesitás concurrir con tu DNI original vigente y la confirmación de la póliza de seguro de la unidad (que podés gestionar previamente con nuestro asesor o con tu productor de seguros). Si retira un apoderado, debe presentar poder certificado original.',
+      'Presentá tu DNI vigente y asegurate de que la unidad cuente con seguro vigente. Deben estar cumplidas las condiciones administrativas y de pago acordadas para tu operación. Si retira otra persona, consultá previamente a Autosol qué documentación corresponde.',
     category: 'Documentación',
     stageId: 'entrega',
     relatedArticleSlug: 'que-hacer-el-dia-de-la-entrega',
@@ -614,9 +612,9 @@ export const INITIAL_FAQS: FAQItem[] = [
   },
   {
     id: 'faq-8',
-    question: '¿Puedo asegurar mi vehículo con mi propia compañía de seguros?',
+    question: '¿Puedo elegir la compañía de seguros para mi 0 km?',
     answer:
-      'Sí, tenés absoluta libertad de elegir tu aseguradora o productor de confianza. Nuestro equipo te proveerá el número de chasis, motor y factura para que puedas emitir la póliza antes del día pactado para la entrega.',
+      'Si la operación no posee financiación prendaria, podés gestionar la cobertura con tu aseguradora o productor de confianza, siempre que la unidad cuente con seguro vigente al momento del retiro. Cuando existe financiación prendaria, la cobertura debe cumplir las condiciones establecidas por la entidad financiera.',
     category: 'Entrega',
     order: 8,
     viewsCount: 1740,
@@ -675,8 +673,8 @@ export const INITIAL_FAQS: FAQItem[] = [
   },
   {
     id: 'faq-15',
-    question: '¿Qué requisitos y documentación exige la ley (UIF) para justificar el origen de fondos?',
-    answer: 'Conforme a las resoluciones de la Unidad de Información Financiera (UIF) y normas de prevención de lavado de activos, cuando el monto de compra supera los umbrales legales vigentes, el adquirente debe presentar documentación que respalde el origen lícito de los fondos (ej: recibo de haberes, constancia de inscripción en Monotributo/Ganancias, certificación contable con legalización del CPCE, declaración jurada de Bienes Personales o boleto de venta de un bien previo).',
+    question: '¿Cuándo pueden solicitar documentación sobre el origen de los fondos?',
+    answer: 'Según la normativa vigente de prevención de lavado de activos, determinadas operaciones pueden requerir declaraciones juradas y documentación respaldatoria sobre el origen de los fondos. Administración informará al cliente qué documentación corresponde en su caso.',
     category: 'Documentación',
     stageId: 'facturacion',
     order: 15,
@@ -685,7 +683,7 @@ export const INITIAL_FAQS: FAQItem[] = [
   {
     id: 'faq-16',
     question: '¿Cómo se realizan los pagos de manera segura y cuáles son las cuentas oficiales?',
-    answer: 'Por estrictas normas de seguridad bancaria, todos los pagos y transferencias deben efectuarse exclusivamente a las cuentas bancarias oficiales a nombre de la razón social del concesionario Autosol. Autosol nunca solicita transferencias a cuentas de personas físicas, asesores particulares o billeteras virtuales no institucionales.',
+    answer: 'Las transferencias vinculadas a la operación deben realizarse utilizando los datos bancarios oficiales informados por Autosol. La cuenta de origen debe corresponder a uno de los titulares de la operación. Si los fondos provienen de un tercero, consultá previamente con Administración, ya que puede requerirse documentación respaldatoria adicional. No realices transferencias a cuentas personales de asesores o terceros que no hayan sido informadas oficialmente por Autosol.',
     category: 'Financiación',
     stageId: 'cierre',
     order: 16,
@@ -694,7 +692,7 @@ export const INITIAL_FAQS: FAQItem[] = [
   {
     id: 'faq-17',
     question: '¿Se puede inscribir el 0km en condominio (dos titulares) o a nombre de una empresa?',
-    answer: 'Sí. En condominio se inscriben dos o más titulares fijando el porcentaje de cada uno (ej. 50% y 50%), requiriendo DNI, CUIT/CUIL y firmas de todos los compradores. Para personas jurídicas (SRL, SA, etc.) se requiere estatuto o contrato social inscripto, acta de designación de autoridades vigente, poder si interviene apoderado y constancia de CUIT societario.',
+    answer: 'Sí. La documentación depende de cada operación. Para una persona humana se solicita DNI vigente del titular y pueden requerirse datos adicionales de cotitular, cónyuge o apoderado. Para una persona jurídica pueden solicitarse contrato o estatuto social, constancia de CUIT, documentación de autoridades, poderes y formularios registrales que correspondan.',
     category: 'Documentación',
     stageId: 'gestoria',
     order: 17,
@@ -702,20 +700,11 @@ export const INITIAL_FAQS: FAQItem[] = [
   },
   {
     id: 'faq-18',
-    question: '¿Qué conceptos integran los gastos de entrega, flete y formularios registrales en Jujuy?',
-    answer: 'Los gastos de entrega corresponden al flete y seguro de transporte oficial de la unidad desde la planta automotriz hasta el concesionario oficial en Jujuy, los formularios oficiales exigidos por la DNRPA para la inscripción inicial (Formularios 01 y 12 de verificación) y el Impuesto a los Sellos provincial fijado por la Dirección General de Rentas (DGR Jujuy). Todos estos conceptos deben estar detallados en la propuesta comercial.',
+    question: '¿Qué conceptos pueden intervenir además del valor del vehículo?',
+    answer: 'Según las características de cada operación y la jurisdicción de radicación pueden intervenir conceptos vinculados con transporte, inscripción registral, tributos, gestoría, financiación, seguro o accesorios contratados. Los conceptos e importes aplicables deben estar informados específicamente en la propuesta de cada operación.',
     category: 'Proceso de compra',
     stageId: 'gestoria',
     order: 18,
-    viewsCount: 0,
-  },
-  {
-    id: 'faq-19',
-    question: '¿Puedo elegir libremente la compañía de seguros para mi nuevo 0km?',
-    answer: 'Sí. Conforme a las resoluciones de la Superintendencia de Seguros de la Nación (SSN) y la Ley de Defensa del Consumidor, el comprador tiene plena libertad para contratar la póliza de seguro con la compañía o productor asesor de su preferencia. El único requisito legal es presentar la constancia de cobertura vigente con fecha y hora de emisión al momento de retirar el vehículo del concesionario.',
-    category: 'Entrega',
-    stageId: 'turno',
-    order: 19,
     viewsCount: 0,
   },
   {
@@ -742,6 +731,15 @@ export const INITIAL_FAQS: FAQItem[] = [
     answer: 'Según las condiciones de cada operación pueden intervenir conceptos vinculados con inscripción registral, tributos, gestoría, financiación, seguro, transporte o accesorios contratados. Los conceptos e importes aplicables deben informarse específicamente para cada operación.',
     category: 'Proceso de compra',
     order: 22,
+    viewsCount: 0,
+  },
+  {
+    id: 'faq-23',
+    question: '¿Qué condiciones deben estar cumplidas para retirar mi vehículo?',
+    answer: 'Antes de la entrega, la unidad debe encontrarse patentada, deben estar cumplidas las condiciones de pago acordadas para la operación y el vehículo debe contar con seguro vigente. Si la operación incluye financiación, entrega de un usado u otra condición particular, pueden existir requisitos adicionales que serán informados por Autosol.',
+    category: 'Entrega',
+    stageId: 'entrega',
+    order: 23,
     viewsCount: 0,
   },
 ];
