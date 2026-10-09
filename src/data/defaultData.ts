@@ -538,7 +538,7 @@ export const INITIAL_FAQS: FAQItem[] = [
     answer:
       'Plazo estimado: aproximadamente 25 días hábiles desde el patentamiento. Los tiempos son orientativos y pueden variar según las características de cada operación, la preparación de la unidad, la disponibilidad de turnos y otras gestiones intervinientes. La fecha se confirma cuando Autosol coordina formalmente el día y horario con el cliente.',
     category: 'Tiempos y plazos',
-    stageId: 'facturacion',
+    stageId: 'patentamiento',
     relatedArticleSlug: 'cuando-empieza-a-correr-tiempo-entrega',
     order: 1,
     viewsCount: 4210,
@@ -547,7 +547,7 @@ export const INITIAL_FAQS: FAQItem[] = [
     id: 'faq-2',
     question: '¿Qué significa que mi unidad está facturada?',
     answer:
-      'Significa que se emitió la factura oficial de compra de la unidad. La facturación se realiza una vez cumplidas la documentación requerida, las firmas, las condiciones de pago y demás validaciones que correspondan. Desde entonces, la emisión puede demandar aproximadamente entre 3 y 7 días hábiles. Después continúan las gestiones registrales y de entrega.',
+      'La factura oficial de compra se emite una vez cumplidas la documentación requerida, las firmas, las condiciones de pago y demás validaciones que correspondan. Desde que se completan esos requisitos, la emisión puede demandar aproximadamente entre 3 y 7 días hábiles. Que la unidad esté facturada significa que ya se emitió esa factura; después continúan las gestiones registrales y de entrega.',
     category: 'Facturación',
     stageId: 'facturacion',
     relatedArticleSlug: 'que-pasa-despues-de-facturar-unidad',

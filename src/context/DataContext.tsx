@@ -79,7 +79,7 @@ interface DataContextType {
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
 const LOCAL_STORAGE_KEY_ARTICLES = 'autosol_articles_v4';
-const LOCAL_STORAGE_KEY_FAQS = 'autosol_faqs_v4';
+const LOCAL_STORAGE_KEY_FAQS = 'autosol_faqs_v5';
 const LOCAL_STORAGE_KEY_KPIS = 'autosol_kpis_v1';
 const LOCAL_STORAGE_KEY_UNCERTAINTY = 'autosol_uncertainty_v1';
 const LOCAL_STORAGE_KEY_SHEET = 'autosol_sheet_config_v1';
