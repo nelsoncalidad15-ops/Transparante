@@ -24,11 +24,18 @@ process.env.SESSION_SECRET = crypto.randomBytes(32).toString('hex');
 process.env.ADMIN_USERNAME = 'admin';
 process.env.ADMIN_PASSWORD_HASH = `scrypt$${salt}$${hash}`;
 if (!realMode) {
-  process.env.APPS_SCRIPT_URL = 'https://local-preview.invalid/script';
+  process.env.APPS_SCRIPT_URL = 'https://script.google.com/macros/s/LOCAL_PREVIEW/exec';
   process.env.APPS_SCRIPT_SHARED_SECRET = crypto.randomBytes(32).toString('hex');
   process.env.VITE_AUTOSOL_LOCAL_DEMO = '1';
 } else {
   process.env.VITE_AUTOSOL_LOCAL_REAL = '1';
+  let scriptUrl;
+  try { scriptUrl = new URL(process.env.APPS_SCRIPT_URL); }
+  catch { console.error('APPS_SCRIPT_URL debe ser la URL HTTPS /exec de la aplicación web de Apps Script.'); process.exit(1); }
+  if (scriptUrl.protocol !== 'https:' || scriptUrl.hostname !== 'script.google.com' || !/^\/macros\/s\/[^/]+\/exec\/?$/.test(scriptUrl.pathname)) {
+    console.error('APPS_SCRIPT_URL debe ser la URL HTTPS /exec de la aplicación web de Apps Script.');
+    process.exit(1);
+  }
   const response = await fetch(process.env.APPS_SCRIPT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },

@@ -57,7 +57,7 @@ test('el endpoint privado exige una sesión admin válida', async () => {
   const expires = Math.floor(Date.now() / 1000) + 60;
   const value = `${expires}.admin.localnonce`;
   const signature = crypto.createHmac('sha256', process.env.SESSION_SECRET).update(value).digest('base64url');
-  process.env.APPS_SCRIPT_URL = 'https://example.test/script';
+  process.env.APPS_SCRIPT_URL = 'https://script.google.com/macros/s/LOCAL_TEST/exec';
   process.env.APPS_SCRIPT_SHARED_SECRET = 'test-shared-secret';
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async () => new Response(JSON.stringify({ ok: true, data: { events: [] } }));
@@ -66,4 +66,14 @@ test('el endpoint privado exige una sesión admin válida', async () => {
     assert.equal(response.status, 200);
     assert.deepEqual((await response.json()).data.events, []);
   } finally { globalThis.fetch = originalFetch; }
+});
+
+test('una URL mal configurada no revela su valor al navegador', async () => {
+  process.env.APPS_SCRIPT_URL = 'ID_DE_HOJA_PRIVADA';
+  process.env.APPS_SCRIPT_SHARED_SECRET = 'test-shared-secret';
+  const response = await handler(new Request('https://example.test/api/content'));
+  const result = await response.json();
+  assert.equal(response.status, 503);
+  assert.match(result.error, /URL HTTPS \/exec/);
+  assert.ok(!JSON.stringify(result).includes('ID_DE_HOJA_PRIVADA'));
 });

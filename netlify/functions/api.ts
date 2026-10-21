@@ -25,9 +25,17 @@ const script = async (action: string, payload: unknown = {}) => {
   const endpoint = process.env.APPS_SCRIPT_URL;
   const secret = process.env.APPS_SCRIPT_SHARED_SECRET;
   if (!endpoint || !secret) throw new Error('Apps Script no está configurado.');
-  const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action, payload, secret }) });
+  let url: URL;
+  try { url = new URL(endpoint); }
+  catch { throw new Error('APPS_SCRIPT_URL debe ser la URL HTTPS /exec de la aplicación web de Apps Script.'); }
+  if (url.protocol !== 'https:' || url.hostname !== 'script.google.com' || !/^\/macros\/s\/[^/]+\/exec\/?$/.test(url.pathname)) {
+    throw new Error('APPS_SCRIPT_URL debe ser la URL HTTPS /exec de la aplicación web de Apps Script.');
+  }
+  let response: Response;
+  try { response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action, payload, secret }) }); }
+  catch { throw new Error('No se pudo conectar con Apps Script.'); }
   if (!response.ok) throw new Error('Apps Script no está disponible.');
-  const result = await response.json();
+  const result = await response.json().catch(() => { throw new Error('Apps Script devolvió una respuesta no válida.'); });
   if (!result.ok) throw new Error(result.error || 'Apps Script rechazó la solicitud.');
   return result;
 };
