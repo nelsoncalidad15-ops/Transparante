@@ -31,6 +31,8 @@ function doPost(e) {
     if (action === 'getSiteTexts') return json_({ ok: true, data: { texts: readRows_('Textos') } });
     if (action === 'updateSiteTexts') return json_({ ok: true, data: updateSiteTexts_(payload) });
     if (action === 'getIndicators') return json_({ ok: true, data: getIndicators_() });
+    if (action === 'recordWebEvents') return json_({ ok: true, data: recordWebEvents_(payload) });
+    if (action === 'getWebEvents') return json_({ ok: true, data: getWebEvents_() });
     if (action === 'getClientCases') return json_({ ok: true, data: getClientCases_() });
     if (action === 'getCaseTimings') return json_({ ok: true, data: getCaseTimings_() });
     if (action === 'updateCaseTimings') return json_({ ok: true, data: updateCaseTimings_(payload) });
@@ -51,6 +53,55 @@ function getSpreadsheet_() {
   var id = PropertiesService.getScriptProperties().getProperty('SHEET_ID');
   if (!id) throw new Error('Falta la propiedad SHEET_ID.');
   return SpreadsheetApp.openById(id);
+}
+
+var WEB_EVENT_TYPES_ = ['page_open', 'section_view', 'article_view', 'stage_open', 'faq_open', 'search', 'search_empty', 'contact_menu', 'contact_click'];
+var WEB_SECTIONS_ = ['home', 'process', 'documents', 'times', 'financing', 'delivery', 'dictionary', 'library', 'faq', 'search', 'article-detail'];
+var WEB_CATEGORIES_ = ['Entrega', 'Patentamiento', 'Gestoría', 'Facturación', 'Financiación', 'Documentación', 'Plazos', 'Seguro', 'Otros', 'WhatsApp', 'Teléfono', 'Ubicación'];
+var WEB_HEADERS_ = ['FechaHora', 'TipoEvento', 'Seccion', 'Categoria', 'Detalle'];
+
+function webSheet_() {
+  var ss = getSpreadsheet_();
+  var sheet = ss.getSheetByName('EventosWeb') || ss.insertSheet('EventosWeb');
+  if (sheet.getLastRow() === 0) sheet.appendRow(WEB_HEADERS_);
+  return sheet;
+}
+
+function recordWebEvents_(payload) {
+  var events = payload && payload.events;
+  if (!Array.isArray(events) || events.length < 1 || events.length > 10) throw new Error('Lote inválido.');
+  var rows = events.map(function(event) {
+    if (!event || WEB_EVENT_TYPES_.indexOf(event.type) < 0 || WEB_SECTIONS_.indexOf(event.section) < 0) throw new Error('Evento inválido.');
+    var category = event.category || '';
+    if (category && WEB_CATEGORIES_.indexOf(category) < 0) throw new Error('Categoría inválida.');
+    var detail = event.detail || '';
+    if (typeof detail !== 'string' || !/^[a-zA-Z0-9_-]{0,80}$/.test(detail)) throw new Error('Detalle inválido.');
+    if (['article_view', 'stage_open', 'faq_open'].indexOf(event.type) < 0) detail = '';
+    return [new Date(), event.type, event.section, category, detail];
+  });
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    var cache = CacheService.getScriptCache();
+    var minute = Math.floor(Date.now() / 60000);
+    var key = 'web-events-' + minute;
+    var count = Number(cache.get(key) || 0);
+    if (count + rows.length > 600) return { saved: 0, limited: true };
+    cache.put(key, String(count + rows.length), 90);
+    var sheet = webSheet_();
+    sheet.getRange(sheet.getLastRow() + 1, 1, rows.length, WEB_HEADERS_.length).setValues(rows);
+    return { saved: rows.length };
+  } finally { lock.releaseLock(); }
+}
+
+function getWebEvents_() {
+  var sheet = getSpreadsheet_().getSheetByName('EventosWeb');
+  if (!sheet || sheet.getLastRow() < 2) return { events: [], updatedAt: new Date().toISOString() };
+  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, WEB_HEADERS_.length).getValues();
+  return { events: rows.map(function(row) { return {
+    date: row[0] instanceof Date ? row[0].toISOString() : String(row[0]),
+    type: String(row[1]), section: String(row[2]), category: String(row[3]), detail: String(row[4])
+  }; }), updatedAt: new Date().toISOString() };
 }
 
 function readRows_(sheetName) {

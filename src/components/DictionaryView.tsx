@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BookOpen,
   Search,
@@ -6,6 +6,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { matchesSearch } from '../utils/search';
+import { searchCategory, track } from '../utils/webAnalytics';
 
 interface DictionaryViewProps {
   onNavigateToArticle: (slug: string) => void;
@@ -140,6 +141,12 @@ export const DictionaryView: React.FC<DictionaryViewProps> = ({
     const matchesCat = selectedCategory === 'Todos' || item.category === selectedCategory;
     return matchesTerm && matchesCat;
   });
+
+  useEffect(() => {
+    if (!searchTerm.trim()) return;
+    const timer = setTimeout(() => track({ type: filteredTerms.length ? 'search' : 'search_empty', section: 'dictionary', category: searchCategory(searchTerm) }), 700);
+    return () => clearTimeout(timer);
+  }, [searchTerm, filteredTerms.length]);
 
   return (
     <div className="space-y-8 pb-12 animate-in fade-in duration-300">

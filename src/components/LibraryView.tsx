@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   BookOpen,
   Search,
@@ -13,6 +13,7 @@ import {
 import { useData } from '../context/DataContext';
 import { ContentCategory, LibraryArticle } from '../types';
 import { matchesSearch } from '../utils/search';
+import { searchCategory, track } from '../utils/webAnalytics';
 
 interface LibraryViewProps {
   initialCategory?: string;
@@ -49,6 +50,12 @@ export const LibraryView: React.FC<LibraryViewProps> = ({
       return matchCategory && matchQuery;
     });
   }, [articles, selectedCategory, searchQuery]);
+
+  useEffect(() => {
+    if (!searchQuery.trim()) return;
+    const timer = setTimeout(() => track({ type: filteredArticles.length ? 'search' : 'search_empty', section: 'library', category: searchCategory(searchQuery) }), 700);
+    return () => clearTimeout(timer);
+  }, [searchQuery, filteredArticles.length]);
 
   return (
     <div className="space-y-8 pb-12 animate-in fade-in duration-300">

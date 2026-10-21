@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { ProcessStageId } from '../types';
+import { track } from '../utils/webAnalytics';
 
 interface ProcessTimelineProps {
   selectedStageId?: ProcessStageId;
@@ -55,6 +56,7 @@ export const ProcessTimeline: React.FC<ProcessTimelineProps> = ({
   }, [selectedStageId]);
 
   const handleStageSelect = (id: ProcessStageId) => {
+    track({ type: 'stage_open', section: 'process', detail: id });
     setInternalStageId(id);
     if (onSelectStage) {
       onSelectStage(id);

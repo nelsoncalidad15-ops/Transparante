@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AdminContentView } from './AdminContentView';
-import { RealIndicatorsView } from './RealIndicatorsView';
+import { WebAnalyticsView } from './WebAnalyticsView';
 
 export function InternalAccess() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -9,7 +9,7 @@ export function InternalAccess() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [view, setView] = useState<'indicators' | 'editor'>('indicators');
+  const [view, setView] = useState<'editor' | 'web'>('web');
 
   useEffect(() => {
     fetch('/api/auth/session').then(r => r.ok ? r.json() : null)
@@ -41,12 +41,12 @@ export function InternalAccess() {
 
   if (authenticated) return <div>
     <nav className="mb-6 flex flex-wrap gap-2" aria-label="Secciones internas">
-      {role === 'admin' && ([['indicators', 'Indicadores'], ['editor', 'Editar datos']] as const).map(([id, label]) =>
+      {role === 'admin' && ([['web', 'Indicadores web'], ['editor', 'Editar datos']] as const).map(([id, label]) =>
         <button key={id} onClick={() => setView(id)} aria-current={view === id ? 'page' : undefined} className={`rounded-lg px-4 py-2 text-sm font-bold ${view === id ? 'bg-[#002244] text-white' : 'bg-white text-[#002244]'}`}>{label}</button>
       )}
     </nav>
-    {role === 'admin' && view === 'indicators' && <RealIndicatorsView />}
-    {role === 'admin' && view === 'editor' && <AdminContentView onExit={() => setView('indicators')} />}
+    {role === 'admin' && view === 'web' && <WebAnalyticsView />}
+    {role === 'admin' && view === 'editor' && <AdminContentView onExit={() => setView('web')} />}
     {role !== 'admin' && <div className="rounded-2xl bg-white p-6 text-sm text-slate-700 shadow-sm">Este acceso no tiene permisos para el panel de administración.</div>}
   </div>;
 

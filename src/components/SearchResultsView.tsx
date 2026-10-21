@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { matchesSearch, normalizeSearchText } from '../utils/search';
+import { searchCategory, track } from '../utils/webAnalytics';
 
 interface SearchResultsViewProps {
   initialQuery: string;
@@ -28,7 +29,7 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
   onNavigateToStage,
   onNewSearch,
 }) => {
-  const { searchAll, faqs, recordSearchQuery } = useData();
+  const { searchAll, faqs } = useData();
   const [query, setQuery] = useState(initialQuery);
   const [selectedType, setSelectedType] = useState<string>('Todo');
   const [expandedFaqId, setExpandedFaqId] = useState<string | null>(null);
@@ -49,11 +50,13 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
 
   useEffect(() => {
     const trimmed = query.trim();
-    if (trimmed && lastRecordedQueryRef.current !== trimmed) {
+    if (!trimmed || lastRecordedQueryRef.current === trimmed) return;
+    const timer = setTimeout(() => {
       lastRecordedQueryRef.current = trimmed;
-      recordSearchQuery(trimmed, results.length);
-    }
-  }, [query, results.length, recordSearchQuery]);
+      track({ type: results.length ? 'search' : 'search_empty', section: 'search', category: searchCategory(trimmed) });
+    }, 700);
+    return () => clearTimeout(timer);
+  }, [query, results.length]);
 
   const relatedFaqs = useMemo(() => {
     if (!normalizeSearchText(query)) return [];
@@ -150,6 +153,7 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
                 } else if (item.urlOrSlug.startsWith('stage:')) {
                   onNavigateToStage(item.urlOrSlug.replace('stage:', ''));
                 } else if (item.urlOrSlug.startsWith('faq:')) {
+                  track({ type: 'faq_open', section: 'search', detail: item.id });
                   setExpandedFaqId(item.id);
                 }
               }}
@@ -206,7 +210,7 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
               return (
                 <div key={faq.id} className="py-3.5 space-y-2">
                   <button
-                    onClick={() => setExpandedFaqId(isExpanded ? null : faq.id)}
+                    onClick={() => { if (!isExpanded) track({ type: 'faq_open', section: 'search', detail: faq.id }); setExpandedFaqId(isExpanded ? null : faq.id); }}
                     className="w-full flex items-center justify-between text-left group"
                   >
                     <span className="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-blue-700 transition-colors">

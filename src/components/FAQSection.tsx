@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   HelpCircle,
   Search,
@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { matchesSearch } from '../utils/search';
+import { searchCategory, track } from '../utils/webAnalytics';
 
 interface FAQSectionProps {
   onNavigateToArticle: (slug: string) => void;
@@ -44,6 +45,12 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
       return matchCategory && matchQuery;
     });
   }, [faqs, selectedCategory, searchQuery]);
+
+  useEffect(() => {
+    if (!searchQuery.trim()) return;
+    const timer = setTimeout(() => track({ type: filteredFaqs.length ? 'search' : 'search_empty', section: 'faq', category: searchCategory(searchQuery) }), 700);
+    return () => clearTimeout(timer);
+  }, [searchQuery, filteredFaqs.length]);
 
   return (
     <div className="space-y-8 pb-12 animate-in fade-in duration-300">
@@ -127,7 +134,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
                 }`}
               >
                 <button
-                  onClick={() => setExpandedId(isExpanded ? null : faq.id)}
+                  onClick={() => { if (!isExpanded) track({ type: 'faq_open', section: 'faq', detail: faq.id }); setExpandedId(isExpanded ? null : faq.id); }}
                   className="w-full min-w-0 text-left p-5 flex items-center justify-between gap-4 cursor-pointer"
                 >
                   <div className="min-w-0 flex-1 flex items-center gap-3.5">

@@ -15,6 +15,7 @@ import { SearchResultsView } from './components/SearchResultsView';
 import { FAQSection } from './components/FAQSection';
 import { AutosolLogo } from './components/AutosolLogo';
 import { ProcessStageId, ContentCategory } from './types';
+import { track } from './utils/webAnalytics';
 import {
   Car,
   ShieldCheck,
@@ -40,6 +41,10 @@ function AppContent() {
   const [libraryInitialCategory, setLibraryInitialCategory] = useState<string | undefined>(undefined);
   const [isContactMenuOpen, setIsContactMenuOpen] = useState(false);
 
+  React.useEffect(() => { if (activeTab !== 'internal-access') track({ type: 'page_open', section: activeTab }); }, []);
+  React.useEffect(() => { if (activeTab !== 'internal-access') track({ type: 'section_view', section: activeTab === 'article-detail' ? 'article-detail' : activeTab }); }, [activeTab]);
+  React.useEffect(() => { if (activeTab === 'article-detail') track({ type: 'article_view', section: 'article-detail', detail: selectedArticleSlug }); }, [activeTab, selectedArticleSlug]);
+
   // Scroll to top instantly whenever tab changes so the user is always at the top of the new view
   React.useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
@@ -59,6 +64,7 @@ function AppContent() {
 
   // Navigation Helpers
   const handleSelectStage = (stageId: ProcessStageId) => {
+    track({ type: 'stage_open', section: 'process', detail: stageId });
     setSelectedStageId(stageId);
     setActiveTab('process');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -191,7 +197,7 @@ function AppContent() {
           <div className="rounded-2xl bg-white border border-slate-200/80 p-4 sm:p-5 shadow-2xs text-xs sm:text-sm text-slate-600 space-y-2">
             <h2 className="font-semibold text-[#002244]">¿Necesitás información sobre tu operación?</h2>
             <p className="leading-relaxed">El Centro Digital brinda información general para ayudarte a comprender el proceso. Para conocer una situación particular de tu operación, comunicate con los canales oficiales de Autosol.</p>
-            <button type="button" onClick={() => setIsContactMenuOpen(true)} className="font-semibold text-[#002244] hover:underline cursor-pointer">
+            <button type="button" onClick={() => { track({ type: 'contact_menu', section: activeTab }); setIsContactMenuOpen(true); }} className="font-semibold text-[#002244] hover:underline cursor-pointer">
               Ver canales de contacto
             </button>
           </div>
@@ -222,7 +228,7 @@ function AppContent() {
                       href={`https://wa.me/5493884399187?text=${encodeURIComponent(getText('whatsapp_message', 'Hola Autosol, tengo una consulta sobre mi operación.'))}`}
                       target="_blank"
                       rel="noreferrer"
-                      onClick={() => setIsContactMenuOpen(false)}
+                      onClick={() => { track({ type: 'contact_click', section: activeTab, category: 'WhatsApp' }); setIsContactMenuOpen(false); }}
                       className="flex items-center gap-3 p-2.5 rounded-xl transition-all hover:bg-emerald-50/60 text-left group cursor-pointer border border-transparent hover:border-emerald-200"
                     >
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#25D366] text-white transition-transform group-hover:scale-105 shadow-xs">
@@ -241,7 +247,7 @@ function AppContent() {
                     {/* Opción 3: Llamar por Teléfono */}
                     <a
                       href="tel:+5493884399187"
-                      onClick={() => setIsContactMenuOpen(false)}
+                      onClick={() => { track({ type: 'contact_click', section: activeTab, category: 'Teléfono' }); setIsContactMenuOpen(false); }}
                       className="flex items-center gap-3 p-2.5 rounded-xl transition-all hover:bg-slate-50 text-left group cursor-pointer border border-transparent hover:border-slate-200"
                     >
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ece5db] text-[#002244] transition-transform group-hover:scale-105">
@@ -262,7 +268,7 @@ function AppContent() {
                       href="https://www.google.com/maps/search/?api=1&query=Autosol+Jujuy,+Argentina"
                       target="_blank"
                       rel="noreferrer"
-                      onClick={() => setIsContactMenuOpen(false)}
+                      onClick={() => { track({ type: 'contact_click', section: activeTab, category: 'Ubicación' }); setIsContactMenuOpen(false); }}
                       className="flex items-center gap-3 p-2.5 rounded-xl transition-all hover:bg-slate-50 text-left group cursor-pointer border border-transparent hover:border-slate-200"
                     >
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ece5db] text-[#002244] transition-transform group-hover:scale-105">
@@ -284,7 +290,7 @@ function AppContent() {
               {/* Único Botón Flotante en Pantalla */}
               <button
                 id="fab-contact-toggle"
-                onClick={() => setIsContactMenuOpen(!isContactMenuOpen)}
+                onClick={() => { if (!isContactMenuOpen) track({ type: 'contact_menu', section: activeTab }); setIsContactMenuOpen(!isContactMenuOpen); }}
                 className={`group relative flex h-14 w-14 items-center justify-center rounded-full border border-white/70 shadow-[0_12px_28px_rgba(0,30,80,0.25)] transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer ${
                   isContactMenuOpen
                     ? 'bg-black text-white hover:bg-slate-800'
