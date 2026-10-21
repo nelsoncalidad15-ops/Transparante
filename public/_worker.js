@@ -58,6 +58,8 @@ const callScript = async (action, payload, env) => {
 
 const routes = {
   '/api/content': { GET: ['getPublicContent', 'public'] },
+  '/api/analytics': { POST: ['recordAnalyticsEvent', 'public'] },
+  '/api/admin/analytics': { GET: ['getAnalyticsSummary', 'admin'] },
   '/api/cases': { GET: ['getClientCases', 'session'] },
   '/api/cases/timings': { GET: ['getCaseTimings', 'session'], POST: ['updateCaseTimings', 'admin'] },
   '/api/admin/indicators': { GET: ['getIndicators', 'admin'] },
@@ -99,6 +101,12 @@ const handleApi = async (request, env, path) => {
   const session = access === 'public' ? null : await getSession(request, env);
   if (access === 'session' && !session || access === 'admin' && session?.role !== 'admin') return json({ error: 'Se requiere una sesión autorizada.' }, 401);
   const payload = request.method === 'GET' ? {} : await readBody(request);
+  if (path === '/api/analytics') {
+    const validTypes = ['page_view', 'search', 'contact_click', 'article_open', 'stage_open'];
+    if (!payload || !validTypes.includes(payload.type) || typeof payload.section !== 'string' ||
+        payload.section.length > 64 || typeof payload.detail !== 'string' || payload.detail.length > 120)
+      return json({ error: 'Evento inválido.' }, 400);
+  }
   if (path === '/api/admin/review' && request.method !== 'GET' && (!Array.isArray(payload.stages) || !Array.isArray(payload.faqs) || !Array.isArray(payload.validations))) return json({ error: 'Revisión incompleta.' }, 400);
   const result = await callScript(action, payload, env);
   return json(result, 200, path === '/api/content' ? { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60' } : {});
