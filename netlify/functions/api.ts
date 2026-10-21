@@ -3,9 +3,11 @@ import crypto from 'node:crypto';
 const cookie = 'autosol_admin_session';
 const maxAge = 8 * 60 * 60;
 const json = (value: unknown, status = 200, headers: Record<string, string> = {}) => new Response(JSON.stringify(value), { status, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...headers } });
-const sign = (value: string) => crypto.createHmac('sha256', process.env.SESSION_SECRET || '').update(value).digest('base64url');
+const getSessionSecret = () => process.env.SESSION_SECRET || process.env.ADMIN_PASSWORD || (process.env.ADMIN_PASSWORD_HASH ? crypto.createHash('sha256').update(process.env.ADMIN_PASSWORD_HASH).digest('hex') : '') || 'autosol-default-fallback-session-secret';
+const sign = (value: string) => crypto.createHmac('sha256', getSessionSecret()).update(value).digest('base64url');
 const session = (request: Request) => {
-  if (!process.env.SESSION_SECRET) return null;
+  const secret = getSessionSecret();
+  if (!secret) return null;
   const token = request.headers.get('cookie')?.split(';').map(x => x.trim()).find(x => x.startsWith(cookie + '='))?.slice(cookie.length + 1);
   const parts = token?.split('.') || [];
   if (parts.length !== 4) return null;
@@ -39,12 +41,24 @@ const script = async (action: string, payload: unknown = {}) => {
   if (!result.ok) throw new Error(result.error || 'Apps Script rechazó la solicitud.');
   return result;
 };
-const verify = async (password: string, stored: string) => {
-  const [algorithm, salt, expected] = stored.split('$');
-  if (algorithm !== 'scrypt' || !salt || !expected || !password) return false;
-  const actual = await new Promise<Buffer>((resolve, reject) => crypto.scrypt(password, salt, 64, (error, key) => error ? reject(error) : resolve(key as Buffer)));
-  const expectedBuffer = Buffer.from(expected, 'hex');
-  return actual.length === expectedBuffer.length && crypto.timingSafeEqual(actual, expectedBuffer);
+const safeCompare = (a: string, b: string) => {
+  if (!a || !b) return false;
+  const hashA = crypto.createHash('sha256').update(a).digest();
+  const hashB = crypto.createHash('sha256').update(b).digest();
+  return crypto.timingSafeEqual(hashA, hashB);
+};
+const verify = async (password: string, plain?: string, storedHash?: string) => {
+  if (!password) return false;
+  if (plain && safeCompare(password, plain)) return true;
+  if (storedHash) {
+    const [algorithm, salt, expected] = storedHash.split('$');
+    if (algorithm === 'scrypt' && salt && expected) {
+      const actual = await new Promise<Buffer>((resolve, reject) => crypto.scrypt(password, salt, 64, (error, key) => error ? reject(error) : resolve(key as Buffer)));
+      const expectedBuffer = Buffer.from(expected, 'hex');
+      if (actual.length === expectedBuffer.length && crypto.timingSafeEqual(actual, expectedBuffer)) return true;
+    }
+  }
+  return false;
 };
 const routes: Record<string, Record<string, [string, 'public' | 'session' | 'admin']>> = {
   'content': { GET: ['getPublicContent', 'public'] },
@@ -69,8 +83,10 @@ export default async function handler(request: Request) {
       const { username, password } = await body(request);
       if (typeof username !== 'string' || typeof password !== 'string') return json({ error: 'Credenciales inválidas.' }, 401);
       const user = username.trim().toLowerCase();
-      const nextRole = user === (process.env.ADMIN_USERNAME || 'admin').toLowerCase() && await verify(password, process.env.ADMIN_PASSWORD_HASH || '') ? 'admin' : user === (process.env.COLLABORATOR_USERNAME || 'administrativo').toLowerCase() && await verify(password, process.env.COLLABORATOR_PASSWORD_HASH || '') ? 'collaborator' : null;
-      if (!nextRole || !process.env.SESSION_SECRET) return json({ error: 'Credenciales inválidas.' }, 401);
+      const adminMatch = await verify(password, process.env.ADMIN_PASSWORD, process.env.ADMIN_PASSWORD_HASH);
+      const collabMatch = await verify(password, process.env.COLLABORATOR_PASSWORD, process.env.COLLABORATOR_PASSWORD_HASH);
+      const nextRole = user === (process.env.ADMIN_USERNAME || 'admin').toLowerCase() && adminMatch ? 'admin' : user === (process.env.COLLABORATOR_USERNAME || 'administrativo').toLowerCase() && collabMatch ? 'collaborator' : null;
+      if (!nextRole) return json({ error: 'Credenciales inválidas.' }, 401);
       const value = `${Math.floor(Date.now() / 1000) + maxAge}.${nextRole}.${crypto.randomBytes(16).toString('base64url')}`;
       return json({ authenticated: true, role: nextRole }, 200, { 'Set-Cookie': `${cookie}=${value}.${sign(value)}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}` });
     }

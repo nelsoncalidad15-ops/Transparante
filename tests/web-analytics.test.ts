@@ -77,3 +77,27 @@ test('una URL mal configurada no revela su valor al navegador', async () => {
   assert.match(result.error, /URL HTTPS \/exec/);
   assert.ok(!JSON.stringify(result).includes('ID_DE_HOJA_PRIVADA'));
 });
+
+test('el login admite ADMIN_PASSWORD directo sin obligar a calcular hashes', async () => {
+  delete process.env.ADMIN_PASSWORD_HASH;
+  process.env.ADMIN_PASSWORD = 'MiClaveFacil2026';
+  delete process.env.SESSION_SECRET;
+
+  const badRes = await handler(new Request('https://example.test/api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username: 'admin', password: 'ClaveIncorrecta' }),
+  }));
+  assert.equal(badRes.status, 401);
+
+  const goodRes = await handler(new Request('https://example.test/api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username: 'admin', password: 'MiClaveFacil2026' }),
+  }));
+  assert.equal(goodRes.status, 200);
+  const data = await goodRes.json();
+  assert.equal(data.authenticated, true);
+  assert.equal(data.role, 'admin');
+  assert.ok(goodRes.headers.get('set-cookie')?.includes('autosol_admin_session='));
+});
