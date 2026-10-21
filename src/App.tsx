@@ -78,7 +78,7 @@ function AppContent() {
   };
 
   const handleSearchSubmit = (query: string) => {
-    trackEvent('search', 'search', query);
+    trackEvent('search', 'search', /patent|08|registro/i.test(query) ? 'patentamiento' : /entreg|retir/i.test(query) ? 'entrega' : /financ|credito|prend|cuota/i.test(query) ? 'financiacion' : /factur|pago|saldo/i.test(query) ? 'pagos' : /document|requisit/i.test(query) ? 'documentacion' : /demora|plazo|tiempo/i.test(query) ? 'plazos' : 'otros');
     setSearchQuery(query);
     setActiveTab('search');
     window.scrollTo({ top: 0, behavior: 'smooth' });
