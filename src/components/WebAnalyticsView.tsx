@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BarChart3, RefreshCw } from 'lucide-react';
 
 type Count = { count: number; section?: string; type?: string; date?: string };
-type Summary = { totalEvents: number; bySection: Count[]; byType: Count[]; daily: Count[]; updatedAt: string };
+type Summary = { totalEvents: number; bySection: Count[]; byType: Count[]; bySearchTopic: {topic:string; count:number}[]; daily: Count[]; updatedAt: string };
 
 export function WebAnalyticsView() {
   const [data, setData] = useState<Summary | null>(null);
@@ -36,6 +36,7 @@ export function WebAnalyticsView() {
         <div className="mt-4 space-y-4">{data.bySection.map(item => <div key={item.section}><div className="mb-1 flex justify-between text-sm"><span>{item.section}</span><b>{item.count}</b></div><div className="h-2 rounded-full bg-slate-100"><div className="h-2 rounded-full bg-[#002244]" style={{ width: `${100 * item.count / max}%` }} /></div></div>)}</div></div>
         <div className="rounded-2xl bg-white p-6 shadow-sm"><h2 className="font-bold text-[#002244]">Tipo de interacción</h2><div className="mt-4 space-y-3">{data.byType.map(item => <div key={item.type} className="flex justify-between border-b border-slate-100 pb-2 text-sm"><span>{item.type}</span><b>{item.count}</b></div>)}</div></div>
       </div>
+      <div className="rounded-2xl bg-white p-6 shadow-sm"><h2 className="font-bold text-[#002244]">Temas que más buscan los clientes</h2><p className="mt-1 text-xs text-slate-500">Categorías agrupadas; no se guardan las frases introducidas.</p><div className="mt-4 grid gap-3 sm:grid-cols-2">{(data.bySearchTopic || []).map(item => <div key={item.topic} className="flex justify-between rounded-lg bg-slate-50 p-3 text-sm"><span>{item.topic}</span><b>{item.count}</b></div>)}</div></div>
       <p className="text-xs text-slate-500">Registros desde la activación del sistema. Sin estimaciones. Una consulta repetida cuenta como otra interacción.</p>
     </>}
   </section>;
