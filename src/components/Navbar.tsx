@@ -51,7 +51,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, [menuOpen]);
 
   const navigate = (tab: ActiveTab) => {
-    if (window.location.hash === '#acceso-interno') window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    if (window.location.hash.includes('acceso-interno')) window.history.replaceState(null, '', window.location.pathname + window.location.search);
     setActiveTab(tab);
     setMenuOpen(false);
   };

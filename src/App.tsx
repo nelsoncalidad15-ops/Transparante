@@ -32,14 +32,34 @@ import {
   Layers,
 } from 'lucide-react';
 
+function isInternalAccessRoute() {
+  const hash = window.location.hash.replace(/^#\/?/, '').replace(/\/$/, '').toLowerCase();
+  const path = window.location.pathname.replace(/^\//, '').replace(/\/$/, '').toLowerCase();
+  return hash === 'acceso-interno' || hash === 'internal-access' || path === 'acceso-interno' || path === 'internal-access';
+}
+
 function AppContent() {
   const { getText } = useData();
-  const [activeTab, setActiveTab] = useState<ActiveTab>(window.location.hash === '#acceso-interno' ? 'internal-access' : 'home');
+  const [activeTab, setActiveTab] = useState<ActiveTab>(isInternalAccessRoute() ? 'internal-access' : 'home');
   const [selectedStageId, setSelectedStageId] = useState<ProcessStageId | undefined>(undefined);
   const [selectedArticleSlug, setSelectedArticleSlug] = useState<string>('que-es-patentamiento');
   const [searchQuery, setSearchQuery] = useState<string>('gestoría');
   const [libraryInitialCategory, setLibraryInitialCategory] = useState<string | undefined>(undefined);
   const [isContactMenuOpen, setIsContactMenuOpen] = useState(false);
+
+  React.useEffect(() => {
+    const checkRoute = () => {
+      if (isInternalAccessRoute()) {
+        setActiveTab('internal-access');
+      }
+    };
+    window.addEventListener('hashchange', checkRoute);
+    window.addEventListener('popstate', checkRoute);
+    return () => {
+      window.removeEventListener('hashchange', checkRoute);
+      window.removeEventListener('popstate', checkRoute);
+    };
+  }, []);
 
   React.useEffect(() => { if (activeTab !== 'internal-access') track({ type: 'page_open', section: activeTab }); }, []);
   React.useEffect(() => { if (activeTab !== 'internal-access') track({ type: 'section_view', section: activeTab === 'article-detail' ? 'article-detail' : activeTab }); }, [activeTab]);
@@ -381,9 +401,19 @@ function AppContent() {
 
           <div className="mt-8 flex flex-col gap-3 border-t border-white/15 pt-6 text-[11px] text-blue-200 sm:flex-row sm:items-center sm:justify-between">
             <p>© {new Date().getFullYear()} Autosol S.R.L. Todos los derechos reservados.</p>
-            <div className="flex flex-wrap gap-x-5 gap-y-2">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
               <a href="https://autosol.com.ar/legales/cookies" target="_blank" rel="noreferrer" className="hover:text-white">Política de cookies</a>
               <a href="https://www.volkswagen.com.ar/es/informaciones-legales/terminos-y-condiciones.html" target="_blank" rel="noreferrer" className="hover:text-white">Términos y condiciones</a>
+              <button
+                type="button"
+                onClick={() => {
+                  window.location.hash = '#acceso-interno';
+                  setActiveTab('internal-access');
+                }}
+                className="hover:text-white text-blue-300 transition-colors cursor-pointer"
+              >
+                Acceso interno
+              </button>
             </div>
           </div>
         </div>
