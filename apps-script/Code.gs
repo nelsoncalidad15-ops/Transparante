@@ -284,7 +284,7 @@ function recordAnalyticsEvent_(payload) {
   var detail = String(payload.detail || '');
   if (types.indexOf(type) < 0 || !/^[a-zA-Z0-9_-]{1,64}$/.test(section) || detail.length > 120) throw new Error('Evento inválido.');
   // Las búsquedas podrían contener información privada: por ahora registramos solo la cantidad, no los términos.
-  if (type === 'search') detail = '';
+  if (type === 'search' && ['patentamiento','entrega','financiacion','pagos','documentacion','plazos','otros'].indexOf(detail) < 0) detail = 'otros';
   if (!/^[a-zA-Z0-9_áéíóúÁÉÍÓÚñÑ -]{0,120}$/.test(detail)) detail = '';
   var lock = LockService.getScriptLock();
   lock.waitLock(10000);
@@ -299,16 +299,17 @@ function recordAnalyticsEvent_(payload) {
 
 function getAnalyticsSummary_() {
   var sheet = getSpreadsheet_().getSheetByName('EventosWeb');
-  if (!sheet || sheet.getLastRow() < 2) return { totalEvents: 0, bySection: [], byType: [], daily: [], updatedAt: new Date().toISOString() };
+  if (!sheet || sheet.getLastRow() < 2) return { totalEvents: 0, bySection: [], byType: [], bySearchTopic: [], daily: [], updatedAt: new Date().toISOString() };
   var values = sheet.getRange(2, 1, sheet.getLastRow() - 1, 4).getValues();
-  var sections = {}, types = {}, daily = {};
+  var sections = {}, types = {}, daily = {}, searchTopics = {};
   values.forEach(function(row) {
     var day = Utilities.formatDate(new Date(row[0]), Session.getScriptTimeZone(), 'yyyy-MM-dd');
     var type = String(row[1]), section = String(row[2]);
     sections[section] = (sections[section] || 0) + 1;
     types[type] = (types[type] || 0) + 1;
+    if (type === 'search') { var topic = String(row[3] || 'otros'); searchTopics[topic] = (searchTopics[topic] || 0) + 1; }
     daily[day] = (daily[day] || 0) + 1;
   });
   function items(map, field) { return Object.keys(map).map(function(key) { var item = { count: map[key] }; item[field] = key; return item; }).sort(function(a,b) { return b.count-a.count; }); }
-  return { totalEvents: values.length, bySection: items(sections, 'section'), byType: items(types, 'type'), daily: items(daily, 'date').sort(function(a,b) { return a.date.localeCompare(b.date); }), updatedAt: new Date().toISOString() };
+  return { totalEvents: values.length, bySection: items(sections, 'section'), byType: items(types, 'type'), bySearchTopic: items(searchTopics, 'topic'), daily: items(daily, 'date').sort(function(a,b) { return a.date.localeCompare(b.date); }), updatedAt: new Date().toISOString() };
 }
