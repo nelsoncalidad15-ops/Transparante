@@ -31,6 +31,8 @@ function doPost(e) {
     if (action === 'getSiteTexts') return json_({ ok: true, data: { texts: readRows_('Textos') } });
     if (action === 'updateSiteTexts') return json_({ ok: true, data: updateSiteTexts_(payload) });
     if (action === 'getIndicators') return json_({ ok: true, data: getIndicators_() });
+    if (action === 'recordAnalyticsEvent') return json_({ ok: true, data: recordAnalyticsEvent_(payload) });
+    if (action === 'getAnalyticsSummary') return json_({ ok: true, data: getAnalyticsSummary_() });
     if (action === 'getClientCases') return json_({ ok: true, data: getClientCases_() });
     if (action === 'getCaseTimings') return json_({ ok: true, data: getCaseTimings_() });
     if (action === 'updateCaseTimings') return json_({ ok: true, data: updateCaseTimings_(payload) });
@@ -271,4 +273,42 @@ function updateContent_(payload) {
 
 function json_(value) {
   return ContentService.createTextOutput(JSON.stringify(value)).setMimeType(ContentService.MimeType.JSON);
+}
+
+
+/** Eventos de uso públicos, con validación estricta y sin identidad del visitante. */
+function recordAnalyticsEvent_(payload) {
+  var types = ['page_view', 'search', 'contact_click', 'article_open', 'stage_open'];
+  var type = String(payload.type || '');
+  var section = String(payload.section || '');
+  var detail = String(payload.detail || '');
+  if (types.indexOf(type) < 0 || !/^[a-zA-Z0-9_-]{1,64}$/.test(section) || detail.length > 120) throw new Error('Evento inválido.');
+  // Las búsquedas podrían contener información privada: por ahora registramos solo la cantidad, no los términos.
+  if (type === 'search') detail = '';
+  if (!/^[a-zA-Z0-9_áéíóúÁÉÍÓÚñÑ -]{0,120}$/.test(detail)) detail = '';
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    var book = getSpreadsheet_();
+    var sheet = book.getSheetByName('EventosWeb') || book.insertSheet('EventosWeb');
+    if (sheet.getLastRow() === 0) sheet.appendRow(['FechaHora', 'Tipo', 'Seccion', 'Detalle']);
+    sheet.appendRow([new Date(), type, section, detail]);
+    return { saved: true };
+  } finally { lock.releaseLock(); }
+}
+
+function getAnalyticsSummary_() {
+  var sheet = getSpreadsheet_().getSheetByName('EventosWeb');
+  if (!sheet || sheet.getLastRow() < 2) return { totalEvents: 0, bySection: [], byType: [], daily: [], updatedAt: new Date().toISOString() };
+  var values = sheet.getRange(2, 1, sheet.getLastRow() - 1, 4).getValues();
+  var sections = {}, types = {}, daily = {};
+  values.forEach(function(row) {
+    var day = Utilities.formatDate(new Date(row[0]), Session.getScriptTimeZone(), 'yyyy-MM-dd');
+    var type = String(row[1]), section = String(row[2]);
+    sections[section] = (sections[section] || 0) + 1;
+    types[type] = (types[type] || 0) + 1;
+    daily[day] = (daily[day] || 0) + 1;
+  });
+  function items(map, field) { return Object.keys(map).map(function(key) { var item = { count: map[key] }; item[field] = key; return item; }).sort(function(a,b) { return b.count-a.count; }); }
+  return { totalEvents: values.length, bySection: items(sections, 'section'), byType: items(types, 'type'), daily: items(daily, 'date').sort(function(a,b) { return a.date.localeCompare(b.date); }), updatedAt: new Date().toISOString() };
 }
