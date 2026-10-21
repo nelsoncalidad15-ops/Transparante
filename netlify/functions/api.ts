@@ -24,13 +24,14 @@ const body = async (request: Request) => {
   return raw ? JSON.parse(raw) : {};
 };
 const script = async (action: string, payload: unknown = {}) => {
-  const endpoint = process.env.APPS_SCRIPT_URL;
-  const secret = process.env.APPS_SCRIPT_SHARED_SECRET;
+  const endpoint = process.env.APPS_SCRIPT_URL?.trim().replace(/^["']|["']$/g, '');
+  const secret = process.env.APPS_SCRIPT_SHARED_SECRET?.trim().replace(/^["']|["']$/g, '');
   if (!endpoint || !secret) throw new Error('Apps Script no está configurado.');
   let url: URL;
   try { url = new URL(endpoint); }
   catch { throw new Error('APPS_SCRIPT_URL debe ser la URL HTTPS /exec de la aplicación web de Apps Script.'); }
-  if (url.protocol !== 'https:' || url.hostname !== 'script.google.com' || !/^\/macros\/s\/[^/]+\/exec\/?$/.test(url.pathname)) {
+  const cleanPath = url.pathname.replace(/\/+$/, '');
+  if (url.protocol !== 'https:' || url.hostname !== 'script.google.com' || !cleanPath.endsWith('/exec')) {
     throw new Error('APPS_SCRIPT_URL debe ser la URL HTTPS /exec de la aplicación web de Apps Script.');
   }
   let response: Response;
