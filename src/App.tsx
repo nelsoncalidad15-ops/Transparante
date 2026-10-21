@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { trackEvent } from './utils/analytics';
 import { DataProvider, useData } from './context/DataContext';
 import { Navbar, ActiveTab } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
@@ -40,6 +41,10 @@ function AppContent() {
   const [libraryInitialCategory, setLibraryInitialCategory] = useState<string | undefined>(undefined);
   const [isContactMenuOpen, setIsContactMenuOpen] = useState(false);
 
+  React.useEffect(() => {
+    if (activeTab !== 'internal-access') trackEvent('page_view', activeTab);
+  }, [activeTab]);
+
   // Scroll to top instantly whenever tab changes so the user is always at the top of the new view
   React.useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
@@ -59,18 +64,21 @@ function AppContent() {
 
   // Navigation Helpers
   const handleSelectStage = (stageId: ProcessStageId) => {
+    trackEvent('stage_open', 'process', String(stageId));
     setSelectedStageId(stageId);
     setActiveTab('process');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleNavigateToArticle = (slug: string) => {
+    trackEvent('article_open', 'article-detail', slug);
     setSelectedArticleSlug(slug);
     setActiveTab('article-detail');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSearchSubmit = (query: string) => {
+    trackEvent('search', 'search', query);
     setSearchQuery(query);
     setActiveTab('search');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -222,7 +230,7 @@ function AppContent() {
                       href={`https://wa.me/5493884399187?text=${encodeURIComponent(getText('whatsapp_message', 'Hola Autosol, tengo una consulta sobre mi operación.'))}`}
                       target="_blank"
                       rel="noreferrer"
-                      onClick={() => setIsContactMenuOpen(false)}
+                      onClick={() => { trackEvent('contact_click', 'contact', 'whatsapp'); setIsContactMenuOpen(false); }}
                       className="flex items-center gap-3 p-2.5 rounded-xl transition-all hover:bg-emerald-50/60 text-left group cursor-pointer border border-transparent hover:border-emerald-200"
                     >
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#25D366] text-white transition-transform group-hover:scale-105 shadow-xs">
@@ -241,7 +249,7 @@ function AppContent() {
                     {/* Opción 3: Llamar por Teléfono */}
                     <a
                       href="tel:+5493884399187"
-                      onClick={() => setIsContactMenuOpen(false)}
+                      onClick={() => { trackEvent('contact_click', 'contact', 'phone'); setIsContactMenuOpen(false); }}
                       className="flex items-center gap-3 p-2.5 rounded-xl transition-all hover:bg-slate-50 text-left group cursor-pointer border border-transparent hover:border-slate-200"
                     >
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ece5db] text-[#002244] transition-transform group-hover:scale-105">
